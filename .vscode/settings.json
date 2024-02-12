@@ -1,0 +1,17 @@
+{
+  "editor.formatOnSave": true,
+  "editor.quickSuggestions": {"other": "on"},
+  "editor.snippetSuggestions": "top",
+  "editor.tabCompletion":"on",
+  "prettier.printWidth": 160,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "eslint.validate": [ "javascript", "javascriptreact", "html", "typescriptreact", "typescript" ],
+  "http.proxy": "http://username:password@hostname:port/",
+  "http.proxyAuthorization": null,
+  "http.proxyStrictSSL": true,
+  "cSpell.words": [
+    "Allcompleted"
+  ]
+}
