@@ -17,7 +17,7 @@ const DrawerComponent: FC<{ heading: string; children: React.ReactNode; placemen
   return (
     <div>
       <Drawer
-        forceRender={true}
+        forceRender={false}
         title={heading || "Drawer"}
         placement={placement}
         width={500}

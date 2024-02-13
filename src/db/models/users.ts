@@ -26,6 +26,10 @@ const userSchema: Schema = new Schema(
       type: String,
       require: true,
     },
+    profile_image: {
+      type: Buffer,
+      require: false,
+    },
   },
   {
     timestamps: true,
