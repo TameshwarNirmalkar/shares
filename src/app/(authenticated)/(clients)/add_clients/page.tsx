@@ -3,7 +3,6 @@
 import SubmitButton from "@/components/SubmitButton";
 import { Alert, Button, Card, Col, Divider, Form, Image, Input, Modal, Row, Space, Upload, message } from "antd";
 import { NextPage } from "next";
-import { FaUserTie } from "react-icons/fa6";
 
 import DrawerComponent from "@/components/DrawerComponent";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
@@ -22,18 +21,6 @@ const getBase64 = (img: FileType, callback: (url: string) => void) => {
   reader.readAsDataURL(img);
 };
 
-const beforeUpload = (file: FileType) => {
-  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-  if (!isJpgOrPng) {
-    message.error("You can only upload JPG/PNG file!");
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error("Image must smaller than 2MB!");
-  }
-  return isJpgOrPng && isLt2M;
-};
-
 const AddClientsPage: NextPage = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
@@ -45,7 +32,6 @@ const AddClientsPage: NextPage = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [apiCallState, setApiCallState] = useState<boolean>(false);
   const [selectedRow, setSelectedRow] = useState<any>({});
-  const [modal, contextHolder] = Modal.useModal();
 
   const getUserList = useCallback(async () => {
     try {
@@ -72,22 +58,6 @@ const AddClientsPage: NextPage = () => {
       getUserList();
     }
   }, [session?.user?.accessToken, apiCallState]);
-
-  const handleChange: UploadProps["onChange"] = (info) => {
-    if (info.file.status === "uploading") {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === "done") {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj as FileType, (url) => {
-        setLoading(false);
-        setImageUrl(url);
-      });
-    }
-  };
-
-  console.log("userList ", userList);
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -151,6 +121,35 @@ const AddClientsPage: NextPage = () => {
     });
   }, []);
 
+  const onBeforeLoad = useCallback((file: FileType) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      message.error("You can only upload JPG/PNG file!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error("Image must smaller than 2MB!");
+    } else {
+      const FR = new FileReader();
+      FR.onloadend = (evt: any) => {
+        setImageUrl(evt.target.result);
+      };
+      FR.readAsDataURL(file);
+    }
+    // return isJpgOrPng && isLt2M;
+    return false;
+  }, []);
+
+  const handleChange: UploadProps["onChange"] = (info) => {
+    if (info.file.status === "uploading") {
+      setLoading(true);
+      return;
+    }
+    if (info.file.status === "done") {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       {errormsg && <Alert message="Unauthorised" description="Please login again." type="error" />}
@@ -194,6 +193,21 @@ const AddClientsPage: NextPage = () => {
         }}
       >
         <Form form={form} initialValues={{ ...selectedRow }} name="addclientForm" layout="vertical" autoComplete="off" onFinish={onFormFinish}>
+          <div>
+            <Upload
+              name="avatar"
+              listType="picture-circle"
+              className="avatar-uploader"
+              showUploadList={false}
+              action="#"
+              beforeUpload={onBeforeLoad}
+              onChange={handleChange}
+              onPreview={() => false}
+            >
+              {imageUrl ? <Image src={imageUrl} width={100} preview={false} /> : uploadButton}
+            </Upload>
+          </div>
+
           <Form.Item name="_id" hidden>
             <Input />
           </Form.Item>
@@ -242,42 +256,6 @@ const AddClientsPage: NextPage = () => {
           </Form.Item>
         </Form>
       </DrawerComponent>
-
-      <div className="hidden">
-        <h1>Add Clients Page</h1>
-        <Row justify={"space-between"}>
-          <Col span={12}></Col>
-          <Col span={10}>
-            <figure className="md:flex bg-slate-100 rounded-xl p-8 md:p-0 dark:bg-slate-800">
-              <span className="md:rounded-none rounded-full mx-auto bg-white pt-8">
-                <Upload
-                  name="avatar"
-                  listType="picture-circle"
-                  className="avatar-uploader"
-                  showUploadList={false}
-                  action="https://run.mocky.io/v3/3ac666c4-0dac-482e-918b-9045f887f04c"
-                  beforeUpload={beforeUpload}
-                  onChange={handleChange}
-                >
-                  {imageUrl ? <FaUserTie className="w-24 h-24 md:w-48 md:h-auto" /> : uploadButton}
-                </Upload>
-              </span>
-              <div className="pt-6 md:p-8 text-center md:text-left space-y-4">
-                <blockquote>
-                  <p className="text-lg font-medium text-white">
-                    “Tailwind CSS is the only framework that I've seen scale on large teams. It’s easy to customize, adapts to any design, and the build size is
-                    tiny.”
-                  </p>
-                </blockquote>
-                <figcaption className="font-medium">
-                  <div className="text-sky-500 dark:text-sky-400">Sarah Dayan</div>
-                  <div className="text-slate-700 dark:text-slate-500">email@abc.com</div>
-                </figcaption>
-              </div>
-            </figure>
-          </Col>
-        </Row>
-      </div>
     </div>
   );
 };
