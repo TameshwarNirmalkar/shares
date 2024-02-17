@@ -27,7 +27,7 @@ const userSchema: Schema = new Schema(
       require: true,
     },
     profile_image: {
-      type: Buffer,
+      type: String,
       require: false,
     },
   },
