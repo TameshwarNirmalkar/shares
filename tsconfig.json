@@ -22,8 +22,9 @@
     "paths": {
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
-      "@db/*":["./src/db/*"],
-      "@hooks/*":["./src/hooks/*"],
+      "@db/*": ["./src/db/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@redux-store/*": ["./src/redux/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

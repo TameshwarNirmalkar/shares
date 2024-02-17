@@ -1,4 +1,5 @@
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { StoreProviders } from "@redux-store/providers";
 import type { Metadata } from "next";
 import { AuthProvider } from "./Provider";
 import "./globals.css";
@@ -12,9 +13,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="App">
-        <AuthProvider>
-          <AntdRegistry>{children}</AntdRegistry>
-        </AuthProvider>
+        <StoreProviders>
+          <AuthProvider>
+            <AntdRegistry>{children}</AntdRegistry>
+          </AuthProvider>
+        </StoreProviders>
       </body>
     </html>
   );
