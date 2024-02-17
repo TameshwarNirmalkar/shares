@@ -1,0 +1,10 @@
+.nav_bar {
+  display: flex;
+  align-items: center;
+}
+
+.fixed-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}

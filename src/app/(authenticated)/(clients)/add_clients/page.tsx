@@ -5,6 +5,10 @@ import { Alert, Button, Card, Col, Divider, Form, Image, Input, Modal, Row, Spac
 import { NextPage } from "next";
 
 import DrawerComponent from "@/components/DrawerComponent";
+import SpinnerLoader from "@/components/SpinnerLoader";
+import { useAppDispatch, useAppSelector } from "@/redux/reduxHooks";
+import { getUsersCollectionAction } from "@/redux/users/action";
+import { isLoading, userListState } from "@/redux/users/memonised-user";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import type { GetProp, UploadProps } from "antd";
 import Meta from "antd/es/card/Meta";
@@ -22,42 +26,25 @@ const getBase64 = (img: FileType, callback: (url: string) => void) => {
 };
 
 const AddClientsPage: NextPage = () => {
+  const dispatch = useAppDispatch();
+  const userList = useAppSelector(userListState);
+  const loading = useAppSelector(isLoading);
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState<boolean>(false);
+  // const [loading, setLoading] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string>();
 
   const { data: session }: any = useSession();
-  const [userList, setUserList] = useState<any[]>([]);
+  // const [userList, setUserList] = useState<any[]>([]);
   const [errormsg, setErrorMsg] = useState<string>("");
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [apiCallState, setApiCallState] = useState<boolean>(false);
   const [selectedRow, setSelectedRow] = useState<any>({});
 
-  const getUserList = useCallback(async () => {
-    try {
-      const res = await fetch("/api/user", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.user?.accessToken}`,
-        },
-      }).then((res) => res.json());
-      if (res.code) {
-        setErrorMsg(res.message);
-      } else {
-        setErrorMsg("");
-        setUserList(res.userList);
-      }
-    } catch (error) {
-      console.log("Error ====== ", error);
-    }
-  }, [session]);
-
   useEffect(() => {
     if (session?.user?.accessToken) {
-      getUserList();
+      dispatch(getUsersCollectionAction(""));
     }
-  }, [session?.user?.accessToken, apiCallState]);
+  }, [dispatch, session?.user?.accessToken, apiCallState]);
 
   useEffect(() => {
     form.resetFields();
@@ -137,11 +124,11 @@ const AddClientsPage: NextPage = () => {
 
   const handleChange: UploadProps["onChange"] = (info) => {
     if (info.file.status === "uploading") {
-      setLoading(true);
+      // setLoading(true);
       return;
     }
     if (info.file.status === "done") {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -156,7 +143,7 @@ const AddClientsPage: NextPage = () => {
     <div>
       {errormsg && <Alert message="Unauthorised" description="Please login again." type="error" />}
       <Row gutter={[10, 10]}>
-        {userList?.map((el) => {
+        {userList?.map((el: any) => {
           // const blob = el.profile_image.blob();
           // const url = URL.createObjectURL(blob);
           // const img = new Image();
@@ -268,6 +255,8 @@ const AddClientsPage: NextPage = () => {
           </Form.Item>
         </Form>
       </DrawerComponent>
+
+      <SpinnerLoader loading={loading} />
     </div>
   );
 };

@@ -11,6 +11,7 @@ export const makeStore = () => {
     middleware: (getDefaultMiddleware: any) =>
       getDefaultMiddleware({
         serializableCheck: {
+          getEntries: (value: [string, any][]) => value,
           ignoredActions: [],
           warnAfter: 500,
           ignoreState: true,

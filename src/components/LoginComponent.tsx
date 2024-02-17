@@ -1,5 +1,6 @@
 "use client";
 
+import { useAppDispatch } from "@redux-store/reduxHooks";
 import { Alert, Button, Checkbox, Form, Input } from "antd";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
@@ -14,6 +15,7 @@ type FieldType = {
 
 const LoginComponent: FC<{}> = memo(() => {
   const { push } = useRouter();
+  const dispatch = useAppDispatch();
 
   const [userError, setUserError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);

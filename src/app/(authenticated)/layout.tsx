@@ -4,8 +4,7 @@ import HeaderComponent from "@/components/HeaderComponent";
 import SideBarComponent from "@/components/SideBarComponent";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Button, Col, Layout, Row, theme } from "antd";
-import Router from "next/router";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 
 const { Header, Sider, Content } = Layout;
 const twoColors = { "0%": "#108ee9", "100%": "#87d068" };
@@ -22,14 +21,14 @@ export default function DashboardLayout({
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  Router.events.on("routeChangeStart", (url) => {
-    console.log(`Loading: ${url}`);
-    setIsLoading(true);
-  });
-  Router.events.on("routeChangeComplete", () => setIsLoading(false));
-  Router.events.on("routeChangeError", () => setIsLoading(false));
+  // Router.events.on("routeChangeStart", (url) => {
+  //   console.log(`Loading: ${url}`);
+  //   setIsLoading(true);
+  // });
+  // Router.events.on("routeChangeComplete", () => setIsLoading(false));
+  // Router.events.on("routeChangeError", () => setIsLoading(false));
 
-  useEffect(() => {}, []);
+  // useEffect(() => {}, []);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
