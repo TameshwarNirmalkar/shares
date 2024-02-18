@@ -8,8 +8,8 @@ import DrawerComponent from "@/components/DrawerComponent";
 import SpinnerLoader from "@/components/SpinnerLoader";
 import { useAppDispatch, useAppSelector } from "@/redux/reduxHooks";
 import { AppState } from "@/redux/store";
-import { selectAllUsers, selectUserById, userUpdate } from "@/redux/users";
-import { getUsersCollectionAction } from "@/redux/users/action";
+import { selectAllUsers, selectUserById } from "@/redux/users";
+import { getUsersCollectionAction, updateUsersAction } from "@/redux/users/action";
 import { isLoading } from "@/redux/users/memonised-user";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import type { GetProp, UploadProps } from "antd";
@@ -40,16 +40,14 @@ const AddClientsPage: NextPage = () => {
   const [imageUrl, setImageUrl] = useState<string>();
 
   const { data: session }: any = useSession();
-  // const [userList, setUserList] = useState<any[]>([]);
   const [errormsg, setErrorMsg] = useState<string>("");
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-  const [apiCallState, setApiCallState] = useState<boolean>(false);
 
   useEffect(() => {
     if (session?.user?.accessToken) {
       dispatch(getUsersCollectionAction(""));
     }
-  }, [dispatch, session?.user?.accessToken, apiCallState]);
+  }, [dispatch, session?.user?.accessToken]);
 
   useEffect(() => {
     form.resetFields();
@@ -57,22 +55,8 @@ const AddClientsPage: NextPage = () => {
 
   const onFormFinish = useCallback(
     async (val: any) => {
-      const res = await fetch("/api/user", {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${session.user.accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...selectedRow, ...val, profile_image: imageUrl }),
-      }).then((res) => res.json());
-      if (res.success) {
-        message.success(res.message);
-        // setApiCallState((prev) => !prev);
-        dispatch(userUpdate({ id: val._id, changes: { ...selectedRow, ...val, profile_image: imageUrl } }));
-        setIsDrawerOpen(false);
-      } else {
-        message.error(res.message);
-      }
+      await dispatch(updateUsersAction({ ...selectedRow, ...val, profile_image: imageUrl }));
+      setIsDrawerOpen(false);
     },
     [session, imageUrl]
   );
@@ -102,7 +86,6 @@ const AddClientsPage: NextPage = () => {
           },
           body: JSON.stringify({ id: row._id }),
         }).then((res) => res.json());
-        setApiCallState((prev) => !prev);
       },
     });
   }, []);
@@ -194,7 +177,6 @@ const AddClientsPage: NextPage = () => {
           <div>
             <Form.Item name="profile_image" label=" " rules={[{ required: false, message: "Required" }]}>
               <Upload
-                // name="avatar"
                 listType="picture-circle"
                 className="avatar-uploader"
                 showUploadList={false}

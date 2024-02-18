@@ -37,7 +37,6 @@ const userSlice = createSlice({
             state.isLoading = true;
         }).addCase(getUsersCollectionAction.fulfilled, (state: any, action: PayloadAction<UserCollection[]>) => {
             state.isLoading = false;
-            // state.userList = action.payload;
             usersAdapter.upsertMany(state, action.payload);
         }).addCase(getUsersCollectionAction.rejected, (state: any, action) => {
             state.errorMsg = action.error
@@ -45,7 +44,7 @@ const userSlice = createSlice({
     }
 }) as any;
 
-//getSelectors creates these selectors and we rename them with aliases using destructuring
+// getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
     selectAll: selectAllUsers,
     selectById: selectUserById,
