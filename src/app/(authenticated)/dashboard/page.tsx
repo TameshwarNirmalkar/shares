@@ -1,7 +1,7 @@
 "use client";
 
-import { Alert, Card, Col, Row } from "antd";
-import { FC, memo, useState } from "react";
+import { Card, Col, Row } from "antd";
+import { FC, memo } from "react";
 
 import { Metadata } from "next";
 import { useRouter } from "next/navigation";
@@ -11,12 +11,12 @@ const metadata: Metadata = {
 };
 
 const Dashboard: FC<{}> = memo(() => {
-  const { replace } = useRouter();
-  const [errormsg, setErrorMsg] = useState<string>("");
+  const { push } = useRouter();
+  // const [errormsg, setErrorMsg] = useState<string>("");
 
   return (
     <>
-      {errormsg && <Alert message="Unauthorised" description="Please login again." type="error" />}
+      {/* {errormsg && <Alert message="Unauthorised" description="Please login again." type="error" />} */}
       <Row gutter={[10, 10]}>
         {[
           { title: "Dashboard", rpath: "/dashboard" },
@@ -30,7 +30,7 @@ const Dashboard: FC<{}> = memo(() => {
           { title: "Investment", rpath: "/investment" },
         ].map((el: any, ind: number) => (
           <Col span={8} key={ind}>
-            <Card title={el.title} bordered={true} onClick={() => replace(`${el.rpath}`)} className="cursor-pointer">
+            <Card title={el.title} bordered={true} onClick={() => push(`${el.rpath}`)} className="cursor-pointer">
               {el.rpath}
             </Card>
           </Col>

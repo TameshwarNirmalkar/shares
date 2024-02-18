@@ -48,8 +48,9 @@ export default function DashboardLayout({
             </Col>
           </Row>
         </Header>
-
-        <Content className="p-3">{children}</Content>
+        <Suspense fallback={<span>Loading</span>}>
+          <Content className="p-3">{children}</Content>
+        </Suspense>
       </Layout>
     </Layout>
   );

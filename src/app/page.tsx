@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default async function HomePage() {
   const authSession = await getServerAuthSession();
-  console.log("SEssion; ", authSession);
+  console.log("HomePage Session  ", authSession);
 
   return (
     <main className="">
