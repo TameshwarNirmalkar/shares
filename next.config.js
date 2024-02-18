@@ -45,7 +45,7 @@ const nextConfig = {
   devIndicators: {
     buildActivity: true,
     buildActivityPosition: "bottom-right",
-    // autoPrerender: true,
+    autoPrerender: true,
   },
 };
 

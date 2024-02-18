@@ -38,7 +38,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token, user }) {
       //(3)
       session.user = { ...token } as any;
-      console.log("3 callback session ============== ", session);
+      // console.log("3 callback session ============== ", session);
       return session;
     },
   },

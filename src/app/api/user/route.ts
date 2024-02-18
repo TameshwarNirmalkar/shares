@@ -64,11 +64,11 @@ export async function PATCH(request: NextRequest, response: NextResponse) {
       await jose.jwtVerify(`${hasBearer[1]}`, secret);
       await connectMongoDB();
       const { _id, full_name, email, phone, whatsapp, address, profile_image } = await request.json();
-      const imageBuffer = Buffer.from(profile_image, "base64");
+      // const imageBuffer = Buffer.from(profile_image, "base64");
       const res = await UserModel.findOneAndUpdate(
         { _id: _id },
         {
-          $set: { _id, full_name, email, phone, whatsapp, address, profile_image: imageBuffer },
+          $set: { _id, full_name, email, phone, whatsapp, address, profile_image },
           $currentDate: { lastUpdate: true },
         },
         { upsert: true, new: true }

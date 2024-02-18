@@ -1,4 +1,4 @@
-import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createEntityAdapter, createSlice, EntityId, PayloadAction } from '@reduxjs/toolkit';
 import { AppState } from '../store';
 import { getUsersCollectionAction } from './action';
 
@@ -14,31 +14,33 @@ interface UserCollection {
 }
 
 interface UserStateI {
-    accessToken: string | null;
     userList: UserCollection[];
     isLoading: boolean;
+    errorMsg: string | null;
 }
 
-const usersAdapter = createEntityAdapter({
+const usersAdapter = createEntityAdapter<UserCollection, EntityId>({
     selectId: (user: UserCollection) => user._id,
     sortComparer: (a: any, b: any) => a.full_name.localeCompare(b.full_name)
 });
 
 const userSlice = createSlice({
     name: 'USER_SLICE',
-    initialState: usersAdapter.getInitialState({ accessToken: null, userList: [], isLoading: false }),
+    initialState: usersAdapter.getInitialState<UserStateI>({ userList: [], isLoading: false, errorMsg: '' }),
     reducers: {
-        setAccessToken(state: UserStateI, action: PayloadAction<string>) {
-            state.accessToken = action.payload;
-        }
+        userAdded: usersAdapter.addOne,
+        userUpdate: usersAdapter.updateOne,
+        userRemove: usersAdapter.removeOne,
     },
     extraReducers(builder) {
         builder.addCase(getUsersCollectionAction.pending, (state: any, action: PayloadAction<any>) => {
             state.isLoading = true;
         }).addCase(getUsersCollectionAction.fulfilled, (state: any, action: PayloadAction<UserCollection[]>) => {
             state.isLoading = false;
-            state.userList = action.payload;
+            // state.userList = action.payload;
             usersAdapter.upsertMany(state, action.payload);
+        }).addCase(getUsersCollectionAction.rejected, (state: any, action) => {
+            state.errorMsg = action.error
         })
     }
 }) as any;
@@ -51,6 +53,6 @@ export const {
     // Pass in a selector that returns the product slice of state
 } = usersAdapter.getSelectors((state: AppState) => state.users);
 
-export const { setAccessToken } = userSlice.actions;
+export const { userAdded, userUpdate, userRemove } = userSlice.actions;
 export default userSlice.reducer;
 
