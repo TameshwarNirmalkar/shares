@@ -86,7 +86,7 @@ export async function DELETE(request: NextRequest) {
     try {
       await jose.jwtVerify(`${hasBearer[1]}`, secret);
       await connectMongoDB();
-      await StakeholderModel.deleteOne({ _id: payload.id });
+      await StakeholderModel.deleteOne({ _id: payload._id });
       return NextResponse.json({ message: "Item Delete Successfully.", success: true }, { status: 200 });
     } catch (error: any) {
       return NextResponse.json({ message: "Unauthorized", code: error.code, success: false }, { status: 403 });

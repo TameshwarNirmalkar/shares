@@ -4,7 +4,7 @@ import DrawerComponent from "@components/DrawerComponent";
 import StackholderFormComponent from "@components/StackholderFormComponent";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
 import { getTotalInterest, getTotalPrinciple, selectAllStakeholders } from "@redux-store/stakeholders";
-import { getInvestorListAction } from "@redux-store/stakeholders/action";
+import { deleteInvestorAction, getInvestorListAction } from "@redux-store/stakeholders/action";
 import { Button, Col, Row, Space, Table } from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
@@ -34,17 +34,13 @@ const StakeholderPage: FC<{}> = memo(() => {
     setSelectedRow(row);
   }, []);
 
-  const onDelete = useCallback(async (row: any) => {
-    const response: any = await fetch(`/api/investors`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session?.user?.accessToken}`,
-      },
-      body: JSON.stringify({ id: row._id }),
-    }).then((res) => res.json());
-    setApiCallState((prev) => !prev);
-  }, []);
+  const onDelete = useCallback(
+    async (row: any) => {
+      await dispatch(deleteInvestorAction(row));
+      // setApiCallState((prev) => !prev);
+    },
+    [dispatch]
+  );
 
   const columns = [
     {
