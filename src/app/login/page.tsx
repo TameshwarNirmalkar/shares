@@ -1,4 +1,4 @@
-import LoginComponent from "@/components/LoginComponent";
+import LoginComponent from "@components/LoginComponent";
 
 type PageProps = {
   searchParams: { error?: string };

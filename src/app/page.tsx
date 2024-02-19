@@ -1,5 +1,5 @@
-import UserInfo from "@/components/UserInfo";
-import { getServerAuthSession } from "@/server/auth";
+import UserInfo from "@components/UserInfo";
+import { getServerAuthSession } from "@server/auth";
 import Link from "next/link";
 
 export default async function HomePage() {

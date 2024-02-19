@@ -1,6 +1,6 @@
-import connectMongoDB from "@/db/connection/db-connection";
-import StakeholderModel from "@/db/models/stakeholders";
-import { getServerAuthSession } from "@/server/auth";
+import connectMongoDB from "@db/connection/db-connection";
+import StakeholderModel from "@db/models/stakeholders";
+import { getServerAuthSession } from "@server/auth";
 import * as jose from "jose";
 import { NextRequest, NextResponse } from "next/server";
 

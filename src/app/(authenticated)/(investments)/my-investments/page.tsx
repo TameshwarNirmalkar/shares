@@ -1,11 +1,16 @@
 "use client";
 
-import DrawerComponent from "@/components/DrawerComponent";
+import DrawerComponent from "@components/DrawerComponent";
+import { getTotalInterest, getTotalPrinciple, selectAllInterests } from "@redux-store/interests";
+import { createInterestAction, deleteInterestAction, getInterestCollectionAction } from "@redux-store/interests/action";
+import { isLoading } from "@redux-store/interests/memonised-interests";
+import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
 import { Button, Col, DatePicker, Divider, Form, Input, Row, Space, Table, message } from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
-import { FC, memo, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, memo, useCallback, useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
+import { LuTrash2 } from "react-icons/lu";
 
 type FieldType = {
   uuid: String;
@@ -17,64 +22,8 @@ type FieldType = {
   interest_date: Date;
 };
 
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "investment_name",
-    key: "investment_name",
-    render: (txt: string) => {
-      return <span className="capitalize">{txt}</span>;
-    },
-  },
-  {
-    title: "Date of Investment",
-    dataIndex: "investment_date",
-    key: "investment_date",
-    render: (txt: string) => {
-      return <span>{dayjs(txt).format("DD")} of every month.</span>;
-    },
-  },
-  {
-    title: "Principle",
-    dataIndex: "amount",
-    key: "amount",
-    render: (txt: number) => {
-      return (
-        <span className="text-green-600">
-          {txt.toLocaleString("en-US", {
-            style: "currency",
-            currency: "INR",
-          })}
-        </span>
-      );
-    },
-  },
-  {
-    title: "Percentage",
-    dataIndex: "percentage",
-    key: "percentage",
-    render: (txt: string) => {
-      return <span className="text-red-600">{txt} %</span>;
-    },
-  },
-  {
-    title: "Monthly Interest",
-    dataIndex: "calculated_amount",
-    key: "calculated_amount",
-    render: (txt: number) => {
-      return (
-        <span className="text-green-600">
-          {txt.toLocaleString("en-US", {
-            style: "currency",
-            currency: "INR",
-          })}
-        </span>
-      );
-    },
-  },
-];
-
 const MyInvestment: FC<{}> = memo(() => {
+  const dispatch = useAppDispatch();
   const { data: session }: any = useSession();
 
   const iniVal = {
@@ -88,70 +37,95 @@ const MyInvestment: FC<{}> = memo(() => {
   };
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-  const [investorList, setInvestorList] = useState<any[]>([]);
   const [apiCallState, setApiCallState] = useState<boolean>(false);
   const [selectedRow, setSelectedRow] = useState<any>({});
-  const [investmentList, setInvestmentList] = useState<any[]>([]);
+
+  const investmentList = useAppSelector(selectAllInterests);
+  const loading = useAppSelector(isLoading);
+  const total_principle = useAppSelector((state) => getTotalPrinciple(state));
+  const total_interest = useAppSelector((state) => getTotalInterest(state));
 
   const [investmentForm] = Form.useForm<FieldType[]>();
 
   useEffect(() => {
-    const getInvestmentList = async () => {
-      const response: any = await fetch(`/api/interest`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.user?.accessToken}`,
-        },
-      }).then((res) => res.json());
-      setInvestmentList(response?.interestList);
-    };
-    getInvestmentList();
-  }, [session?.user?.accessToken]);
+    dispatch(getInterestCollectionAction(""));
+  }, [dispatch, apiCallState]);
 
-  const totalInvestment = useMemo(() => {
-    return {
-      totalPrinciple: investmentList
-        ?.reduce((acc, ite) => acc + ite.amount, 0)
-        .toLocaleString("en-US", {
-          style: "currency",
-          currency: "INR",
-        }),
-      totalInterest: investmentList
-        ?.reduce((acc, ite) => acc + ite.calculated_amount, 0)
-        .toLocaleString("en-US", {
-          style: "currency",
-          currency: "INR",
-        }),
-    };
-  }, [investmentList]);
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "investment_name",
+      key: "investment_name",
+      render: (txt: string) => {
+        return <span className="capitalize">{txt}</span>;
+      },
+    },
+    {
+      title: "Date of Investment",
+      dataIndex: "investment_date",
+      key: "investment_date",
+      render: (txt: string) => {
+        return <span>{dayjs(txt).format("DD")} of every month.</span>;
+      },
+    },
+    {
+      title: "Principle",
+      dataIndex: "amount",
+      key: "amount",
+      render: (txt: number) => {
+        return (
+          <span className="text-green-600">
+            {txt.toLocaleString("en-US", {
+              style: "currency",
+              currency: "INR",
+            })}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Percentage",
+      dataIndex: "percentage",
+      key: "percentage",
+      render: (txt: string) => {
+        return <span className="text-red-600">{txt} %</span>;
+      },
+    },
+    {
+      title: "Monthly Interest",
+      dataIndex: "calculated_amount",
+      key: "calculated_amount",
+      render: (txt: number) => {
+        return (
+          <span className="text-green-600">
+            {txt.toLocaleString("en-US", {
+              style: "currency",
+              currency: "INR",
+            })}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "_id",
+      key: "_id",
+      render: (_txt: string, row: any) => <LuTrash2 fontSize={18} color="red" className="cursor-pointer" onClick={() => dispatch(deleteInterestAction(row))} />,
+    },
+  ];
 
   const onFinish = useCallback(
     async (values: any) => {
-      console.log("Values: ", values);
       try {
-        const response: any = await fetch(`/api/interest`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.user?.accessToken}`,
-          },
-          body: JSON.stringify({ uuid: session.user.user.id, ...values }),
-        }).then((res) => res.json());
-        if (!response.success) {
-          message.error(`${response.message}`);
-        } else {
-          message.success(`Data inserted successfully`);
-          setIsDrawerOpen(false);
-          setApiCallState((prev) => !prev);
-          setSelectedRow({});
-        }
-        console.log(" =============== ", response);
+        await dispatch(createInterestAction({ ...values }));
+        setIsDrawerOpen(false);
+        setApiCallState((prev) => !prev);
+        setSelectedRow({});
       } catch (error: any) {
         message.error(`SERVER ERROR ${error.toString()}`);
       }
     },
-    [session]
+    [dispatch]
   );
 
   return (
@@ -179,15 +153,16 @@ const MyInvestment: FC<{}> = memo(() => {
       <Table
         columns={columns}
         dataSource={investmentList}
+        loading={loading}
         bordered
         rowKey={"_id"}
         footer={(currentPageData) => (
           <Space className="text-right">
             <div>
-              <strong>Total Investment</strong> : <span className="text-green-600">{totalInvestment.totalPrinciple}</span>
+              <strong>Total Investment</strong> : <span className="text-green-600">{total_principle}</span>
             </div>
             <div>
-              <strong>Total Interest</strong> : <span className="text-green-600">{totalInvestment.totalInterest}</span>
+              <strong>Total Interest</strong> : <span className="text-green-600">{total_interest}</span>
             </div>
           </Space>
         )}
@@ -259,7 +234,7 @@ const MyInvestment: FC<{}> = memo(() => {
                   // const perc = investmentForm.getFieldValue([name, "percentage"]);
                   // const cal_amount = investmentForm.getFieldValue([name, "amount"]) * (perc / 100);
                   return (
-                    <div>
+                    <div key={`__${name}`}>
                       <Row justify={"space-between"} gutter={[0, 10]}>
                         <Col>Item :: {name + 1}</Col>
                         <Col>

@@ -1,6 +1,6 @@
-import connectMongoDB from "@/db/connection/db-connection";
-import UserModel from "@/db/models/users";
-import { getServerAuthSession } from "@/server/auth";
+import connectMongoDB from "@db/connection/db-connection";
+import UserModel from "@db/models/users";
+import { getServerAuthSession } from "@server/auth";
 import bcrypt from "bcryptjs";
 import * as jose from "jose";
 import { NextRequest, NextResponse } from "next/server";

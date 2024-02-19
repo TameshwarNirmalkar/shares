@@ -1,5 +1,5 @@
-import connectMongoDB from '@/db/connection/db-connection';
-import User from '@/db/models/users';
+import connectMongoDB from '@db/connection/db-connection';
+import User from '@db/models/users';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {

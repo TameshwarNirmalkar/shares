@@ -1,17 +1,17 @@
 "use client";
 
-import SubmitButton from "@/components/SubmitButton";
+import SubmitButton from "@components/SubmitButton";
 import { Alert, Button, Card, Col, Divider, Form, Image, Input, Modal, Row, Space, Upload, message } from "antd";
 import { NextPage } from "next";
 
-import DrawerComponent from "@/components/DrawerComponent";
-import SpinnerLoader from "@/components/SpinnerLoader";
-import { useAppDispatch, useAppSelector } from "@/redux/reduxHooks";
-import { AppState } from "@/redux/store";
-import { selectAllUsers, selectUserById } from "@/redux/users";
-import { getUsersCollectionAction, updateUsersAction } from "@/redux/users/action";
-import { isLoading } from "@/redux/users/memonised-user";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import DrawerComponent from "@components/DrawerComponent";
+import SpinnerLoader from "@components/SpinnerLoader";
+import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
+import { AppState } from "@redux-store/store";
+import { selectAllUsers, selectUserById } from "@redux-store/users";
+import { getUsersCollectionAction, updateUsersAction } from "@redux-store/users/action";
+import { isLoading } from "@redux-store/users/memonised-user";
 import type { GetProp, UploadProps } from "antd";
 import Meta from "antd/es/card/Meta";
 import { useSession } from "next-auth/react";

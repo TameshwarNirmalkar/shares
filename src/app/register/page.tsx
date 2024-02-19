@@ -1,4 +1,4 @@
-import RegisterComponent from "@/components/RegisterComponent";
+import RegisterComponent from "@components/RegisterComponent";
 
 type PageProps = {
   searchParams: { error?: string };

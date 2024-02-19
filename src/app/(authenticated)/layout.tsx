@@ -1,8 +1,8 @@
 "use client";
 
-import HeaderComponent from "@/components/HeaderComponent";
-import SideBarComponent from "@/components/SideBarComponent";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import HeaderComponent from "@components/HeaderComponent";
+import SideBarComponent from "@components/SideBarComponent";
 import { Button, Col, Layout, Row, theme } from "antd";
 import { Suspense, useState } from "react";
 

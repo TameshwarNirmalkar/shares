@@ -1,6 +1,6 @@
-import { getServerAuthSession } from "@/server/auth";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { StoreProviders } from "@redux-store/providers";
+import { getServerAuthSession } from "@server/auth";
 import type { Metadata } from "next";
 import { AuthProvider } from "./Provider";
 import "./globals.css";

@@ -20,11 +20,12 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@db/*": ["./src/db/*"],
       "@hooks/*": ["./src/hooks/*"],
-      "@redux-store/*": ["./src/redux/*"]
+      "@redux-store/*": ["./src/redux/*"],
+      "@server/*": ["./src/server/*"],
+      "@global-types/*": ["./src/types/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

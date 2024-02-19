@@ -1,7 +1,7 @@
 "use client";
 
-import DrawerComponent from "@/components/DrawerComponent";
-import StackholderFormComponent from "@/components/StackholderFormComponent";
+import DrawerComponent from "@components/DrawerComponent";
+import StackholderFormComponent from "@components/StackholderFormComponent";
 import { Button, Col, Row, Space, Table, message } from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
