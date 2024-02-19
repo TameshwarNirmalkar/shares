@@ -202,7 +202,6 @@ const MyInvestment: FC<{}> = memo(() => {
                         <Button
                           type="primary"
                           onClick={() => {
-                            console.log("Calculator");
                             setShowCalculator(true);
                           }}
                         >
