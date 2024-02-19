@@ -1,5 +1,6 @@
 "use client";
 
+import CalculatorComponent from "@components/Calculator";
 import DrawerComponent from "@components/DrawerComponent";
 import { getTotalInterest, getTotalPrinciple, selectAllInterests } from "@redux-store/interests";
 import { createInterestAction, deleteInterestAction, getInterestCollectionAction } from "@redux-store/interests/action";
@@ -38,6 +39,7 @@ const MyInvestment: FC<{}> = memo(() => {
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [apiCallState, setApiCallState] = useState<boolean>(false);
+  const [showCalculator, setShowCalculator] = useState<boolean>(false);
   const [selectedRow, setSelectedRow] = useState<any>({});
 
   const investmentList = useAppSelector(selectAllInterests);
@@ -175,14 +177,6 @@ const MyInvestment: FC<{}> = memo(() => {
           setIsDrawerOpen(false);
         }}
       >
-        {/* <StackholderFormComponent
-          initialVal={{ ...selectedRow, interest_date: dayjs(selectedRow.interest_date) }}
-          onSuccessCallback={() => {
-            setIsDrawerOpen(false);
-            setApiCallState((prev) => !prev);
-            setSelectedRow({});
-          }}
-        /> */}
         <Form
           form={investmentForm}
           name="myinvestmentform"
@@ -209,6 +203,7 @@ const MyInvestment: FC<{}> = memo(() => {
                           type="primary"
                           onClick={() => {
                             console.log("Calculator");
+                            setShowCalculator(true);
                           }}
                         >
                           Calculator
@@ -236,7 +231,7 @@ const MyInvestment: FC<{}> = memo(() => {
                   return (
                     <div key={`__${name}`}>
                       <Row justify={"space-between"} gutter={[0, 10]}>
-                        <Col>Item :: {name + 1}</Col>
+                        <Col>Investment {name + 1}</Col>
                         <Col>
                           {fields.length > 1 && (
                             <FaTrash
@@ -305,8 +300,8 @@ const MyInvestment: FC<{}> = memo(() => {
           {/* <div className="pt-4"> */}
           <Form.Item>
             <div>
-              <Button type="primary" htmlType="submit" block>
-                Add Investment
+              <Button type="primary" htmlType="submit" block danger>
+                Add Your Investment
               </Button>
               <Button type="text" block onClick={() => setIsDrawerOpen(false)}>
                 Cancel
@@ -315,6 +310,14 @@ const MyInvestment: FC<{}> = memo(() => {
           </Form.Item>
           {/* </div> */}
         </Form>
+        {showCalculator && (
+          <>
+            <CalculatorComponent />
+            <Button type="primary" block onClick={() => setShowCalculator(false)}>
+              Close Calculator
+            </Button>
+          </>
+        )}
       </DrawerComponent>
     </>
   );
