@@ -21,7 +21,7 @@ interface UserStateI {
 
 const usersAdapter = createEntityAdapter<UserCollection, EntityId>({
     selectId: (user: UserCollection) => user._id,
-    sortComparer: (a: any, b: any) => a.full_name.localeCompare(b.full_name)
+    sortComparer: (a: UserCollection, b: UserCollection) => a.full_name.localeCompare(b.full_name)
 });
 
 const userSlice = createSlice({
@@ -42,7 +42,7 @@ const userSlice = createSlice({
             state.errorMsg = action.error
         })
     }
-}) as any;
+});
 
 // getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {

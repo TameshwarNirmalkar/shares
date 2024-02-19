@@ -20,7 +20,7 @@ interface InterestStateI {
 
 const interestsAdapter = createEntityAdapter<InterestCollection, EntityId>({
     selectId: (interest: InterestCollection) => interest._id,
-    sortComparer: (a: any, b: any) => a.investment_name.localeCompare(b.investment_name)
+    sortComparer: (a: InterestCollection, b: InterestCollection) => a.investment_name.localeCompare(b.investment_name)
 });
 
 const interestSlice = createSlice({
@@ -42,7 +42,7 @@ const interestSlice = createSlice({
             state.errorMsg = action.error
         })
     }
-}) as any;
+});
 
 // getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
