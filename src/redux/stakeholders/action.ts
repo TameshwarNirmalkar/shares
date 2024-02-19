@@ -1,9 +1,22 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { message } from 'antd';
+import type { Session } from 'next-auth';
+import { getSession } from 'next-auth/react';
 
-export const createProductCollectionAction = createAsyncThunk('GET_PRODUCT_COLLECTION', async (arg: any, { dispatch }) => {
+export const getInvestorListAction = createAsyncThunk('GET_PRODUCT_COLLECTION', async (arg: any, { dispatch }) => {
     try {
-        const res = await fetch("https://fakestoreapi.com/products").then((res) => res.json());
-        return res;
+        const session = await getSession() as Session;
+        const response: any = await fetch(`/api/investors`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.user?.accessToken}`,
+            },
+        }).then((res) => res.json());
+        if (response.code) {
+            message.error("Invalid Session, Please login again");
+        }
+        return response.investorList;
     } catch (error: any) {
         return error;
     }

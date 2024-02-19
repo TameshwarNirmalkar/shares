@@ -2,57 +2,32 @@
 
 import DrawerComponent from "@components/DrawerComponent";
 import StackholderFormComponent from "@components/StackholderFormComponent";
-import { Button, Col, Row, Space, Table, message } from "antd";
+import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
+import { getTotalInterest, getTotalPrinciple, selectAllStakeholders } from "@redux-store/stakeholders";
+import { getInvestorListAction } from "@redux-store/stakeholders/action";
+import { Button, Col, Row, Space, Table } from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
-import { FC, memo, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, memo, useCallback, useEffect, useState } from "react";
 import { LuFileEdit } from "react-icons/lu";
 import { MdDelete } from "react-icons/md";
 import { PiPhoneCallDuotone } from "react-icons/pi";
 
 const StakeholderPage: FC<{}> = memo(() => {
   const { data: session }: any = useSession();
+  const dispatch = useAppDispatch();
+  const investorList = useAppSelector(selectAllStakeholders) as any[];
+  const total_principle = useAppSelector((state) => getTotalPrinciple(state));
+  const total_interest = useAppSelector((state) => getTotalInterest(state));
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-  const [investorList, setInvestorList] = useState<any[]>([]);
+  // const [investorList, setInvestorList] = useState<any[]>([]);
   const [apiCallState, setApiCallState] = useState<boolean>(false);
   const [selectedRow, setSelectedRow] = useState<any>({});
 
   useEffect(() => {
-    const getInvestmentList = async () => {
-      const response: any = await fetch(`/api/investors`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.user?.accessToken}`,
-        },
-      }).then((res) => res.json());
-      console.log("REs: ", response);
-      if (response.code) {
-        message.error("Invalid Session, Please login again");
-      } else {
-        setInvestorList(response?.investorList);
-      }
-    };
-    getInvestmentList();
-  }, [session?.user?.accessToken, apiCallState]);
-
-  const totalInvestment = useMemo(() => {
-    return {
-      totalPrinciple: investorList
-        ?.reduce((acc, ite) => acc + ite.principle_amount, 0)
-        .toLocaleString("en-US", {
-          style: "currency",
-          currency: "INR",
-        }),
-      totalInterest: investorList
-        ?.reduce((acc, ite) => acc + ite.principle_amount * (ite.percentage / 100), 0)
-        .toLocaleString("en-US", {
-          style: "currency",
-          currency: "INR",
-        }),
-    };
-  }, [investorList]);
+    dispatch(getInvestorListAction(""));
+  }, [dispatch, apiCallState]);
 
   const onEditHandler = useCallback(async (row: any) => {
     setIsDrawerOpen(true);
@@ -190,10 +165,10 @@ const StakeholderPage: FC<{}> = memo(() => {
               footer={(currentPageData) => (
                 <Space className="text-right">
                   <div>
-                    <strong>Investor Investment</strong> : <span className="text-green-600">{totalInvestment.totalPrinciple}</span>
+                    <strong>Investor Investment</strong> : <span className="text-green-600">{total_principle}</span>
                   </div>
                   <div>
-                    <strong>Investor Payment</strong> : <span className="text-green-600">{totalInvestment.totalInterest}</span>
+                    <strong>Investor Payment</strong> : <span className="text-green-600">{total_interest}</span>
                   </div>
                 </Space>
               )}

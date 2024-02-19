@@ -1,6 +1,6 @@
 import { AppState } from "@redux-store/store";
-import { EntityId, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { createProductCollectionAction } from './action';
+import { EntityId, createEntityAdapter, createSelector, createSlice } from '@reduxjs/toolkit';
+import { getInvestorListAction } from './action';
 
 interface StakeholderCollectionI {
     email: string;
@@ -24,7 +24,7 @@ const stakeholdersAdapter = createEntityAdapter<StakeholderCollectionI, EntityId
 
 const stakeholderSlice = createSlice({
     name: 'STAKEHOLDER_SLICE',
-    initialState: stakeholdersAdapter.getInitialState<StakeholderStateI>({ isLoading: false }),
+    initialState: stakeholdersAdapter.getInitialState({ isLoading: false }),
     reducers: {
         stakeholdersAddOne: stakeholdersAdapter.addOne,
         stakeholdersUpdateOne: stakeholdersAdapter.updateOne,
@@ -32,9 +32,9 @@ const stakeholderSlice = createSlice({
     },
     extraReducers(builder) {
         builder
-            .addCase(createProductCollectionAction.pending, (state) => {
+            .addCase(getInvestorListAction.pending, (state) => {
                 state.isLoading = true;
-            }).addCase(createProductCollectionAction.fulfilled, (state: any, action) => {
+            }).addCase(getInvestorListAction.fulfilled, (state: any, action) => {
                 state.isLoading = false;
                 stakeholdersAdapter.upsertMany(state, action.payload);
             });
@@ -51,4 +51,23 @@ export const {
 
 export const { stakeholdersAddOne, stakeholdersUpdateOne, stakeholdersRemoveOne } = stakeholderSlice.actions;
 export default stakeholderSlice.reducer;
+
+export const getTotalPrinciple = createSelector(
+    [selectAllStakeholders],
+    (allinterest) => {
+        return allinterest.reduce((acc: number, ite: any) => acc + ite.principle_amount, 0).toLocaleString("en-US", {
+            style: "currency",
+            currency: "INR",
+        });
+    }
+);
+export const getTotalInterest = createSelector(
+    [selectAllStakeholders],
+    (allinterest) => {
+        return allinterest.reduce((acc: number, ite: any) => acc + ite.principle_amount * (ite.percentage / 100), 0).toLocaleString("en-US", {
+            style: "currency",
+            currency: "INR",
+        });
+    }
+);
 
