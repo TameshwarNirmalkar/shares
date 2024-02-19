@@ -4,6 +4,12 @@ import type { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 import { stakeholdersRemoveOne } from '.';
 
+message.config({
+    top: 10,
+    duration: 100,
+    maxCount: 3,
+});
+
 export const getInvestorListAction = createAsyncThunk('GET_PRODUCT_COLLECTION', async (arg: any, { dispatch }) => {
     try {
         const session = await getSession() as Session;
