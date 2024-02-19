@@ -72,7 +72,6 @@ export const updateInterestAction = createAsyncThunk('UPDATE_INTEREST_ACTION', a
 
 export const deleteInterestAction = createAsyncThunk('DELETE_INTEREST_ACTION', async (arg: any, { dispatch }) => {
     try {
-        debugger;
         const { _id, parent_id } = arg;
         const session = await getSession() as Session;
         const res = await fetch("/api/interest", {
