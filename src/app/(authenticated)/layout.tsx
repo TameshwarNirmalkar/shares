@@ -7,7 +7,7 @@ import { Button, Col, Layout, Row, theme } from "antd";
 import { Suspense, useState } from "react";
 
 const { Header, Sider, Content } = Layout;
-const twoColors = { "0%": "#108ee9", "100%": "#87d068" };
+// const twoColors = { "0%": "#108ee9", "100%": "#87d068" };
 
 export default function DashboardLayout({
   children, // will be a page or nested layout
@@ -15,7 +15,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [collapsed, setCollapsed] = useState<boolean>(false);
-  const [isloading, setIsLoading] = useState<boolean>(false);
+  // const [isloading, setIsLoading] = useState<boolean>(false);
 
   const {
     token: { colorBgContainer, borderRadiusLG },
