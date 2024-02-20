@@ -6,11 +6,11 @@ import { stakeholdersRemoveOne } from '.';
 
 message.config({
     top: 10,
-    duration: 100,
-    maxCount: 3,
+    duration: 50,
+    maxCount: 2,
 });
 
-export const getInvestorListAction = createAsyncThunk('GET_PRODUCT_COLLECTION', async (arg: any, { dispatch }) => {
+export const getInvestorListAction = createAsyncThunk('GET_INVESTOR_COLLECTION', async (arg: any, { dispatch }) => {
     try {
         const session = await getSession() as Session;
         const response: any = await fetch(`/api/investors`, {
@@ -30,9 +30,51 @@ export const getInvestorListAction = createAsyncThunk('GET_PRODUCT_COLLECTION', 
 });
 
 // Create investors
+export const createInvestorAction = createAsyncThunk('CREATE_INVESTOR_ACTION', async (arg: any, { dispatch }) => {
+    try {
+        const session = await getSession() as Session | any;
+        const response: any = await fetch(`/api/investors`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.user?.accessToken}`,
+            },
+            body: JSON.stringify({ ...arg, uuid: session.user.user.id }),
+        }).then((res) => res.json());
+        if (response.code) {
+            message.error("Invalid Session, Please login again");
+        } else {
+            message.success("Investor created successfully.");
+        }
+        return response;
+    } catch (error: any) {
+        return error;
+    }
+});
 
 
 // Update investors
+export const updateInvestorAction = createAsyncThunk('UPDATE_INVESTOR_ACTION', async (arg: any, { dispatch }) => {
+    try {
+        const session = await getSession() as Session | any;
+        const response: any = await fetch(`/api/investors`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.user?.accessToken}`,
+            },
+            body: JSON.stringify({ ...arg, uuid: session.user.user.id }),
+        }).then((res) => res.json());
+        if (response.code) {
+            message.error("Invalid Session, Please login again");
+        } else {
+            message.success("Investor updated successfully.");
+        }
+        return response;
+    } catch (error: any) {
+        return error;
+    }
+});
 
 
 // Delete Investors

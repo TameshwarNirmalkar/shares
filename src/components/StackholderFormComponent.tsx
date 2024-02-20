@@ -1,5 +1,8 @@
 "use client";
 
+import { useAppDispatch } from "@redux-store/reduxHooks";
+import { stakeholdersAddOne, stakeholdersUpdateOne } from "@redux-store/stakeholders";
+import { createInvestorAction, updateInvestorAction } from "@redux-store/stakeholders/action";
 import { Button, Col, DatePicker, Form, Input, Row, message } from "antd";
 import { useSession } from "next-auth/react";
 import { FC, memo, useCallback, useEffect, useState } from "react";
@@ -16,6 +19,7 @@ type FieldType = {
 
 const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => void }> = (props) => {
   const { onSuccessCallback, initialVal } = props;
+  const dispatch = useAppDispatch();
   const { data: session }: any = useSession();
   const [isLoading, setIsloading] = useState<boolean>(false);
   const [investorForm] = Form.useForm<FieldType>();
@@ -38,23 +42,16 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
     async (values: any) => {
       try {
         setIsloading(true);
-
-        const response: any = await fetch(`/api/investors`, {
-          method: initialVal._id ? "PATCH" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.user?.accessToken}`,
-          },
-          body: JSON.stringify({ ...initialVal, uuid: session.user.user.id, ...values }),
-        }).then((res) => res.json());
-        if (!response.success) {
-          message.error(`${response.message}`);
+        if (initialVal._id) {
+          await dispatch(updateInvestorAction({ ...initialVal, ...values }));
+          dispatch(stakeholdersUpdateOne({ id: initialVal._id, changes: { ...initialVal, ...values } }));
         } else {
-          message.success(`${response.message}`);
-          investorForm.resetFields();
-          if (typeof onSuccessCallback === "function") {
-            onSuccessCallback();
-          }
+          const res = await dispatch(createInvestorAction({ ...initialVal, ...values }));
+          dispatch(stakeholdersAddOne(res.payload.data));
+        }
+        investorForm.resetFields();
+        if (typeof onSuccessCallback === "function") {
+          onSuccessCallback();
         }
       } catch (error: any) {
         message.error(`SERVER ERROR ${error.toString()}`);
@@ -62,7 +59,7 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
         setIsloading(false);
       }
     },
-    [session, initialVal]
+    [initialVal, dispatch]
   );
 
   return (

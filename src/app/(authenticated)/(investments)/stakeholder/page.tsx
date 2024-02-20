@@ -4,31 +4,32 @@ import DrawerComponent from "@components/DrawerComponent";
 import SpinnerLoader from "@components/SpinnerLoader";
 import StackholderFormComponent from "@components/StackholderFormComponent";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
-import { getTotalInterest, getTotalPrinciple, selectAllStakeholders } from "@redux-store/stakeholders";
+import { getTotalInterest, getTotalPrinciple, selectAllStakeholders, selectStakeholderById } from "@redux-store/stakeholders";
 import { deleteInvestorAction, getInvestorListAction } from "@redux-store/stakeholders/action";
+import { AppState } from "@redux-store/store";
 import { Button, Col, Row, Space, Table } from "antd";
 import dayjs from "dayjs";
-import { useSession } from "next-auth/react";
 import { FC, Suspense, memo, useCallback, useEffect, useState } from "react";
 import { LuFileEdit } from "react-icons/lu";
 import { MdDelete } from "react-icons/md";
 import { PiPhoneCallDuotone } from "react-icons/pi";
 
 const StakeholderPage: FC<{}> = memo(() => {
-  const { data: session }: any = useSession();
   const dispatch = useAppDispatch();
   const investorList = useAppSelector(selectAllStakeholders) as any[];
-  const total_principle = useAppSelector((state) => getTotalPrinciple(state));
-  const total_interest = useAppSelector((state) => getTotalInterest(state));
+  const total_principle = useAppSelector((state: AppState) => getTotalPrinciple(state));
+  const total_interest = useAppSelector((state: AppState) => getTotalInterest(state));
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   // const [investorList, setInvestorList] = useState<any[]>([]);
-  const [apiCallState, setApiCallState] = useState<boolean>(false);
+  // const [apiCallState, setApiCallState] = useState<boolean>(false);
   const [selectedRow, setSelectedRow] = useState<any>({});
+
+  const selectedData = useAppSelector((state: AppState) => selectStakeholderById(state, selectedRow._id));
 
   useEffect(() => {
     dispatch(getInvestorListAction(""));
-  }, [dispatch, apiCallState]);
+  }, [dispatch]);
 
   const onEditHandler = useCallback(async (row: any) => {
     setIsDrawerOpen(true);
@@ -181,10 +182,9 @@ const StakeholderPage: FC<{}> = memo(() => {
         }}
       >
         <StackholderFormComponent
-          initialVal={{ ...selectedRow, interest_date: dayjs(selectedRow.interest_date) }}
+          initialVal={{ ...selectedData, interest_date: dayjs(selectedData?.interest_date) }}
           onSuccessCallback={() => {
             setIsDrawerOpen(false);
-            setApiCallState((prev) => !prev);
             setSelectedRow({});
           }}
         />

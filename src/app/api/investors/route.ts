@@ -20,8 +20,9 @@ export async function POST(request: NextRequest) {
     try {
       await jose.jwtVerify(`${hasBearer[1]}`, secret);
       await connectMongoDB();
-      await StakeholderModel.create(payload);
-      return NextResponse.json({ message: "Stakeholder created successfully.", success: true }, { status: 200 });
+      const res = await StakeholderModel.create(payload);
+
+      return NextResponse.json({ message: "Stakeholder created successfully.", success: true, data: res }, { status: 200 });
     } catch (error: any) {
       return NextResponse.json({ message: "Unauthorized", code: error.code, success: false }, { status: 403 });
     }
