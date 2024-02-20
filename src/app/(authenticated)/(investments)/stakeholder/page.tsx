@@ -1,6 +1,7 @@
 "use client";
 
 import DrawerComponent from "@components/DrawerComponent";
+import SpinnerLoader from "@components/SpinnerLoader";
 import StackholderFormComponent from "@components/StackholderFormComponent";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
 import { getTotalInterest, getTotalPrinciple, selectAllStakeholders } from "@redux-store/stakeholders";
@@ -8,7 +9,7 @@ import { deleteInvestorAction, getInvestorListAction } from "@redux-store/stakeh
 import { Button, Col, Row, Space, Table } from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
-import { FC, memo, useCallback, useEffect, useState } from "react";
+import { FC, Suspense, memo, useCallback, useEffect, useState } from "react";
 import { LuFileEdit } from "react-icons/lu";
 import { MdDelete } from "react-icons/md";
 import { PiPhoneCallDuotone } from "react-icons/pi";
@@ -152,7 +153,7 @@ const StakeholderPage: FC<{}> = memo(() => {
         </Col>
 
         <Col span={24}>
-          <>
+          <Suspense fallback={<SpinnerLoader loading={true} />}>
             <Table
               columns={columns}
               dataSource={investorList}
@@ -169,7 +170,7 @@ const StakeholderPage: FC<{}> = memo(() => {
                 </Space>
               )}
             />
-          </>
+          </Suspense>
         </Col>
       </Row>
       <DrawerComponent

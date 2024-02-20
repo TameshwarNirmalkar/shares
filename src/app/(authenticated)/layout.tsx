@@ -5,6 +5,7 @@ import HeaderComponent from "@components/HeaderComponent";
 import SideBarComponent from "@components/SideBarComponent";
 import { Button, Col, Layout, Row, theme } from "antd";
 import { Suspense, useState } from "react";
+import Loading from "./loading";
 
 const { Header, Sider, Content } = Layout;
 // const twoColors = { "0%": "#108ee9", "100%": "#87d068" };
@@ -15,20 +16,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [collapsed, setCollapsed] = useState<boolean>(false);
-  // const [isloading, setIsLoading] = useState<boolean>(false);
-
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-
-  // Router.events.on("routeChangeStart", (url) => {
-  //   console.log(`Loading: ${url}`);
-  //   setIsLoading(true);
-  // });
-  // Router.events.on("routeChangeComplete", () => setIsLoading(false));
-  // Router.events.on("routeChangeError", () => setIsLoading(false));
-
-  // useEffect(() => {}, []);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -42,15 +32,13 @@ export default function DashboardLayout({
               <Button type="text" icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={() => setCollapsed(!collapsed)} />
             </Col>
             <Col>
-              <Suspense fallback={<span>Loading</span>}>
-                <HeaderComponent />
-              </Suspense>
+              <HeaderComponent />
             </Col>
           </Row>
         </Header>
-        <Suspense fallback={<span>Loading</span>}>
-          <Content className="p-3">{children}</Content>
-        </Suspense>
+        <Content className="p-3">
+          <Suspense fallback={<Loading />}>{children}</Suspense>
+        </Content>
       </Layout>
     </Layout>
   );

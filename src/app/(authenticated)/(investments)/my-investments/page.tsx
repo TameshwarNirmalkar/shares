@@ -2,6 +2,7 @@
 
 import CalculatorComponent from "@components/Calculator";
 import DrawerComponent from "@components/DrawerComponent";
+import SpinnerLoader from "@components/SpinnerLoader";
 import { getTotalInterest, getTotalPrinciple, selectAllInterests } from "@redux-store/interests";
 import { createInterestAction, deleteInterestAction, getInterestCollectionAction } from "@redux-store/interests/action";
 import { isLoading } from "@redux-store/interests/memonised-interests";
@@ -9,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
 import { Button, Col, DatePicker, Divider, Form, Input, Row, Space, Table, message } from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
-import { FC, memo, useCallback, useEffect, useState } from "react";
+import { FC, Suspense, memo, useCallback, useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { LuTrash2 } from "react-icons/lu";
 
@@ -151,24 +152,25 @@ const MyInvestment: FC<{}> = memo(() => {
           </Col>
         </Row>
       </div>
-
-      <Table
-        columns={columns}
-        dataSource={investmentList}
-        loading={loading}
-        bordered
-        rowKey={"_id"}
-        footer={(currentPageData) => (
-          <Space className="text-right">
-            <div>
-              <strong>Total Investment</strong> : <span className="text-green-600">{total_principle}</span>
-            </div>
-            <div>
-              <strong>Total Interest</strong> : <span className="text-green-600">{total_interest}</span>
-            </div>
-          </Space>
-        )}
-      />
+      <Suspense fallback={<SpinnerLoader loading={true} />}>
+        <Table
+          columns={columns}
+          dataSource={investmentList}
+          loading={loading}
+          bordered
+          rowKey={"_id"}
+          footer={(currentPageData) => (
+            <Space className="text-right">
+              <div>
+                <strong>Total Investment</strong> : <span className="text-green-600">{total_principle}</span>
+              </div>
+              <div>
+                <strong>Total Interest</strong> : <span className="text-green-600">{total_interest}</span>
+              </div>
+            </Space>
+          )}
+        />
+      </Suspense>
 
       <DrawerComponent
         heading="Investment Form"
