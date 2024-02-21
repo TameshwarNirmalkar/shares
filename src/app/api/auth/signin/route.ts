@@ -13,11 +13,21 @@ type ResponseData = {
   success: boolean;
 };
 
+type UserT = {
+  email: string;
+  full_name: string;
+  _id: string;
+  id: string;
+  image: string;
+  profile_image: string;
+  password: string
+}
+
 export async function POST(request: NextRequest, response: NextResponse<ResponseData>) {
   const { email, password } = await request.json();
   try {
     await connectMongoDB();
-    let user = await UserModel.findOne({ email });
+    let user = await UserModel.findOne({ email }) as UserT;
     if (!user) {
       return NextResponse.json({ message: "User does not match.", success: false }, { status: 403 });
     }
@@ -33,7 +43,7 @@ export async function POST(request: NextRequest, response: NextResponse<Response
       name: user.full_name,
       email: user.email,
       id: user._id,
-      image: "",
+      image: user.profile_image,
     };
     const accessToken = await new jose.SignJWT(payload).setProtectedHeader({ alg }).setExpirationTime("24h").sign(signature);
     const refreshToken = await new jose.SignJWT(payload).setProtectedHeader({ alg }).setExpirationTime("1y").sign(refreshSignature);
