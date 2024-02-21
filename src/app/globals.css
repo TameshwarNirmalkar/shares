@@ -1,5 +1,4 @@
+@import url("../styles/spinner-loader.css");
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
-
-@import url("../styles/spinner-loader.css");

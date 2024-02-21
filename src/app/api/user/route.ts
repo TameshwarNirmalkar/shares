@@ -64,7 +64,6 @@ export async function PATCH(request: NextRequest, response: NextResponse) {
       await jose.jwtVerify(`${hasBearer[1]}`, secret);
       await connectMongoDB();
       const { _id, full_name, email, phone, whatsapp, address, profile_image } = await request.json();
-      // const imageBuffer = Buffer.from(profile_image, "base64");
       const res = await UserModel.findOneAndUpdate(
         { _id: _id },
         {
@@ -73,8 +72,6 @@ export async function PATCH(request: NextRequest, response: NextResponse) {
         },
         { upsert: true, new: true }
       );
-      // console.log("request.json() ===================  ", request.json());
-      console.log("RES --------------------------------------", res);
       return NextResponse.json({ message: "User details updated successfully", success: true }, { status: 200 });
     } catch (error: any) {
       return NextResponse.json({ message: "Unauthorized", code: error.code }, { status: 403 });

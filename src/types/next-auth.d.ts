@@ -39,6 +39,7 @@ declare global {
     interface ProcessEnv {
       JWT_SECERT_KEY?: string;
       JWT_SECERT_REFRESH_KEY?: string;
+      NEXT_PUBLIC_IMBB_SECERET_KEY?: string;
     }
   }
 }
