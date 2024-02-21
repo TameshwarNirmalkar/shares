@@ -33,8 +33,7 @@ export async function POST(request: NextRequest, response: NextResponse<Response
       name: user.full_name,
       email: user.email,
       id: user._id,
-      image:
-        "https://media.istockphoto.com/id/496488838/photo/inquisitive-beagle-hound.jpg?s=2048x2048&w=is&k=20&c=awRNZUIxRyEGwgY1k8a5LCrY07WRGKb3bQwhATrFfvA=",
+      image: "",
     };
     const accessToken = await new jose.SignJWT(payload).setProtectedHeader({ alg }).setExpirationTime("24h").sign(signature);
     const refreshToken = await new jose.SignJWT(payload).setProtectedHeader({ alg }).setExpirationTime("1y").sign(refreshSignature);

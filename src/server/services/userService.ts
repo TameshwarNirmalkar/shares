@@ -1,6 +1,6 @@
 const authenticate = async (credentials: { email: string; password: string }): Promise<any> => {
   try {
-    const res = await fetch(`${process.env.NEXT_AUTH_URL}/api/auth/signin`, {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/signin`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
