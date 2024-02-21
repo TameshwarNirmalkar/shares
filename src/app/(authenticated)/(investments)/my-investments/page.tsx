@@ -1,5 +1,6 @@
 "use client";
 
+import { DeleteFilled } from "@ant-design/icons";
 import CalculatorComponent from "@components/Calculator";
 import DrawerComponent from "@components/DrawerComponent";
 import SpinnerLoader from "@components/SpinnerLoader";
@@ -11,8 +12,6 @@ import { Button, Col, DatePicker, Divider, Form, Input, Row, Space, Table, messa
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import { FC, Suspense, memo, useCallback, useEffect, useState } from "react";
-import { FaTrash } from "react-icons/fa";
-import { LuTrash2 } from "react-icons/lu";
 
 type FieldType = {
   uuid: String;
@@ -113,7 +112,11 @@ const MyInvestment: FC<{}> = memo(() => {
       title: "Action",
       dataIndex: "_id",
       key: "_id",
-      render: (_txt: string, row: any) => <LuTrash2 fontSize={18} color="red" className="cursor-pointer" onClick={() => dispatch(deleteInterestAction(row))} />,
+      render: (_txt: string, row: any) => (
+        <span className="cursor-pointer" onClick={() => dispatch(deleteInterestAction(row))}>
+          Delete
+        </span>
+      ),
     },
   ];
 
@@ -235,7 +238,7 @@ const MyInvestment: FC<{}> = memo(() => {
                         <Col>Investment {name + 1}</Col>
                         <Col>
                           {fields.length > 1 && (
-                            <FaTrash
+                            <DeleteFilled
                               className="cursor-pointer"
                               onClick={() => {
                                 remove(name);

@@ -1,5 +1,6 @@
 "use client";
 
+import { DeleteFilled, EditFilled, PhoneFilled } from "@ant-design/icons";
 import DrawerComponent from "@components/DrawerComponent";
 import SpinnerLoader from "@components/SpinnerLoader";
 import StackholderFormComponent from "@components/StackholderFormComponent";
@@ -10,9 +11,6 @@ import { AppState } from "@redux-store/store";
 import { Button, Col, Row, Space, Table } from "antd";
 import dayjs from "dayjs";
 import { FC, Suspense, memo, useCallback, useEffect, useState } from "react";
-import { LuFileEdit } from "react-icons/lu";
-import { MdDelete } from "react-icons/md";
-import { PiPhoneCallDuotone } from "react-icons/pi";
 
 const StakeholderPage: FC<{}> = memo(() => {
   const dispatch = useAppDispatch();
@@ -73,10 +71,10 @@ const StakeholderPage: FC<{}> = memo(() => {
       render: (txt: number) => {
         return (
           <div className="flex align-middle">
-            <span className="text-blue-600 pr-1">
-              <PiPhoneCallDuotone fontSize={20} />
-            </span>
             <span>{txt}</span>
+            <span className="text-blue-600 pr-1">
+              <PhoneFilled />
+            </span>
           </div>
         );
       },
@@ -127,8 +125,8 @@ const StakeholderPage: FC<{}> = memo(() => {
       render: (txt: number, row: any) => {
         return (
           <Space>
-            <LuFileEdit fontSize={20} className="text-blue-400 cursor-pointer" onClick={() => onEditHandler(row)} />
-            <MdDelete fontSize={20} className="text-red-700 cursor-pointer" onClick={() => onDelete(row)} />
+            <EditFilled className="text-blue-400 cursor-pointer" onClick={() => onEditHandler(row)} />
+            <DeleteFilled className="text-red-700 cursor-pointer" onClick={() => onDelete(row)} />
           </Space>
         );
       },

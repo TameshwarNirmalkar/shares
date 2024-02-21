@@ -1,12 +1,10 @@
 "use-client";
 
+import { InsertRowAboveOutlined, MehOutlined, SketchCircleFilled } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import { usePathname, useRouter } from "next/navigation";
 import { FC, memo, useCallback, useEffect, useMemo, useState } from "react";
-import { FaUsers } from "react-icons/fa";
-import { GrLineChart } from "react-icons/gr";
-import { SiWebmoney } from "react-icons/si";
 
 const KEY_PATH: { [key: string]: string } = {
   dashboard: "dashboard",
@@ -28,7 +26,7 @@ const items: MenuProps["items"] = [
   {
     label: "Clients",
     key: "clients",
-    icon: <FaUsers />,
+    icon: <MehOutlined />,
     children: [
       { label: "Add Clients", key: "add_clients" },
       { label: "Clients List", key: "client_list" },
@@ -37,7 +35,7 @@ const items: MenuProps["items"] = [
   {
     label: "Investments",
     key: "investments",
-    icon: <FaUsers />,
+    icon: <MehOutlined />,
     children: [
       { label: "My Investments", key: "my-investments" },
       { label: "Stakeholder", key: "stakeholder" },
@@ -47,7 +45,7 @@ const items: MenuProps["items"] = [
   {
     label: "History",
     key: "history",
-    icon: <GrLineChart />,
+    icon: <InsertRowAboveOutlined />,
     children: [
       { label: "Transaction", key: "transaction" },
       { label: "Interest Calculator", key: "interest_calculator" },
@@ -78,7 +76,7 @@ const SideBarComponent: FC<{}> = memo(() => {
   return (
     <div className="">
       <div className="grid justify-items-center p-2">
-        <SiWebmoney size={50} color="white" />
+        <SketchCircleFilled />
         {activeLink}
       </div>
       <div>

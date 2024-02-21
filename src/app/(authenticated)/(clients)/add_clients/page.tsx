@@ -16,7 +16,6 @@ import type { GetProp, UploadFile, UploadProps } from "antd";
 import Meta from "antd/es/card/Meta";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
-import { LuFileEdit } from "react-icons/lu";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -168,8 +167,11 @@ const AddClientsPage: NextPage = () => {
                   {session.user.user.id === el._id && (
                     <Col>
                       <Space>
-                        <LuFileEdit fontSize={20} className="text-blue-400 cursor-pointer" onClick={() => onEditHandler(el)} />
+                        {/* <LuFileEdit fontSize={20} className="text-blue-400 cursor-pointer" onClick={() => onEditHandler(el)} /> */}
                         {/* <MdDelete fontSize={20} className="text-red-500 cursor-pointer" onClick={() => onDelete(el)} /> */}
+                        <span className="text-blue-400 cursor-pointer" onClick={() => onEditHandler(el)}>
+                          Edit
+                        </span>
                       </Space>
                     </Col>
                   )}
