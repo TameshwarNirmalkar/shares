@@ -12,7 +12,6 @@ type FieldType = {
 };
 
 const RegisterForm: FC<{}> = memo(() => {
-  const [messageApi, contextHolder] = message.useMessage();
   const { push } = useRouter();
 
   const onFinish = useCallback(async (values: FieldType) => {
@@ -25,8 +24,7 @@ const RegisterForm: FC<{}> = memo(() => {
     }).then((res) => res.json());
 
     if (!res.success) {
-      messageApi.open({
-        type: "error",
+      message.error({
         content: res.message,
         duration: 5,
       });
@@ -39,7 +37,6 @@ const RegisterForm: FC<{}> = memo(() => {
     <div className="w-2/5">
       <h1 className="text-2xl justify-center grid mb-4">Registeration</h1>
       <div className="bg-slate-600 rounded-lg  border p-4">
-        {contextHolder}
         <Form className="space-y-4 md:space-y-6" layout="vertical" name="registrationForm" onFinish={onFinish} autoComplete="off">
           <Form.Item<FieldType>
             label={<span className="font-light text-gray-500 dark:text-gray-400">Full Name</span>}

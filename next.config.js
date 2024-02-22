@@ -20,6 +20,18 @@ const nextConfig = {
     /** Do not run ESLint during production builds (`next build`). */
     ignoreDuringBuilds: false,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.ibb.co",
+      },
+      {
+        protocol: "https",
+        hostname: "https://www.pexels.com/",
+      },
+    ],
+  },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     config.module.rules.push({
       test: /\.(png|jpg|jpeg|gif|svg|ttf|woff|woff2)$/,
