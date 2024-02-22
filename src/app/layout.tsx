@@ -1,9 +1,12 @@
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import { StoreProviders } from "@redux-store/providers";
 import { getServerAuthSession } from "@server/auth";
 import type { Metadata } from "next";
 import { AuthProvider } from "./Provider";
 import "./globals.css";
+config.autoAddCss = false;
 
 export const metadata: Metadata = {
   title: "Interest",

@@ -1,5 +1,7 @@
 "use client";
 
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppSelector } from "@redux-store/reduxHooks";
 import { AppState } from "@redux-store/store";
 import { selectUserById } from "@redux-store/users";
@@ -43,9 +45,12 @@ const HeaderComponent: FC<{}> = memo(() => {
         className="rounded-full"
       />
       <Dropdown menu={{ items }} placement="bottomRight">
-        <a onClick={(e) => e.preventDefault()}>
+        <a onClick={(e) => e.preventDefault()} href="#" className="text-slate-500">
           <Space>
-            <span className="capitalize p-3">{userDetails?.full_name || session.user.user.name}</span>
+            <div>
+              <span className="capitalize p-3">{userDetails?.full_name || session.user.user.name}</span>
+              <FontAwesomeIcon icon={faAngleDown} />
+            </div>
           </Space>
         </a>
       </Dropdown>
