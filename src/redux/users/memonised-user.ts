@@ -2,6 +2,7 @@ import { AppState } from '@redux-store/store';
 
 export const isLoading = (state: AppState) => state.users.isLoading;
 export const userListState = (state: AppState) => state.users.userList;
+export const userDetailsState = (state: AppState) => state.users.userDetails;
 
 // export const productFilterSelector = createSelector([productCollection, (productList, selectedId: any[]) => selectedId], (productList, selectedId) => {
 //     return productList.filter((el: any) => selectedId.includes(String(el.id)));

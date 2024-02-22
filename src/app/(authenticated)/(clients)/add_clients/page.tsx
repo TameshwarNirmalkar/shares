@@ -62,7 +62,6 @@ const AddClientsPage: NextPage = () => {
     if (res.success) {
       await dispatch(updateUsersAction({ ...selectedRow, ...form.getFieldsValue(), profile_image: res.data.url }));
     }
-    console.log("res: ", res);
   }, [fileList]);
 
   const onFormFinish = useCallback(
@@ -123,16 +122,6 @@ const AddClientsPage: NextPage = () => {
     // return isJpgOrPng && isLt2M;
     return false;
   }, []);
-
-  const handleChange: UploadProps["onChange"] = (info) => {
-    if (info.file.status === "uploading") {
-      // setLoading(true);
-      return;
-    }
-    if (info.file.status === "done") {
-      // setLoading(false);
-    }
-  };
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -199,7 +188,6 @@ const AddClientsPage: NextPage = () => {
                   showUploadList={false}
                   action="#"
                   beforeUpload={onBeforeLoad}
-                  onChange={handleChange}
                   onPreview={() => false}
                   fileList={fileList}
                   multiple={false}

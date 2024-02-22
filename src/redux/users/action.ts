@@ -42,5 +42,20 @@ export const updateUsersAction = createAsyncThunk('UPDATE_USER_ACTION', async (a
     } catch (error) {
         return error;
     }
-
 })
+
+export const getUserDetailsAction = createAsyncThunk('GET_USERS_BY_EMAIL', async (email: string, { getState }) => {
+    try {
+        const session = await getSession() as Session;
+        const res = await fetch(`/api/user-exists?email=${email}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.user.accessToken}`,
+            },
+        }).then((res) => res.json());
+        return res.user;
+    } catch (error: any) {
+        return error;
+    }
+});

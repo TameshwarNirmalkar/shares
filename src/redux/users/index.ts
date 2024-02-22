@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSlice, EntityId, PayloadAction } from '@reduxjs/toolkit';
 import { AppState } from '../store';
-import { getUsersCollectionAction } from './action';
+import { getUserDetailsAction, getUsersCollectionAction } from './action';
 
 interface UserCollection {
     uuid: string;
@@ -17,6 +17,7 @@ interface UserStateI {
     userList: UserCollection[];
     isLoading: boolean;
     errorMsg: string | null;
+    userDetails: any
 }
 
 const usersAdapter = createEntityAdapter<UserCollection, EntityId>({
@@ -26,20 +27,25 @@ const usersAdapter = createEntityAdapter<UserCollection, EntityId>({
 
 const userSlice = createSlice({
     name: 'USER_SLICE',
-    initialState: usersAdapter.getInitialState<UserStateI>({ userList: [], isLoading: false, errorMsg: '' }),
+    initialState: usersAdapter.getInitialState<UserStateI>({ userList: [], isLoading: false, errorMsg: '', userDetails: null }),
     reducers: {
         userAdded: usersAdapter.addOne,
         userUpdate: usersAdapter.updateOne,
         userRemove: usersAdapter.removeOne,
     },
     extraReducers(builder) {
-        builder.addCase(getUsersCollectionAction.pending, (state: any, action: PayloadAction<any>) => {
+        builder.addCase(getUsersCollectionAction.pending, (state: any) => {
             state.isLoading = true;
         }).addCase(getUsersCollectionAction.fulfilled, (state: any, action: PayloadAction<UserCollection[]>) => {
             state.isLoading = false;
             usersAdapter.upsertMany(state, action.payload);
         }).addCase(getUsersCollectionAction.rejected, (state: any, action) => {
             state.errorMsg = action.error
+        }).addCase(getUserDetailsAction.pending, (state: any) => {
+            state.isLoading = true;
+        }).addCase(getUserDetailsAction.fulfilled, (state: any, action: PayloadAction<any>) => {
+            state.isLoading = false;
+            state.userDetails = action.payload
         })
     }
 });

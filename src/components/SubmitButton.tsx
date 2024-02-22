@@ -9,8 +9,6 @@ const SubmitButton: FC<{ form: FormInstance; isblock: boolean; buttonText?: stri
   const values = Form.useWatch([], form);
 
   React.useEffect(() => {
-    console.log("isblock ", isblock);
-
     form.validateFields({ validateOnly: true }).then(
       () => {
         setSubmittable(true);

@@ -20,7 +20,9 @@ type UserT = {
   id: string;
   image: string;
   profile_image: string;
-  password: string
+  password: string;
+  address: string;
+  whatsapp: string;
 }
 
 export async function POST(request: NextRequest, response: NextResponse<ResponseData>) {
@@ -44,6 +46,8 @@ export async function POST(request: NextRequest, response: NextResponse<Response
       email: user.email,
       id: user._id,
       image: user.profile_image,
+      address: user.address,
+      whatsapp: user.whatsapp
     };
     const accessToken = await new jose.SignJWT(payload).setProtectedHeader({ alg }).setExpirationTime("24h").sign(signature);
     const refreshToken = await new jose.SignJWT(payload).setProtectedHeader({ alg }).setExpirationTime("1y").sign(refreshSignature);

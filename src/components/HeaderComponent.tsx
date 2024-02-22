@@ -1,5 +1,8 @@
 "use client";
 
+import { useAppSelector } from "@redux-store/reduxHooks";
+import { AppState } from "@redux-store/store";
+import { selectUserById } from "@redux-store/users";
 import { Dropdown, MenuProps, Space } from "antd";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
@@ -27,14 +30,22 @@ const items: MenuProps["items"] = [
 
 const HeaderComponent: FC<{}> = memo(() => {
   const { data: session }: any = useSession();
+  const userDetails = useAppSelector((state: AppState) => selectUserById(state, session.user.user.id)) as any;
 
   return (
     <div className="flex items-center">
-      <Image src={session.user.user.image} alt="User Image" width={30} height={30} style={{ width: 30, height: 30 }} className="rounded-full" />
+      <Image
+        src={userDetails?.profile_image || session.user.user.image}
+        alt="User Image"
+        width={30}
+        height={30}
+        style={{ width: 30, height: 30 }}
+        className="rounded-full"
+      />
       <Dropdown menu={{ items }} placement="bottomRight">
         <a onClick={(e) => e.preventDefault()}>
           <Space>
-            <span className="capitalize p-3">{session?.user?.user?.name}</span>
+            <span className="capitalize p-3">{userDetails?.full_name || session.user.user.name}</span>
           </Space>
         </a>
       </Dropdown>

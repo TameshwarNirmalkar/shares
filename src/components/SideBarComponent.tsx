@@ -1,6 +1,7 @@
 "use-client";
 
-import { faClockRotateLeft, faHandHoldingUsd, faMoneyBills, faPeopleRoof, faSackDollar } from "@fortawesome/free-solid-svg-icons";
+import { SunFilled } from "@ant-design/icons";
+import { faClockRotateLeft, faMoneyBills, faPeopleRoof, faSackDollar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
@@ -77,8 +78,8 @@ const SideBarComponent: FC<{}> = memo(() => {
   return (
     <div className="">
       <div className="grid justify-items-center p-2">
-        {/* <SunFilled style={{ fontSize: 40, color: "white" }} /> */}
-        <FontAwesomeIcon icon={faHandHoldingUsd} color="white" fontSize={40} />
+        <SunFilled style={{ fontSize: 40, color: "white" }} />
+        {/* <FontAwesomeIcon icon={faHandHoldingUsd} color="white" fontSize={40} /> */}
       </div>
       <div>
         <Menu
