@@ -84,17 +84,17 @@ const MyProfile: FC<{}> = memo(() => {
             <Meta title={session?.user?.user?.name} />
             <Divider className="my-3" />
             <Space direction="vertical">
-              <h2>
-                <strong>Email: </strong> {selectedData?.email}
+              <h2 className="grid grid-cols-1">
+                <strong>Email: </strong> <span className="text-slate-500">{selectedData?.email}</span>
               </h2>
-              <h2>
-                <strong>Phone: </strong> {selectedData?.phone}
+              <h2 className="grid grid-cols-1">
+                <strong>Phone: </strong> <span className="text-slate-500">{selectedData?.phone}</span>
               </h2>
-              <h2>
-                <strong>Whatsapp: </strong> {selectedData?.whatsapp}
+              <h2 className="grid grid-cols-1">
+                <strong>Whatsapp: </strong> <span className="text-slate-500">{selectedData?.whatsapp}</span>
               </h2>
-              <h2 className="mb-5">
-                <strong>Address: </strong> {selectedData?.address}
+              <h2 className="mb-5 grid grid-cols-1">
+                <strong>Address: </strong> <span className="text-slate-500">{selectedData?.address}</span>
               </h2>
             </Space>
             <Button type="primary" block onClick={() => setIsDrawerOpen(true)}>
