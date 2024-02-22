@@ -6,7 +6,7 @@ import { AuthProvider } from "./Provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Manage Intereset",
+  title: "Interest",
   description: "Interset manage price",
 };
 

@@ -1,6 +1,7 @@
 "use-client";
 
-import { InsertRowAboveOutlined, MehOutlined, SketchCircleFilled } from "@ant-design/icons";
+import { faClockRotateLeft, faHandHoldingUsd, faMoneyBills, faPeopleRoof, faSackDollar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import { usePathname, useRouter } from "next/navigation";
@@ -22,11 +23,12 @@ const items: MenuProps["items"] = [
   {
     label: "Dashboard",
     key: "dashboard",
+    icon: <FontAwesomeIcon icon={faMoneyBills} color="white" fontSize={20} />,
   },
   {
     label: "Clients",
     key: "clients",
-    icon: <MehOutlined />,
+    icon: <FontAwesomeIcon icon={faPeopleRoof} color="white" fontSize={20} />,
     children: [
       { label: "Add Clients", key: "add_clients" },
       { label: "Clients List", key: "client_list" },
@@ -35,7 +37,7 @@ const items: MenuProps["items"] = [
   {
     label: "Investments",
     key: "investments",
-    icon: <MehOutlined />,
+    icon: <FontAwesomeIcon icon={faSackDollar} color="white" fontSize={20} />,
     children: [
       { label: "My Investments", key: "my-investments" },
       { label: "Stakeholder", key: "stakeholder" },
@@ -45,7 +47,7 @@ const items: MenuProps["items"] = [
   {
     label: "History",
     key: "history",
-    icon: <InsertRowAboveOutlined />,
+    icon: <FontAwesomeIcon icon={faClockRotateLeft} color="white" fontSize={20} />,
     children: [
       { label: "Transaction", key: "transaction" },
       { label: "Interest Calculator", key: "interest_calculator" },
@@ -59,7 +61,6 @@ const SideBarComponent: FC<{}> = memo(() => {
   const pname = usePathname();
 
   const openKeys = useMemo(() => items.map((el) => el?.key), [items]) as string[];
-  console.log(" open items: ", openKeys);
 
   const [activeLink, setActiveLink] = useState<string[]>(["0"]);
 
@@ -76,8 +77,8 @@ const SideBarComponent: FC<{}> = memo(() => {
   return (
     <div className="">
       <div className="grid justify-items-center p-2">
-        <SketchCircleFilled />
-        {activeLink}
+        {/* <SunFilled style={{ fontSize: 40, color: "white" }} /> */}
+        <FontAwesomeIcon icon={faHandHoldingUsd} color="white" fontSize={40} />
       </div>
       <div>
         <Menu
