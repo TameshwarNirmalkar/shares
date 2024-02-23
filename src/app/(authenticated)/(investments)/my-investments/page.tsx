@@ -1,20 +1,23 @@
 "use client";
 
-import { DeleteFilled } from "@ant-design/icons";
 import CalculatorComponent from "@components/Calculator";
 import DrawerComponent from "@components/DrawerComponent";
 import SpinnerLoader from "@components/SpinnerLoader";
-import { getTotalInterest, getTotalPrinciple, selectAllInterests } from "@redux-store/interests";
-import { createInterestAction, deleteInterestAction, getInterestCollectionAction } from "@redux-store/interests/action";
+import { faPenNib, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getTotalInterest, getTotalPrinciple, selectAllInterests, selectInterestById } from "@redux-store/interests";
+import { createInterestAction, deleteInterestAction, getInterestCollectionAction, updateInterestAction } from "@redux-store/interests/action";
 import { isLoading } from "@redux-store/interests/memonised-interests";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
-import { Button, Col, DatePicker, Divider, Form, Input, Row, Space, Table, message } from "antd";
+import { AppState } from "@redux-store/store";
+import { Button, Col, DatePicker, Form, Input, Row, Space, Table, message } from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import { FC, Suspense, memo, useCallback, useEffect, useState } from "react";
 
 type FieldType = {
-  uuid: String;
+  _id?: string;
+  uuid: string;
   investment_name?: string;
   investment_date?: Date;
   amount: number;
@@ -38,20 +41,20 @@ const MyInvestment: FC<{}> = memo(() => {
   };
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-  const [apiCallState, setApiCallState] = useState<boolean>(false);
   const [showCalculator, setShowCalculator] = useState<boolean>(false);
   const [selectedRow, setSelectedRow] = useState<any>({});
 
   const investmentList = useAppSelector(selectAllInterests);
   const loading = useAppSelector(isLoading);
-  const total_principle = useAppSelector((state) => getTotalPrinciple(state));
+  const total_principle = useAppSelector((state: AppState) => getTotalPrinciple(state));
   const total_interest = useAppSelector((state) => getTotalInterest(state));
+  const memoizedRow = useAppSelector((state: AppState) => selectInterestById(state, selectedRow._id));
 
   const [investmentForm] = Form.useForm<FieldType[]>();
 
   useEffect(() => {
     dispatch(getInterestCollectionAction(""));
-  }, [dispatch, apiCallState]);
+  }, [dispatch]);
 
   const columns = [
     {
@@ -113,25 +116,38 @@ const MyInvestment: FC<{}> = memo(() => {
       dataIndex: "_id",
       key: "_id",
       render: (_txt: string, row: any) => (
-        <span className="cursor-pointer" onClick={() => dispatch(deleteInterestAction(row))}>
-          Delete
-        </span>
+        <Space>
+          <span className="cursor-pointer" onClick={() => onUpdateInterest(row)}>
+            <FontAwesomeIcon icon={faPenNib} fontSize={18} color="#0284c7" />
+          </span>
+          <span className="cursor-pointer" onClick={() => dispatch(deleteInterestAction(row))}>
+            <FontAwesomeIcon icon={faTrash} fontSize={18} color="red" />
+          </span>
+        </Space>
       ),
     },
   ];
 
+  const onUpdateInterest = useCallback((row: any) => {
+    setSelectedRow({ ...row, interest_date: dayjs(row?.interest_date), investment_date: dayjs(row?.investment_date) });
+    setIsDrawerOpen(true);
+  }, []);
+
   const onFinish = useCallback(
     async (values: any) => {
       try {
-        await dispatch(createInterestAction({ ...values }));
+        if (memoizedRow?._id) {
+          await dispatch(updateInterestAction({ ...values }));
+        } else {
+          await dispatch(createInterestAction({ ...values }));
+        }
         setIsDrawerOpen(false);
-        setApiCallState((prev) => !prev);
         setSelectedRow({});
       } catch (error: any) {
         message.error(`SERVER ERROR ${error.toString()}`);
       }
     },
-    [dispatch]
+    [dispatch, memoizedRow]
   );
 
   return (
@@ -186,133 +202,99 @@ const MyInvestment: FC<{}> = memo(() => {
           form={investmentForm}
           name="myinvestmentform"
           layout="vertical"
-          initialValues={{ investments: [{ ...iniVal, ...selectedRow }] }}
+          initialValues={{ ...iniVal, ...selectedRow }}
           onFinish={onFinish}
           autoComplete="off"
           onValuesChange={(val, allval: any) => {
-            allval.investments.forEach((element: any) => {
-              element.calculated_amount = Math.round(element.amount * (element.percentage / 100));
-            });
-            investmentForm.setFieldValue("investments", allval.investments);
+            if (allval.amount && allval.percentage) {
+              allval.calculated_amount = Math.round(allval.amount * (allval.percentage / 100));
+            }
+            investmentForm.setFieldsValue({ ...allval });
           }}
         >
-          <Form.List name="investments">
-            {(fields, { add, remove }) => (
-              <>
-                <div className="pb-4">
-                  <Row justify={"space-between"} align={"middle"}>
-                    <Col></Col>
-                    <Col>
-                      <Space>
-                        <Button
-                          type="primary"
-                          onClick={() => {
-                            setShowCalculator(true);
-                          }}
-                        >
-                          Calculator
-                        </Button>
-                        <Button
-                          type="primary"
-                          danger
-                          onClick={async () => {
-                            try {
-                              await investmentForm.validateFields();
-                              add({ ...iniVal });
-                            } catch (error) {}
-                          }}
-                        >
-                          Add Investment
-                        </Button>
-                      </Space>
-                    </Col>
-                  </Row>
-                </div>
+          <>
+            <div className="pb-4">
+              <Row justify={"space-between"} align={"middle"}>
+                <Col></Col>
+                <Col>
+                  <Space>
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        setShowCalculator(true);
+                      }}
+                    >
+                      Calculator
+                    </Button>
+                  </Space>
+                </Col>
+              </Row>
+            </div>
 
-                {fields.map(({ key, name, ...restField }) => {
-                  // const perc = investmentForm.getFieldValue([name, "percentage"]);
-                  // const cal_amount = investmentForm.getFieldValue([name, "amount"]) * (perc / 100);
-                  return (
-                    <div key={`__${name}`}>
-                      <Row justify={"space-between"} gutter={[0, 10]}>
-                        <Col>Investment {name + 1}</Col>
-                        <Col>
-                          {fields.length > 1 && (
-                            <DeleteFilled
-                              className="cursor-pointer"
-                              onClick={() => {
-                                remove(name);
-                              }}
-                            />
-                          )}
-                        </Col>
-                      </Row>
-                      <Divider />
-                      <Row gutter={[30, 0]}>
-                        <Col span={24}>
-                          <Form.Item<FieldType[]> label="" name={[name, "uuid"]} hidden>
-                            <Input />
-                          </Form.Item>
-                          <Form.Item<FieldType[]> label="Investment Name" name={[name, "investment_name"]} rules={[{ required: true, message: "Required" }]}>
-                            <Input />
-                          </Form.Item>
-                          <Form.Item<FieldType[]> label="Principal Amount" name={[name, "amount"]} rules={[{ required: true, message: "Required" }]}>
-                            <Input addonAfter="₹" />
-                          </Form.Item>
-                        </Col>
-                        <Col span={24}>
-                          <Form.Item<FieldType[]> label="Investment Date" name={[name, "interest_date"]} rules={[{ required: true, message: "Required" }]}>
-                            <DatePicker format={"DD/MM/YYYY"} style={{ width: "100%" }} />
-                          </Form.Item>
-                          <Form.Item<FieldType[]> label="Payment Date" name={[name, "investment_date"]} rules={[{ required: true, message: "Required" }]}>
-                            <DatePicker format={"DD/MM/YYYY"} style={{ width: "100%" }} />
-                          </Form.Item>
-                        </Col>
+            <div>
+              <Row gutter={[30, 0]}>
+                <Col span={24}>
+                  <Form.Item<FieldType> label="" name="uuid" hidden>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item<FieldType> label="" name="_id" hidden>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item<FieldType> label="Investment Name" name="investment_name" rules={[{ required: true, message: "Required" }]}>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item<FieldType> label="Principal Amount" name="amount" rules={[{ required: true, message: "Required" }]}>
+                    <Input addonAfter="₹" />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item<FieldType> label="Investment Date" name="interest_date" rules={[{ required: true, message: "Required" }]}>
+                    <DatePicker format={"DD/MM/YYYY"} style={{ width: "100%" }} />
+                  </Form.Item>
+                  <Form.Item<FieldType> label="Payment Date" name="investment_date" rules={[{ required: true, message: "Required" }]}>
+                    <DatePicker format={"DD/MM/YYYY"} style={{ width: "100%" }} />
+                  </Form.Item>
+                </Col>
 
-                        <Col span={12}>
-                          <Form.Item<FieldType[]>
-                            label="Monthly Percentage"
-                            name={[name, "percentage"]}
-                            rules={[
-                              { required: true, message: "Required" },
-                              { message: "Only Number", pattern: /^[0-9]*$/g },
-                              () => ({
-                                validator: (_rule, val): Promise<string> => {
-                                  if (val > 15) {
-                                    return Promise.reject("Value should be not greter than 15");
-                                  }
-                                  return Promise.resolve("");
-                                },
-                              }),
-                            ]}
-                          >
-                            <Input addonAfter="%" maxLength={2} />
-                          </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                          <Form.Item<FieldType[]> label="Payment Amount" name={[name, "calculated_amount"]}>
-                            <Input readOnly={true} addonAfter="₹" />
-                          </Form.Item>
-                        </Col>
-                      </Row>
-                    </div>
-                  );
-                })}
-              </>
-            )}
-          </Form.List>
-          {/* <div className="pt-4"> */}
+                <Col span={12}>
+                  <Form.Item<FieldType>
+                    label="Monthly Percentage"
+                    name="percentage"
+                    rules={[
+                      { required: true, message: "Required" },
+                      { message: "Only Number", pattern: /^[0-9]*$/g },
+                      () => ({
+                        validator: (_rule, val): Promise<string> => {
+                          if (val > 15) {
+                            return Promise.reject("Value should be not greter than 15");
+                          }
+                          return Promise.resolve("");
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input addonAfter="%" maxLength={2} />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item<FieldType> label="Payment Amount" name="calculated_amount">
+                    <Input readOnly={true} addonAfter="₹" />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </div>
+          </>
+
           <Form.Item>
             <div>
               <Button type="primary" htmlType="submit" block danger>
-                Add Your Investment
+                {memoizedRow?._id ? "Edit Your Investment" : "Add Your Investment"}
               </Button>
               <Button type="text" block onClick={() => setIsDrawerOpen(false)}>
                 Cancel
               </Button>
             </div>
           </Form.Item>
-          {/* </div> */}
         </Form>
         {showCalculator && (
           <>

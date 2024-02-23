@@ -73,6 +73,7 @@ export async function PATCH(request: NextRequest) {
     }
   }
 }
+
 export async function DELETE(request: NextRequest) {
   const payload = await request.json();
   const geth = request.headers.get("authorization");

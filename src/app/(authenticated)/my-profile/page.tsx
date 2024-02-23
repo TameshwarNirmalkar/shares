@@ -65,12 +65,14 @@ const MyProfile: FC<{}> = memo(() => {
     }).then((res) => res.json());
     if (res.success) {
       await dispatch(updateUsersAction({ ...selectedData, ...form.getFieldsValue(), profile_image: res.data.url }));
+      await dispatch(getUserDetailsAction(session.user.user.email));
     }
   }, [fileList]);
 
   const onFormFinish = useCallback(
     async (val: any) => {
       await dispatch(updateUsersAction({ ...selectedData, ...val }));
+      await dispatch(getUserDetailsAction(session.user.user.email));
       setIsDrawerOpen(false);
     },
     [session, imageUrl]
