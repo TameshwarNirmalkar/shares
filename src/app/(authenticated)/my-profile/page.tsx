@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Card, Col, Divider, Form, GetProp, Image, Input, Row, Space, Upload, UploadFile, UploadProps, message } from "antd";
+import { Button, Card, Col, Divider, Form, GetProp, Image, Input, Modal, Row, Space, Upload, UploadFile, UploadProps, message } from "antd";
 import { FC, memo, useCallback, useEffect, useState } from "react";
 
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
@@ -27,6 +27,7 @@ const MyProfile: FC<{}> = memo(() => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const [form] = Form.useForm();
 
@@ -102,10 +103,40 @@ const MyProfile: FC<{}> = memo(() => {
             <Button type="primary" block onClick={() => setIsDrawerOpen(true)}>
               Edit Profile
             </Button>
+            <Divider className="my-2" />
+            <Button type="primary" danger block onClick={() => setIsModalOpen(true)}>
+              Change Password
+            </Button>
           </Card>
         </Col>
         <Col span={16}>Items</Col>
       </Row>
+
+      <Modal title="Change Password" open={isModalOpen} footer={null} centered={true} maskClosable={false} onCancel={() => setIsModalOpen(false)}>
+        <p>*Note: </p>
+        <sup className="text-red-700">
+          After successful change password you have to re-login with new password in the system. System will redirect to login page.
+        </sup>
+        <Form name="change-password" onFinish={(val: any) => {}} layout="vertical">
+          <Form.Item name={"old_password"} label="Old Password">
+            <Input.Password onPaste={(e) => e.preventDefault()} />
+          </Form.Item>
+          <Form.Item name={"new_password"} label="New Password">
+            <Input.Password onPaste={(e) => e.preventDefault()} />
+          </Form.Item>
+          <Form.Item name={"confirm_password"} label="Confirm Password">
+            <Input.Password onPaste={(e) => e.preventDefault()} />
+          </Form.Item>
+          <div className="grid grid-cols-2 gap-2">
+            <Button type="primary" danger onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="primary" htmlType="submit">
+              Update Password
+            </Button>
+          </div>
+        </Form>
+      </Modal>
 
       <DrawerComponent
         heading="Edit Details"
