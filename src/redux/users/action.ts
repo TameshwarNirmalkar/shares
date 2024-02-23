@@ -59,3 +59,25 @@ export const getUserDetailsAction = createAsyncThunk('GET_USERS_BY_EMAIL', async
         return error;
     }
 });
+
+export const changePassword = createAsyncThunk('CHANGE_USERS_PASSWORD', async (args: { _id: string, old_password: string, confirm_password: string }, { getState }) => {
+    try {
+        const session = await getSession() as Session;
+        const res = await fetch(`/api/change-password`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.user.accessToken}`,
+            },
+            body: JSON.stringify(args)
+        }).then((res) => res.json());
+        if (res.success) {
+            message.success(res.message);
+        } else {
+            message.error(res.message);
+        }
+        return res;
+    } catch (error: any) {
+        return error;
+    }
+});

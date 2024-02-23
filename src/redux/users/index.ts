@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSlice, EntityId, PayloadAction } from '@reduxjs/toolkit';
 import { AppState } from '../store';
-import { getUserDetailsAction, getUsersCollectionAction } from './action';
+import { changePassword, getUserDetailsAction, getUsersCollectionAction } from './action';
 
 interface UserCollection {
     uuid: string;
@@ -46,6 +46,10 @@ const userSlice = createSlice({
         }).addCase(getUserDetailsAction.fulfilled, (state: any, action: PayloadAction<any>) => {
             state.isLoading = false;
             state.userDetails = action.payload
+        }).addCase(changePassword.pending, (state: any, action: PayloadAction<any>) => {
+            state.isLoading = true;
+        }).addCase(changePassword.fulfilled, (state: any, action: PayloadAction<any>) => {
+            state.isLoading = false;
         })
     }
 });
