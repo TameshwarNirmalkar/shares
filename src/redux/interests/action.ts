@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { message } from 'antd';
 import type { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
-import { interestRemove, interestUpdate } from '.';
+import { interestAdded, interestRemove, interestUpdate } from '.';
 
 
 export const getInterestCollectionAction = createAsyncThunk('GET_INTEREST_COLLECTION', async (arg: any, { getState }) => {
@@ -23,8 +23,6 @@ export const getInterestCollectionAction = createAsyncThunk('GET_INTEREST_COLLEC
 
 export const createInterestAction = createAsyncThunk('CREATE_INTEREST_ACTION', async (arg: any, { dispatch }) => {
     try {
-        console.log(' Values: ', arg);
-
         const session: any = await getSession() as Session;
         const res = await fetch("/api/interest", {
             method: "POST",
@@ -36,6 +34,7 @@ export const createInterestAction = createAsyncThunk('CREATE_INTEREST_ACTION', a
         }).then((res) => res.json());
         if (res.success) {
             // dispatch(interestAddMany(...arg.investments));
+            dispatch(interestAdded(res.data));
             message.success(res.message);
         } else {
             message.error(res.message);

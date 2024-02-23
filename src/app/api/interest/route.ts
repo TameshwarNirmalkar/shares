@@ -20,8 +20,8 @@ export async function POST(request: NextRequest) {
     try {
       await jose.jwtVerify(`${hasBearer[1]}`, secret);
       await connectMongoDB();
-      await InterestModel.create(payload);
-      return NextResponse.json({ message: "Interest successfully created", success: true }, { status: 200 });
+      const data = await InterestModel.create(payload);
+      return NextResponse.json({ message: "Interest successfully created", success: true, data }, { status: 200 });
     } catch (error: any) {
       return NextResponse.json({ message: error.toString(), code: error.code, success: false }, { status: 403 });
     }
@@ -78,10 +78,11 @@ export async function DELETE(request: NextRequest) {
       const payload = await request.json();
       await jose.jwtVerify(`${hasBearer[1]}`, secret);
       await connectMongoDB();
-      await InterestModel.updateOne(
-        { _id: payload.parent_id },
-        { $pull: { investments: { _id: payload._id } } },
-      )
+      // await InterestModel.updateOne(
+      //   { _id: payload.parent_id },
+      //   { $pull: { investments: { _id: payload._id } } },
+      // )
+      await InterestModel.deleteOne(payload);
       return NextResponse.json({ message: "Item Delete Successfully.", success: true }, { status: 200 });
     } catch (error: any) {
       return NextResponse.json({ message: error.toString(), code: error.code, success: false }, { status: 403 });

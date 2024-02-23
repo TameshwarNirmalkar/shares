@@ -5,7 +5,7 @@ import DrawerComponent from "@components/DrawerComponent";
 import SpinnerLoader from "@components/SpinnerLoader";
 import { faPenNib, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getTotalInterest, getTotalPrinciple, selectAllInterests, selectInterestById } from "@redux-store/interests";
+import { getTotalInterest, getTotalPrinciple, selectAllInterests } from "@redux-store/interests";
 import { createInterestAction, deleteInterestAction, getInterestCollectionAction, updateInterestAction } from "@redux-store/interests/action";
 import { isLoading } from "@redux-store/interests/memonised-interests";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
@@ -48,7 +48,7 @@ const MyInvestment: FC<{}> = memo(() => {
   const loading = useAppSelector(isLoading);
   const total_principle = useAppSelector((state: AppState) => getTotalPrinciple(state));
   const total_interest = useAppSelector((state) => getTotalInterest(state));
-  const memoizedRow = useAppSelector((state: AppState) => selectInterestById(state, selectedRow._id));
+  // const memoizedRow = useAppSelector((state: AppState) => selectInterestById(state, selectedRow._id));
 
   const [investmentForm] = Form.useForm<FieldType[]>();
 
@@ -136,18 +136,19 @@ const MyInvestment: FC<{}> = memo(() => {
   const onFinish = useCallback(
     async (values: any) => {
       try {
-        if (memoizedRow?._id) {
+        if (selectedRow?._id) {
           await dispatch(updateInterestAction({ ...values }));
         } else {
           await dispatch(createInterestAction({ ...values }));
         }
-        setIsDrawerOpen(false);
-        setSelectedRow({});
       } catch (error: any) {
         message.error(`SERVER ERROR ${error.toString()}`);
+      } finally {
+        setIsDrawerOpen(false);
+        setSelectedRow({});
       }
     },
-    [dispatch, memoizedRow]
+    [dispatch, selectedRow]
   );
 
   return (
@@ -288,7 +289,7 @@ const MyInvestment: FC<{}> = memo(() => {
           <Form.Item>
             <div>
               <Button type="primary" htmlType="submit" block danger>
-                {memoizedRow?._id ? "Edit Your Investment" : "Add Your Investment"}
+                {selectedRow?._id ? "Edit Your Investment" : "Add Your Investment"}
               </Button>
               <Button type="text" block onClick={() => setIsDrawerOpen(false)}>
                 Cancel
