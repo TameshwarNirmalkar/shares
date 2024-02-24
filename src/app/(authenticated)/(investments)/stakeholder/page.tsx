@@ -1,9 +1,11 @@
 "use client";
 
-import { DeleteFilled, EditFilled, PhoneFilled } from "@ant-design/icons";
+import { DeleteFilled } from "@ant-design/icons";
 import DrawerComponent from "@components/DrawerComponent";
 import SpinnerLoader from "@components/SpinnerLoader";
 import StackholderFormComponent from "@components/StackholderFormComponent";
+import { faMobileScreenButton, faUserPen } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
 import { getTotalInterest, getTotalPrinciple, selectAllStakeholders, selectStakeholderById } from "@redux-store/stakeholders";
 import { deleteInvestorAction, getInvestorListAction } from "@redux-store/stakeholders/action";
@@ -71,10 +73,10 @@ const StakeholderPage: FC<{}> = memo(() => {
       render: (txt: number) => {
         return (
           <div className="flex align-middle">
-            <span>{txt}</span>
-            <span className="text-blue-600 pr-1">
-              <PhoneFilled />
+            <span className="text-blue-400 pr-1">
+              <FontAwesomeIcon icon={faMobileScreenButton} />
             </span>
+            <span>+91 {txt}</span>
           </div>
         );
       },
@@ -125,7 +127,8 @@ const StakeholderPage: FC<{}> = memo(() => {
       render: (txt: number, row: any) => {
         return (
           <Space>
-            <EditFilled className="text-blue-400 cursor-pointer" onClick={() => onEditHandler(row)} />
+            <FontAwesomeIcon icon={faUserPen} className="text-blue-400 cursor-pointer" onClick={() => onEditHandler(row)} />
+            {/* <EditFilled /> */}
             <DeleteFilled className="text-red-700 cursor-pointer" onClick={() => onDelete(row)} />
           </Space>
         );
