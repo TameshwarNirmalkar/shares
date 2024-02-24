@@ -78,7 +78,7 @@ const LoginComponent: FC<{}> = memo(() => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" danger block loading={isLoading} disabled={isLoading}>
+            <Button type="primary" htmlType="submit" danger block loading={isLoading}>
               Login
             </Button>
           </Form.Item>

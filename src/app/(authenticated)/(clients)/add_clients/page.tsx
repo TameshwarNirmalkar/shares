@@ -1,42 +1,24 @@
 "use client";
 
-import SubmitButton from "@components/SubmitButton";
-import { Alert, Button, Card, Col, Divider, Form, Image, Input, Modal, Row, Space, Upload, message } from "antd";
+import { Alert, Card, Col, Image, Row, Space } from "antd";
 import { NextPage } from "next";
 
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import DrawerComponent from "@components/DrawerComponent";
 import SpinnerLoader from "@components/SpinnerLoader";
+import UserDetailsComponent from "@components/UserDetailsComponent";
+import { faUserEdit } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
-import { AppState } from "@redux-store/store";
-import { selectAllUsers, selectUserById } from "@redux-store/users";
-import { getUsersCollectionAction, updateUsersAction } from "@redux-store/users/action";
+import { selectAllUsers } from "@redux-store/users";
+import { getUserDetailsAction, getUsersCollectionAction } from "@redux-store/users/action";
 import { isLoading } from "@redux-store/users/memonised-user";
-import type { GetProp, UploadFile, UploadProps } from "antd";
 import Meta from "antd/es/card/Meta";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
-
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-
-const getBase64 = (img: FileType, callback: (url: string) => void) => {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result as string));
-  reader.readAsDataURL(img);
-};
 
 const AddClientsPage: NextPage = () => {
   const dispatch = useAppDispatch();
   const userList = useAppSelector(selectAllUsers);
   const loading = useAppSelector(isLoading);
-
-  const [form] = Form.useForm();
-  const [selectedRow, setSelectedRow] = useState<any>({});
-
-  const selectedData = useAppSelector((state: AppState) => selectUserById(state, selectedRow._id)) as any;
-
-  const [imageUrl, setImageUrl] = useState<string>();
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const { data: session }: any = useSession();
   const [errormsg, setErrorMsg] = useState<string>("");
@@ -48,87 +30,34 @@ const AddClientsPage: NextPage = () => {
     }
   }, [dispatch, session?.user?.accessToken]);
 
-  useEffect(() => {
-    form.resetFields();
-  }, [form, selectedRow]);
-
-  const onUploadImage = useCallback(async () => {
-    const formData = new FormData();
-    formData.append("image", fileList[0] as any);
-    const res = await fetch(`/api/upload-image`, {
-      method: "POST",
-      body: formData,
-    }).then((res) => res.json());
-    if (res.success) {
-      await dispatch(updateUsersAction({ ...selectedRow, ...form.getFieldsValue(), profile_image: res.data.url }));
-    }
-  }, [fileList]);
-
-  const onFormFinish = useCallback(
-    async (val: any) => {
-      await dispatch(updateUsersAction({ ...selectedRow, ...val }));
-      setIsDrawerOpen(false);
-    },
-    [session, imageUrl]
-  );
-
   const onEditHandler = useCallback(async (row: any) => {
+    await dispatch(getUserDetailsAction(row.email));
     setIsDrawerOpen(true);
-    setSelectedRow(row);
   }, []);
 
-  const onDelete = useCallback(async (row: any) => {
-    Modal.confirm({
-      okText: "Yes",
-      cancelText: "No",
-      centered: true,
-      title: "Delete User",
-      content: (
-        <div>
-          <span>Are you sure!!! want to delete the user?</span>
-        </div>
-      ),
-      onOk: async () => {
-        const response: any = await fetch(`/api/user`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.user?.accessToken}`,
-          },
-          body: JSON.stringify({ id: row._id }),
-        }).then((res) => res.json());
-      },
-    });
-  }, []);
-
-  const onBeforeLoad = useCallback((file: FileType) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
-    } else if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
-    } else {
-      // const FR = new FileReader();
-      // FR.onloadend = (evt: any) => {
-      //   setImageUrl(evt.target.result);
-      // };
-      // FR.readAsDataURL(file);
-      setFileList([file]);
-      getBase64(file, (url) => {
-        setImageUrl(url);
-      });
-    }
-    // return isJpgOrPng && isLt2M;
-    return false;
-  }, []);
-
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
+  // const onDelete = useCallback(async (row: any) => {
+  //   Modal.confirm({
+  //     okText: "Yes",
+  //     cancelText: "No",
+  //     centered: true,
+  //     title: "Delete User",
+  //     content: (
+  //       <div>
+  //         <span>Are you sure!!! want to delete the user?</span>
+  //       </div>
+  //     ),
+  //     onOk: async () => {
+  //       const response: any = await fetch(`/api/user`, {
+  //         method: "DELETE",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${session?.user?.accessToken}`,
+  //         },
+  //         body: JSON.stringify({ id: row._id }),
+  //       }).then((res) => res.json());
+  //     },
+  //   });
+  // }, []);
 
   return (
     <div>
@@ -151,15 +80,15 @@ const AddClientsPage: NextPage = () => {
               >
                 <Row justify={"space-between"}>
                   <Col>
-                    <Meta title={el.full_name} description={el.email} />
+                    <Meta title={el.full_name} description={session.user.user.id === el._id ? el.email : ""} />
                   </Col>
                   {session.user.user.id === el._id && (
                     <Col>
                       <Space>
                         {/* <LuFileEdit fontSize={20} className="text-blue-400 cursor-pointer" onClick={() => onEditHandler(el)} /> */}
                         {/* <MdDelete fontSize={20} className="text-red-500 cursor-pointer" onClick={() => onDelete(el)} /> */}
-                        <span className="text-blue-400 cursor-pointer" onClick={() => onEditHandler(el)}>
-                          Edit
+                        <span className="text-white cursor-pointer rounded-full bg-sky-400 p-2" title="Edit User Details" onClick={() => onEditHandler(el)}>
+                          <FontAwesomeIcon icon={faUserEdit} />
                         </span>
                       </Space>
                     </Col>
@@ -171,89 +100,7 @@ const AddClientsPage: NextPage = () => {
         })}
       </Row>
 
-      <DrawerComponent
-        heading="Edit User Details"
-        isOpen={isDrawerOpen}
-        onCloseDrawer={() => {
-          setIsDrawerOpen(false);
-          // setImageUrl("");
-        }}
-      >
-        <Form form={form} initialValues={{ ...selectedData }} name="addclientForm" layout="vertical" autoComplete="off" onFinish={onFormFinish}>
-          <Card className="mb-3 bg-slate-500">
-            <Row align={"middle"}>
-              <Col span={7}>
-                <Upload
-                  listType="picture-card"
-                  showUploadList={false}
-                  action="#"
-                  beforeUpload={onBeforeLoad}
-                  onPreview={() => false}
-                  fileList={fileList}
-                  multiple={false}
-                >
-                  {imageUrl || selectedData?.profile_image ? <Image src={imageUrl ?? selectedData?.profile_image} width={100} preview={false} /> : uploadButton}
-                </Upload>
-              </Col>
-              <Col>
-                <Button type="primary" onClick={onUploadImage} disabled={loading || !imageUrl}>
-                  <div className="text-white-800">Change Profile Image</div>
-                </Button>
-                <div className="pt-1">
-                  <sup className="text-slate-200">File size should not greater then 2 mb.</sup>
-                </div>
-              </Col>
-            </Row>
-          </Card>
-
-          <Form.Item name="_id" hidden>
-            <Input />
-          </Form.Item>
-          <Form.Item name="full_name" label="Full Name" rules={[{ required: true, message: "Required" }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            label="Email"
-            rules={[
-              { required: true, message: "Required" },
-              { type: "email", message: "Invalid email." },
-            ]}
-          >
-            <Input disabled={true} />
-          </Form.Item>
-          <Form.Item
-            name="phone"
-            label="Phone"
-            rules={[
-              { required: true, message: "Required" },
-              { pattern: /^[0-9]{10}\/*$/g, message: "Only 10 digits" },
-            ]}
-          >
-            <Input maxLength={10} />
-          </Form.Item>
-          <Form.Item
-            name="whatsapp"
-            label="Whatsapp Number"
-            rules={[
-              { required: true, message: "Required" },
-              { pattern: /^[0-9]{10}\/*$/g, message: "Only 10 digits" },
-            ]}
-          >
-            <Input maxLength={10} />
-          </Form.Item>
-          <Form.Item name="address" label="Address" rules={[{ required: true, message: "Required" }]}>
-            <Input.TextArea rows={6} />
-          </Form.Item>
-          <Form.Item>
-            <SubmitButton form={form} isblock={true} buttonText="Update User Details" />
-            <Divider>OR</Divider>
-            <Button htmlType="reset" block onClick={() => setIsDrawerOpen(false)}>
-              Cancel
-            </Button>
-          </Form.Item>
-        </Form>
-      </DrawerComponent>
+      <UserDetailsComponent drawerHeading="Edit Details" isDrawerOpen={isDrawerOpen} onDrawerOpen={(val) => setIsDrawerOpen(val)} />
 
       <SpinnerLoader loading={loading} />
     </div>

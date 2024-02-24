@@ -19,7 +19,7 @@ interface StakeholderStateI {
 
 const stakeholdersAdapter = createEntityAdapter<StakeholderCollectionI, EntityId>({
     selectId: (stake: StakeholderCollectionI) => stake._id,
-    sortComparer: (a: StakeholderCollectionI, b: StakeholderCollectionI) => a.full_name.localeCompare(b.full_name)
+    sortComparer: (a: StakeholderCollectionI, b: StakeholderCollectionI) => a.interest_date.localeCompare(b.interest_date)
 });
 
 const stakeholderSlice = createSlice({
