@@ -152,11 +152,9 @@ const MyInvestment: FC<{}> = memo(() => {
 
   return (
     <>
-      <div className="pt-4 pb-4">
+      <div className="pb-4">
         <Row justify={"space-between"} align={"middle"}>
-          <Col>
-            <h1>My Investment</h1>
-          </Col>
+          <Col className="text-white text-lg">My Investment</Col>
           <Col>
             <Space>
               <Button

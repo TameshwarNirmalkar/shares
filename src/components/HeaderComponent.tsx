@@ -47,7 +47,7 @@ const HeaderComponent: FC<{}> = memo(() => {
       <Dropdown menu={{ items }} placement="bottomRight">
         <a onClick={(e) => e.preventDefault()} href="#" className="text-slate-500">
           <Space>
-            <div>
+            <div className="text-slate-100">
               <span className="capitalize p-3">{userDetails?.full_name || session.user.user.name}</span>
               <FontAwesomeIcon icon={faAngleDown} />
             </div>

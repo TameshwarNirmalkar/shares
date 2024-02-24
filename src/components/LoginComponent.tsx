@@ -1,7 +1,6 @@
 "use client";
 
-import { useAppDispatch } from "@redux-store/reduxHooks";
-import { Alert, Button, Checkbox, Form, Input } from "antd";
+import { Alert, Button, Checkbox, Form, Input, message } from "antd";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,7 +14,6 @@ type FieldType = {
 
 const LoginComponent: FC<{}> = memo(() => {
   const { push } = useRouter();
-  const dispatch = useAppDispatch();
 
   const [userError, setUserError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -26,15 +24,15 @@ const LoginComponent: FC<{}> = memo(() => {
       const res: any = await signIn("credentials", {
         ...values,
         redirect: false,
-        callbackUrl: "/dashboard",
+        callbackUrl: "/error",
       });
       if (res?.ok) {
         push("/dashboard");
       } else {
         setUserError(true);
       }
-    } catch (error) {
-      console.log("ERROR: OK: ", error);
+    } catch (error: any) {
+      message.error(error.toString());
     } finally {
       setIsLoading(false);
     }
@@ -42,11 +40,18 @@ const LoginComponent: FC<{}> = memo(() => {
 
   return (
     <div className="w-2/5">
-      <h1 className="text-2xl justify-center grid mb-4">Login</h1>
-      <div className="bg-slate-600 rounded-lg  border p-4">
-        {userError && <Alert className="pb-8" type="error" message={<span className="error text-red-900">{"Invalid Credentials."}</span>} />}
+      <h1 className="text-2xl justify-center grid mb-4 text-slate-400">Login</h1>
+      <div className="bg-slate-600 rounded-lg p-4">
+        {userError && <Alert className="p-2 mb-3" type="error" message={<span className="error text-red-700">{"Invalid Credentials."}</span>} />}
 
-        <Form className="space-y-4 md:space-y-6" layout="vertical" name="loginForm" onFinish={onFinish} autoComplete="on">
+        <Form
+          initialValues={{ email: null, password: null, remember: false }}
+          className="space-y-4 md:space-y-6"
+          layout="vertical"
+          name="loginForm"
+          onFinish={onFinish}
+          autoComplete="on"
+        >
           <Form.Item<FieldType>
             label={<span className="font-light text-white">Username</span>}
             name="email"

@@ -138,9 +138,10 @@ const StakeholderPage: FC<{}> = memo(() => {
       <Row>
         <Col span={24}>
           <Row justify={"space-between"} align={"middle"} className="mb-4">
-            <Col>Header</Col>
+            <Col className="text-white text-lg">Stakeholders</Col>
             <Col>
               <Button
+                type="primary"
                 onClick={() => {
                   setIsDrawerOpen(true);
                 }}

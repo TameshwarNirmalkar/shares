@@ -1,5 +1,6 @@
 "use client";
 
+import { PASSWORD_PATTERN } from "@utility/regex-pattern";
 import { Button, Form, Input, message } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -35,21 +36,22 @@ const RegisterForm: FC<{}> = memo(() => {
 
   return (
     <div className="w-2/5">
-      <h1 className="text-2xl justify-center grid mb-4">Registeration</h1>
-      <div className="bg-slate-600 rounded-lg  border p-4">
-        <Form className="space-y-4 md:space-y-6" layout="vertical" name="registrationForm" onFinish={onFinish} autoComplete="off">
+      <h1 className="text-2xl justify-center grid mb-4 text-slate-100">Registeration</h1>
+      <div className="bg-slate-600 rounded-lg p-4">
+        <Form className="space-y-4" layout="vertical" name="registrationForm" onFinish={onFinish} autoComplete="off">
           <Form.Item<FieldType>
-            label={<span className="font-light text-gray-500 dark:text-gray-400">Full Name</span>}
+            label={<span className="font-light text-white">Full Name</span>}
             name="full_name"
             rules={[{ required: true, message: "Required" }]}
           >
             <Input />
           </Form.Item>
+
           <Form.Item<FieldType>
-            label={<span className="font-light text-gray-500 dark:text-gray-400">Email</span>}
+            label={<span className="font-light text-white">Email</span>}
             name="email"
             rules={[
-              { required: true, message: "Email Required" },
+              { required: true, message: "Required" },
               { type: "email", message: "Invalid email" },
             ]}
           >
@@ -57,9 +59,12 @@ const RegisterForm: FC<{}> = memo(() => {
           </Form.Item>
 
           <Form.Item<FieldType>
-            label={<span className="font-light text-gray-500 dark:text-gray-400">Password</span>}
+            label={<span className="font-light text-white">Password</span>}
             name="password"
-            rules={[{ required: true, message: "Password Required" }]}
+            rules={[
+              { required: true, message: "Required" },
+              { pattern: PASSWORD_PATTERN, message: "Password should contains, 1 Capital letter, 1 special characters and 8 characters long." },
+            ]}
           >
             <Input.Password />
           </Form.Item>
@@ -69,8 +74,9 @@ const RegisterForm: FC<{}> = memo(() => {
               Register
             </Button>
           </Form.Item>
-          <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-            <Link href="/login" className="font-medium text-primary-600 hover:underline dark:text-primary-500">
+
+          <p className="flex justify-end">
+            <Link href="/login" className="rounded-lg border px-5 bg-slate-700 py-1 text-slate-300">
               Login
             </Link>
           </p>

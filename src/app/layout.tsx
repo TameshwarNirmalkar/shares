@@ -18,7 +18,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en">
-      <body className="App">
+      <body className="bg-slate-900">
         <StoreProviders>
           <AuthProvider session={session}>
             <AntdRegistry>{children}</AntdRegistry>
