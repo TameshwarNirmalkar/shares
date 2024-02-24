@@ -6,7 +6,7 @@ import { stakeholdersRemoveOne } from '.';
 
 message.config({
     top: 10,
-    duration: 50,
+    duration: 30,
     maxCount: 2,
 });
 

@@ -16,14 +16,14 @@ import { useSession } from "next-auth/react";
 import { FC, Suspense, memo, useCallback, useEffect, useState } from "react";
 
 type FieldType = {
-  _id?: string;
-  uuid: string;
-  investment_name?: string;
-  investment_date?: Date;
-  amount: number;
-  percentage: number;
-  calculated_amount: number;
-  interest_date: Date;
+  _id?: string | null;
+  uuid: string | null;
+  investment_name?: string | null;
+  investment_date?: Date | null;
+  amount: number | null;
+  percentage: number | null;
+  calculated_amount: number | null;
+  interest_date: Date | null;
 };
 
 const MyInvestment: FC<{}> = memo(() => {
@@ -31,7 +31,7 @@ const MyInvestment: FC<{}> = memo(() => {
   const { data: session }: any = useSession();
 
   const iniVal = {
-    uuid: session?.user?.user?.id,
+    uuid: session?.user?.user?.id ?? null,
     investment_name: null,
     investment_date: null,
     amount: null,
@@ -42,7 +42,6 @@ const MyInvestment: FC<{}> = memo(() => {
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [showCalculator, setShowCalculator] = useState<boolean>(false);
-  const [selectedRow, setSelectedRow] = useState<any>({});
 
   const investmentList = useAppSelector(selectAllInterests);
   const loading = useAppSelector(isLoading);
@@ -50,7 +49,7 @@ const MyInvestment: FC<{}> = memo(() => {
   const total_interest = useAppSelector((state) => getTotalInterest(state));
   // const memoizedRow = useAppSelector((state: AppState) => selectInterestById(state, selectedRow._id));
 
-  const [investmentForm] = Form.useForm<FieldType[]>();
+  const [investmentForm] = Form.useForm<FieldType>();
 
   useEffect(() => {
     dispatch(getInterestCollectionAction(""));
@@ -128,15 +127,16 @@ const MyInvestment: FC<{}> = memo(() => {
     },
   ];
 
-  const onUpdateInterest = useCallback((row: any) => {
-    setSelectedRow({ ...row, interest_date: dayjs(row?.interest_date), investment_date: dayjs(row?.investment_date) });
+  const onUpdateInterest = useCallback(async (row: any) => {
+    const fieldValues = { ...row, interest_date: dayjs(row?.interest_date), investment_date: dayjs(row?.investment_date) };
+    await investmentForm.setFieldsValue(fieldValues);
     setIsDrawerOpen(true);
   }, []);
 
   const onFinish = useCallback(
     async (values: any) => {
       try {
-        if (selectedRow?._id) {
+        if (values?._id) {
           await dispatch(updateInterestAction({ ...values }));
         } else {
           await dispatch(createInterestAction({ ...values }));
@@ -145,10 +145,9 @@ const MyInvestment: FC<{}> = memo(() => {
         message.error(`SERVER ERROR ${error.toString()}`);
       } finally {
         setIsDrawerOpen(false);
-        setSelectedRow({});
       }
     },
-    [dispatch, selectedRow]
+    [dispatch]
   );
 
   return (
@@ -162,7 +161,8 @@ const MyInvestment: FC<{}> = memo(() => {
             <Space>
               <Button
                 type="primary"
-                onClick={() => {
+                onClick={async () => {
+                  await investmentForm.resetFields();
                   setIsDrawerOpen(true);
                 }}
               >
@@ -203,14 +203,14 @@ const MyInvestment: FC<{}> = memo(() => {
           form={investmentForm}
           name="myinvestmentform"
           layout="vertical"
-          initialValues={{ ...iniVal, ...selectedRow }}
+          initialValues={iniVal}
           onFinish={onFinish}
           autoComplete="off"
-          onValuesChange={(val, allval: any) => {
+          onValuesChange={(_val, allval: any) => {
             if (allval.amount && allval.percentage) {
               allval.calculated_amount = Math.round(allval.amount * (allval.percentage / 100));
+              investmentForm.setFieldsValue(allval);
             }
-            investmentForm.setFieldsValue({ ...allval });
           }}
         >
           <>
@@ -289,7 +289,7 @@ const MyInvestment: FC<{}> = memo(() => {
           <Form.Item>
             <div>
               <Button type="primary" htmlType="submit" block danger>
-                {selectedRow?._id ? "Edit Your Investment" : "Add Your Investment"}
+                {investmentForm.getFieldValue("_id") ? "Edit Your Investment" : "Add Your Investment"}
               </Button>
               <Button type="text" block onClick={() => setIsDrawerOpen(false)}>
                 Cancel
