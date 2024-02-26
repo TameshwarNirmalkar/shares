@@ -64,7 +64,7 @@ const AddClientsPage: NextPage = () => {
       <Row gutter={[10, 10]}>
         {[userList]?.map((el: any) => {
           return (
-            <Col span={8} key={el._id}>
+            <Col span={8} key={el?._id}>
               <Card
                 bordered={false}
                 hoverable
@@ -79,9 +79,9 @@ const AddClientsPage: NextPage = () => {
               >
                 <Row justify={"space-between"}>
                   <Col>
-                    <Meta title={el.full_name} description={session.user.user.id === el._id ? el.email : ""} />
+                    <Meta title={el?.full_name} description={session?.user?.user?.id === el?._id ? el?.email : ""} />
                   </Col>
-                  {session.user.user.id === el._id && (
+                  {session.user.user.id === el?._id && (
                     <Col>
                       <Space>
                         {/* <LuFileEdit fontSize={20} className="text-blue-400 cursor-pointer" onClick={() => onEditHandler(el)} /> */}

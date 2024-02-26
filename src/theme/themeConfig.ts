@@ -13,7 +13,13 @@ const themeConfig: ThemeConfig = {
         controlItemBgHover: '#64748b',
         colorBorder: "#64748b",
         colorTextDisabled: "#64748b",
-        boxShadowTertiary: 'none'
+        boxShadowTertiary: 'none',
+        colorInfoBg: "#0ea5e9",
+        colorInfoBorder: '#0ea5e9',
+        colorSuccessBg: '#22c55e',
+        colorSuccessBorder: '#16a34a',
+        colorWarningBg: '#eab308',
+        colorWarningBorder: '#ca8a04'
     },
     components: {
         Button: {
@@ -47,7 +53,8 @@ const themeConfig: ThemeConfig = {
         },
         Card: {
             colorBorder: '#64748b',
-            borderRadius: 50
+            borderRadius: 50,
+            actionsBg: '#1e293b'
         }
 
 

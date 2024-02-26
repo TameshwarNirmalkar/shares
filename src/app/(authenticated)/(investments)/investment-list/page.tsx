@@ -10,7 +10,7 @@ import {
   myTotalInvestmentState,
 } from "@redux-store/investments-list/memonised-investment-list";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
-import { Space, Table } from "antd";
+import { Alert, Col, Row, Space, Table } from "antd";
 import dayjs from "dayjs";
 import { FC, memo, useEffect } from "react";
 
@@ -144,7 +144,7 @@ const InvestmentListPage: FC<{}> = memo(() => {
   const loading = useAppSelector(isLoading);
   const my_investment_list = useAppSelector(myInvestmentListState);
   const my_client_investment_list = useAppSelector(myClientInvestmentListState);
-  const consolidate = useAppSelector(consolidateState);
+  const consolidate: any = useAppSelector(consolidateState);
   const my_total_investment: any = useAppSelector(myTotalInvestmentState);
   const my_client_total_investment: any = useAppSelector(myClientTotalInvestmentState);
 
@@ -154,6 +154,36 @@ const InvestmentListPage: FC<{}> = memo(() => {
 
   return (
     <>
+      <Row align={"middle"} gutter={[10, 0]}>
+        <Col span={12}>
+          <Alert
+            message={<span className="text-white">Total Investment</span>}
+            description={
+              <span className="text-2xl text-green-200">
+                {consolidate?.total_investment.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "INR",
+                })}
+              </span>
+            }
+            type="success"
+          />
+        </Col>
+        <Col span={12}>
+          <Alert
+            message={<span className="text-yellow-100">Total Interest</span>}
+            description={
+              <span className="text-2xl text-amber-600">
+                {consolidate?.total_interest.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "INR",
+                })}
+              </span>
+            }
+            type="warning"
+          />
+        </Col>
+      </Row>
       <div>
         <h1 className="text-xl text-stone-100 p-3">My Investment</h1>
         <Table
