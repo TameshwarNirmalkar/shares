@@ -19,7 +19,9 @@ const themeConfig: ThemeConfig = {
         colorSuccessBg: '#22c55e',
         colorSuccessBorder: '#16a34a',
         colorWarningBg: '#eab308',
-        colorWarningBorder: '#ca8a04'
+        colorWarningBorder: '#ca8a04',
+        colorIcon: '#cbd5e1',
+        colorSplit: ' #cbd5e1'
     },
     components: {
         Button: {

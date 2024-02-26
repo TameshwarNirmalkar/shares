@@ -22,7 +22,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <SideBarComponent />
       </Sider>
       <Layout>
-        <Header>
+        <Header className="sticky top-0">
           <Row align={"middle"} justify={"space-between"} className="pr-3">
             <Col>
               <Button

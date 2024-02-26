@@ -6,4 +6,5 @@ export const myClientInvestmentListState = (state: AppState) => state.investment
 export const consolidateState = (state: AppState) => state.investmentList.consolidate_investment;
 export const myTotalInvestmentState = (state: AppState) => state.investmentList.my_total_investment;
 export const myClientTotalInvestmentState = (state: AppState) => state.investmentList.my_client_total_investment;
+export const profitFromClientState = (state: AppState) => state.investmentList.profit_from_client;
 

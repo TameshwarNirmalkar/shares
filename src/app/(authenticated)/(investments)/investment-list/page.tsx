@@ -8,16 +8,12 @@ import {
   myClientTotalInvestmentState,
   myInvestmentListState,
   myTotalInvestmentState,
+  profitFromClientState,
 } from "@redux-store/investments-list/memonised-investment-list";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
 import { Alert, Col, Row, Space, Table } from "antd";
 import dayjs from "dayjs";
 import { FC, memo, useEffect } from "react";
-
-type InvestmentInterest = {
-  total_investment: number;
-  total_interest: number;
-};
 
 const columns = [
   {
@@ -43,7 +39,7 @@ const columns = [
     sorter: (a: any, b: any) => a.amount - b.amount,
     render: (txt: number) => {
       return (
-        <span className="text-green-600">
+        <span className="text-yellow-400">
           {txt.toLocaleString("en-US", {
             style: "currency",
             currency: "INR",
@@ -58,7 +54,7 @@ const columns = [
     key: "percentage",
     sorter: (a: any, b: any) => a.percentage - b.percentage,
     render: (txt: string) => {
-      return <span className="text-red-600">{txt} %</span>;
+      return <span className="text-sky-600">{txt} %</span>;
     },
   },
   {
@@ -68,7 +64,7 @@ const columns = [
     sorter: (a: any, b: any) => a.calculated_amount - b.calculated_amount,
     render: (txt: number) => {
       return (
-        <span className="text-green-600">
+        <span className="text-green-200">
           {txt.toLocaleString("en-US", {
             style: "currency",
             currency: "INR",
@@ -103,7 +99,7 @@ const columnClient = [
     sorter: (a: any, b: any) => a.principle_amount - b.principle_amount,
     render: (txt: number) => {
       return (
-        <span className="text-green-600">
+        <span className="text-yellow-400">
           {txt.toLocaleString("en-US", {
             style: "currency",
             currency: "INR",
@@ -118,7 +114,7 @@ const columnClient = [
     key: "percentage",
     sorter: (a: any, b: any) => a.percentage - b.percentage,
     render: (txt: string) => {
-      return <span className="text-red-600">{txt} %</span>;
+      return <span className="text-sky-600">{txt} %</span>;
     },
   },
   {
@@ -127,7 +123,7 @@ const columnClient = [
     key: "createdAt",
     render: (txt: number, row: any) => {
       return (
-        <span className="text-green-600">
+        <span className="text-green-200">
           {((row.principle_amount * row.percentage) / 100).toLocaleString("en-US", {
             style: "currency",
             currency: "INR",
@@ -147,6 +143,7 @@ const InvestmentListPage: FC<{}> = memo(() => {
   const consolidate: any = useAppSelector(consolidateState);
   const my_total_investment: any = useAppSelector(myTotalInvestmentState);
   const my_client_total_investment: any = useAppSelector(myClientTotalInvestmentState);
+  const profit_from_client: number = useAppSelector(profitFromClientState);
 
   useEffect(() => {
     dispatch(getInvestmentsCollectionAction(""));
@@ -155,7 +152,7 @@ const InvestmentListPage: FC<{}> = memo(() => {
   return (
     <>
       <Row align={"middle"} gutter={[10, 0]}>
-        <Col span={12}>
+        <Col span={8}>
           <Alert
             message={<span className="text-white">Total Investment</span>}
             description={
@@ -169,7 +166,7 @@ const InvestmentListPage: FC<{}> = memo(() => {
             type="success"
           />
         </Col>
-        <Col span={12}>
+        <Col span={8}>
           <Alert
             message={<span className="text-yellow-100">Total Interest</span>}
             description={
@@ -183,6 +180,34 @@ const InvestmentListPage: FC<{}> = memo(() => {
             type="warning"
           />
         </Col>
+        {/* <Col span={8}>
+          <Alert
+            message={
+              <div className="grid grid-col-2">
+                <span className="text-yellow-100">Profite From Client</span>
+                <span>
+                  <Input
+                    size="small"
+                    onChange={(e: any) => {
+                      const val = e.target.value;
+                      const profit_from_client = my_client_total_investment.total_investment * (val / 100) - my_client_total_investment.total_interest;
+                      dispatch(updateProfitClient(profit_from_client));
+                    }}
+                  />
+                </span>
+              </div>
+            }
+            description={
+              <span className="text-2xl text-sky-200">
+                {profit_from_client.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "INR",
+                })}
+              </span>
+            }
+            type="info"
+          />
+        </Col> */}
       </Row>
       <div>
         <h1 className="text-xl text-stone-100 p-3">My Investment</h1>
@@ -194,12 +219,24 @@ const InvestmentListPage: FC<{}> = memo(() => {
           rowKey={"_id"}
           pagination={false}
           footer={(currentPageData) => (
-            <Space className="text-right">
+            <Space className="text-right" direction="vertical">
               <div>
-                <strong>Total Investment</strong> : <span className="text-green-600">{my_total_investment?.total_investment}</span>
+                <strong>Total Investment</strong> :{" "}
+                <span className="text-yellow-400">
+                  {my_total_investment?.total_investment.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "INR",
+                  })}
+                </span>
               </div>
               <div>
-                <strong>Total Interest</strong> : <span className="text-green-600">{my_total_investment?.total_interest}</span>
+                <strong>Total Interest</strong> :{" "}
+                <span className="text-green-200">
+                  {my_total_investment?.total_interest.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "INR",
+                  })}
+                </span>
               </div>
             </Space>
           )}
@@ -215,12 +252,24 @@ const InvestmentListPage: FC<{}> = memo(() => {
           pagination={false}
           rowKey={"_id"}
           footer={(currentPageData) => (
-            <Space className="text-right">
+            <Space className="text-right" direction="vertical">
               <div>
-                <strong>Total Investment</strong> : <span className="text-green-600">{my_client_total_investment?.total_investment}</span>
+                <strong>Total Investment</strong> :
+                <span className="text-yellow-400">
+                  {my_client_total_investment?.total_investment.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "INR",
+                  })}
+                </span>
               </div>
               <div>
-                <strong>Total Interest</strong> : <span className="text-green-600">{my_client_total_investment?.total_interest}</span>
+                <strong>Total Interest</strong> :
+                <span className="text-green-200">
+                  {my_client_total_investment?.total_interest.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "INR",
+                  })}
+                </span>
               </div>
             </Space>
           )}

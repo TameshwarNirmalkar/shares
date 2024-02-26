@@ -31,6 +31,7 @@ interface InvestmentListStateI {
     my_total_investment: any;
     my_client_total_investment: any;
     consolidate_investment: any;
+    profit_from_client: number;
 }
 
 // const investmentListAdapter = createEntityAdapter<InvestmentListCollection, EntityId>({
@@ -57,8 +58,14 @@ const investmentListSlice = createSlice({
         my_total_investment: null,
         my_client_total_investment: null,
         consolidate_investment: null,
+        profit_from_client: 0
     },
-    reducers: {},
+    reducers: {
+        updateProfitClient: (state: InvestmentListStateI, action: PayloadAction<number>) => {
+            console.log("Action: ", action.payload);
+            state.profit_from_client = action.payload;
+        }
+    },
     extraReducers(builder) {
         builder.addCase(getInvestmentsCollectionAction.pending, (state: any) => {
             state.isLoading = true;
@@ -69,9 +76,12 @@ const investmentListSlice = createSlice({
             state.my_total_investment = action.payload.my_total_investment;
             state.my_client_total_investment = action.payload.my_client_total_investment;
             state.consolidate_investment = action.payload.consolidate_investment;
+            // state.profit_from_client = action.payload.profit_from_client
         })
     }
 });
+
+export const { updateProfitClient } = investmentListSlice.actions;
 
 export default investmentListSlice.reducer;
 

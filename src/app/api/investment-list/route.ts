@@ -47,7 +47,16 @@ export async function GET(request: NextRequest) {
                 total_interest: (my_total_investment.total_interest + my_client_total_investment.total_interest)
             }
 
-            return NextResponse.json({ my_investment_list, my_client_investment_list, my_total_investment, my_client_total_investment, consolidate_investment, success: true }, { status: 200 });
+
+
+            return NextResponse.json({
+                my_investment_list,
+                my_client_investment_list,
+                my_total_investment,
+                my_client_total_investment,
+                consolidate_investment,
+                success: true
+            }, { status: 200 });
         } catch (error: any) {
             return NextResponse.json({ message: error.toString(), code: error.code, success: false }, { status: 403 });
         }
