@@ -145,7 +145,7 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
               name={"percentage"}
               rules={[
                 { required: true, message: "Required" },
-                { message: "Only Number", pattern: /^[0-9]*$/g },
+                { message: "Only Number", pattern: /^[0-9].*$/g },
                 () => ({
                   validator: (_rule, val): Promise<string> => {
                     if (val > 15) {
@@ -156,7 +156,7 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
                 }),
               ]}
             >
-              <Input addonAfter="%" maxLength={2} />
+              <Input addonAfter="%" maxLength={5} />
             </Form.Item>
             <Form.Item<FieldType> label="Investment Date" name={"interest_date"} rules={[{ required: true, message: "Required" }]}>
               <DatePicker format={"DD/MM/YYYY"} style={{ width: "100%" }} />
