@@ -1,6 +1,5 @@
 import connectMongoDB from "@db/connection/db-connection";
 import UserModel from "@db/models/users";
-import { getServerAuthSession } from "@server/auth";
 import bcrypt from "bcryptjs";
 import * as jose from "jose";
 import { NextRequest, NextResponse } from "next/server";
@@ -22,7 +21,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest, response: NextResponse) {
   const geth = request.headers.get("authorization");
-  const session = (await getServerAuthSession()) as any;
+  // const session = (await getServerAuthSession()) as any;
 
   const secret = new TextEncoder().encode(SECRET_KEY);
   const hasBearer = geth?.split(" ") as string[];

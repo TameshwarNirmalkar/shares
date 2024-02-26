@@ -1,6 +1,5 @@
 import connectMongoDB from "@db/connection/db-connection";
 import StakeholderModel from "@db/models/stakeholders";
-import { getServerAuthSession } from "@server/auth";
 import * as jose from "jose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -31,7 +30,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   const geth = request.headers.get("authorization");
-  const session: any = await getServerAuthSession();
+  // const session: any = await getServerAuthSession();
 
   const secret = new TextEncoder().encode(SECRET_KEY);
   const hasBearer = geth?.split(" ") as string[];
@@ -42,9 +41,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ message: "Authorize token is not defined" }, { status: 403 });
   } else {
     try {
-      await jose.jwtVerify(`${hasBearer[1]}`, secret);
+      const { payload } = await jose.jwtVerify(`${hasBearer[1]}`, secret);
       await connectMongoDB();
-      const response = await StakeholderModel.find({ uuid: session?.user?.user.id });
+      const response = await StakeholderModel.find({ uuid: payload.id });
       return NextResponse.json({ investorList: response, success: true }, { status: 200 });
     } catch (error: any) {
       return NextResponse.json({ message: "Unauthorized", code: error.code, success: false }, { status: 403 });

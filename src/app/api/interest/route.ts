@@ -1,6 +1,5 @@
 import connectMongoDB from "@db/connection/db-connection";
 import InterestModel from "@db/models/interests";
-import { getServerAuthSession } from "@server/auth";
 import * as jose from "jose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -30,7 +29,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   const geth = request.headers.get("authorization");
-  const session: any = await getServerAuthSession();
+  // const session: any = await getServerAuthSession();
 
   const secret = new TextEncoder().encode(SECRET_KEY);
   const hasBearer = geth?.split(" ") as string[];
@@ -41,7 +40,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ message: "Authorize token is not defined" }, { status: 403 });
   } else {
     try {
-      await jose.jwtVerify(`${hasBearer[1]}`, secret);
+      const { payload } = await jose.jwtVerify(`${hasBearer[1]}`, secret);
       await connectMongoDB();
       // const response = await InterestModel.aggregate([{ $match: { uuid: session?.user?.user.id } }, { $unwind: '$investments' }, {
       //   $project: {
@@ -55,7 +54,7 @@ export async function GET(request: NextRequest) {
       //     "parent_id": '$_id'
       //   }
       // }]);
-      const interestList = await InterestModel.find({ uuid: session?.user?.user.id });
+      const interestList = await InterestModel.find({ uuid: payload.id });
       // const interestList = response;
       return NextResponse.json({ interestList, success: true }, { status: 200 });
     } catch (error: any) {
