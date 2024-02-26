@@ -3,6 +3,7 @@
 import { useAppDispatch } from "@redux-store/reduxHooks";
 import { stakeholdersAddOne, stakeholdersUpdateOne } from "@redux-store/stakeholders";
 import { createInvestorAction, updateInvestorAction } from "@redux-store/stakeholders/action";
+import { NUMBER_WITH_DOT, ONLY_NUMBER } from "@utility/regex-pattern";
 import { Button, Col, DatePicker, Form, Input, Row, message } from "antd";
 import { useSession } from "next-auth/react";
 import { FC, memo, useCallback, useEffect, useState } from "react";
@@ -122,7 +123,7 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
               name={"phone"}
               rules={[
                 { required: true, message: "Required" },
-                { message: "Only Number", pattern: /^[0-9]*$/g },
+                { message: "Only Number", pattern: ONLY_NUMBER },
               ]}
             >
               <Input maxLength={10} />
@@ -132,7 +133,7 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
               name={"principle_amount"}
               rules={[
                 { required: true, message: "Required" },
-                { message: "Only Number", pattern: /^[0-9]*$/g },
+                { message: "Only Number", pattern: ONLY_NUMBER },
               ]}
             >
               <Input addonAfter="₹" />
@@ -145,7 +146,7 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
               name={"percentage"}
               rules={[
                 { required: true, message: "Required" },
-                { message: "Only Number", pattern: /^[0-9].*$/g },
+                { message: "Only Number", pattern: NUMBER_WITH_DOT },
                 () => ({
                   validator: (_rule, val): Promise<string> => {
                     if (val > 15) {
