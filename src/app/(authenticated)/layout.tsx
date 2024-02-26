@@ -21,8 +21,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <Sider trigger={null} collapsible collapsed={collapsed} width={250}>
         <SideBarComponent />
       </Sider>
-      <Layout className="bg-slate-600">
-        <Header className="p-0 bg-slate-800">
+      <Layout>
+        <Header>
           <Row align={"middle"} justify={"space-between"} className="pr-3">
             <Col>
               <Button

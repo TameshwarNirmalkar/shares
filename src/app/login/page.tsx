@@ -5,9 +5,5 @@ type PageProps = {
 };
 
 export default function LoginPage({ searchParams }: PageProps) {
-  return (
-    <div className="h-screen items-center grid justify-items-center">
-      <LoginComponent />
-    </div>
-  );
+  return <LoginComponent />;
 }

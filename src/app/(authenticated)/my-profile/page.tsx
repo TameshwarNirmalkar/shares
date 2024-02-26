@@ -38,7 +38,7 @@ const MyProfile: FC<{}> = memo(() => {
     <>
       <Row gutter={[10, 10]}>
         <Col span={8}>
-          <Card cover={<img alt="example" src={session?.user?.user?.image} />}>
+          <Card cover={<img alt="example" src={session?.user?.user?.image} />} bordered={false}>
             <Meta title={session?.user?.user?.name} />
             <Divider className="my-3" />
             <Space direction="vertical">

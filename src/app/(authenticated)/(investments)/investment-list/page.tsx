@@ -1,31 +1,27 @@
 "use client";
 
-import { Form, Space, Table } from "antd";
+import { getInvestmentsCollectionAction } from "@redux-store/investments-list/action";
+import {
+  consolidateState,
+  isLoading,
+  myClientInvestmentListState,
+  myClientTotalInvestmentState,
+  myInvestmentListState,
+  myTotalInvestmentState,
+} from "@redux-store/investments-list/memonised-investment-list";
+import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
+import { Space, Table } from "antd";
 import dayjs from "dayjs";
-import { useSession } from "next-auth/react";
-import { FC, memo, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, memo, useEffect } from "react";
 
-type FieldType = {
-  investment_name?: string;
-  investment_date?: Date;
-  amount: number;
-  percentage: number;
-  calculated_amount: number;
-  interest_date: Date;
-};
-
-const iniVal = {
-  investment_name: null,
-  investment_date: null,
-  amount: null,
-  percentage: null,
-  calculated_amount: null,
-  interest_date: null,
+type InvestmentInterest = {
+  total_investment: number;
+  total_interest: number;
 };
 
 const columns = [
   {
-    title: "Name",
+    title: "Exchanger",
     dataIndex: "investment_name",
     key: "investment_name",
     render: (txt: string) => {
@@ -44,6 +40,7 @@ const columns = [
     title: "Principle",
     dataIndex: "amount",
     key: "amount",
+    sorter: (a: any, b: any) => a.amount - b.amount,
     render: (txt: number) => {
       return (
         <span className="text-green-600">
@@ -59,6 +56,7 @@ const columns = [
     title: "Percentage",
     dataIndex: "percentage",
     key: "percentage",
+    sorter: (a: any, b: any) => a.percentage - b.percentage,
     render: (txt: string) => {
       return <span className="text-red-600">{txt} %</span>;
     },
@@ -67,6 +65,7 @@ const columns = [
     title: "Monthly Interest",
     dataIndex: "calculated_amount",
     key: "calculated_amount",
+    sorter: (a: any, b: any) => a.calculated_amount - b.calculated_amount,
     render: (txt: number) => {
       return (
         <span className="text-green-600">
@@ -80,89 +79,123 @@ const columns = [
   },
 ];
 
+const columnClient = [
+  {
+    title: "Client Name",
+    dataIndex: "full_name",
+    key: "full_name",
+    render: (txt: string) => {
+      return <span className="capitalize">{txt}</span>;
+    },
+  },
+  // {
+  //   title: "Date of Investment",
+  //   dataIndex: "investment_date",
+  //   key: "investment_date",
+  //   render: (txt: string) => {
+  //     return <span>{dayjs(txt).format("DD")} of every month.</span>;
+  //   },
+  // },
+  {
+    title: "Principle",
+    dataIndex: "principle_amount",
+    key: "principle_amount",
+    sorter: (a: any, b: any) => a.principle_amount - b.principle_amount,
+    render: (txt: number) => {
+      return (
+        <span className="text-green-600">
+          {txt.toLocaleString("en-US", {
+            style: "currency",
+            currency: "INR",
+          })}
+        </span>
+      );
+    },
+  },
+  {
+    title: "Percentage",
+    dataIndex: "percentage",
+    key: "percentage",
+    sorter: (a: any, b: any) => a.percentage - b.percentage,
+    render: (txt: string) => {
+      return <span className="text-red-600">{txt} %</span>;
+    },
+  },
+  {
+    title: "Monthly Interest",
+    dataIndex: "createdAt",
+    key: "createdAt",
+    render: (txt: number, row: any) => {
+      return (
+        <span className="text-green-600">
+          {((row.principle_amount * row.percentage) / 100).toLocaleString("en-US", {
+            style: "currency",
+            currency: "INR",
+          })}
+        </span>
+      );
+    },
+  },
+];
+
 const InvestmentListPage: FC<{}> = memo(() => {
-  const { data: session }: any = useSession();
-  const [investmentList, setInvestmentList] = useState<any[]>([]);
-  const [errormsg, setErrorMsg] = useState<string>("");
+  const dispatch = useAppDispatch();
 
-  const [investmentForm] = Form.useForm<FieldType[]>();
-
-  const totalInvestment = useMemo(() => {
-    return {
-      totalPrinciple: investmentList
-        ?.reduce((acc, ite) => acc + ite.amount, 0)
-        .toLocaleString("en-US", {
-          style: "currency",
-          currency: "INR",
-        }),
-      totalInterest: investmentList
-        ?.reduce((acc, ite) => acc + ite.calculated_amount, 0)
-        .toLocaleString("en-US", {
-          style: "currency",
-          currency: "INR",
-        }),
-    };
-  }, [investmentList]);
-
-  useCallback(() => {}, []);
+  const loading = useAppSelector(isLoading);
+  const my_investment_list = useAppSelector(myInvestmentListState);
+  const my_client_investment_list = useAppSelector(myClientInvestmentListState);
+  const consolidate = useAppSelector(consolidateState);
+  const my_total_investment: any = useAppSelector(myTotalInvestmentState);
+  const my_client_total_investment: any = useAppSelector(myClientTotalInvestmentState);
 
   useEffect(() => {
-    const getInvestmentList = async () => {
-      const response: any = await fetch(`/api/interest`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.user?.accessToken}`,
-        },
-      }).then((res) => res.json());
-      setInvestmentList(response?.interestList);
-    };
-    getInvestmentList();
-  }, [session?.user?.accessToken]);
-
-  const onFinish = useCallback(
-    async (values: any) => {
-      console.log("Values: ", values);
-      // try {
-      //   const response: any = await fetch(`/api/interest`, {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       Authorization: `Bearer ${session?.user?.accessToken}`,
-      //     },
-      //     body: JSON.stringify({ uuid: session.user.user.id, ...values }),
-      //   }).then((res) => res.json());
-      //   if (!response.success) {
-      //     message.error(`${response.message}`);
-      //   } else {
-      //     message.success(`Data inserted successfully`);
-      //   }
-      //   console.log(" =============== ", response);
-      // } catch (error: any) {
-      //   message.error(`SERVER ERROR ${error.toString()}`);
-      // }
-    },
-    [session]
-  );
+    dispatch(getInvestmentsCollectionAction(""));
+  }, [dispatch]);
 
   return (
     <>
-      <Table
-        columns={columns}
-        dataSource={investmentList}
-        bordered
-        rowKey={"_id"}
-        footer={(currentPageData) => (
-          <Space className="text-right">
-            <div>
-              <strong>Total Investment</strong> : <span className="text-green-600">{totalInvestment.totalPrinciple}</span>
-            </div>
-            <div>
-              <strong>Total Interest</strong> : <span className="text-green-600">{totalInvestment.totalInterest}</span>
-            </div>
-          </Space>
-        )}
-      />
+      <div>
+        <h1 className="text-xl text-stone-100 p-3">My Investment</h1>
+        <Table
+          loading={loading}
+          columns={columns}
+          dataSource={my_investment_list}
+          bordered
+          rowKey={"_id"}
+          pagination={false}
+          footer={(currentPageData) => (
+            <Space className="text-right">
+              <div>
+                <strong>Total Investment</strong> : <span className="text-green-600">{my_total_investment?.total_investment}</span>
+              </div>
+              <div>
+                <strong>Total Interest</strong> : <span className="text-green-600">{my_total_investment?.total_interest}</span>
+              </div>
+            </Space>
+          )}
+        />
+      </div>
+      <div>
+        <h1 className="text-xl text-stone-100 p-3">Stakeholders Investment</h1>
+        <Table
+          loading={loading}
+          columns={columnClient}
+          dataSource={my_client_investment_list}
+          bordered
+          pagination={false}
+          rowKey={"_id"}
+          footer={(currentPageData) => (
+            <Space className="text-right">
+              <div>
+                <strong>Total Investment</strong> : <span className="text-green-600">{my_client_total_investment?.total_investment}</span>
+              </div>
+              <div>
+                <strong>Total Interest</strong> : <span className="text-green-600">{my_client_total_investment?.total_interest}</span>
+              </div>
+            </Space>
+          )}
+        />
+      </div>
     </>
   );
 });

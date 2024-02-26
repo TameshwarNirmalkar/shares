@@ -27,7 +27,8 @@
       "@redux-store/*": ["./src/redux/*"],
       "@server/*": ["./src/server/*"],
       "@global-types/*": ["./src/types/*"],
-      "@utility/*": ["./src/utility/*"]
+      "@utility/*": ["./src/utility/*"],
+      "@theme/*": ["./src/theme/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -8,16 +8,15 @@ import UserDetailsComponent from "@components/UserDetailsComponent";
 import { faUserEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
-import { selectAllUsers } from "@redux-store/users";
-import { getUserDetailsAction, getUsersCollectionAction } from "@redux-store/users/action";
-import { isLoading } from "@redux-store/users/memonised-user";
+import { getUserDetailsAction } from "@redux-store/users/action";
+import { isLoading, userDetailsState } from "@redux-store/users/memonised-user";
 import Meta from "antd/es/card/Meta";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 
 const AddClientsPage: NextPage = () => {
   const dispatch = useAppDispatch();
-  const userList = useAppSelector(selectAllUsers);
+  const userList = useAppSelector(userDetailsState);
   const loading = useAppSelector(isLoading);
 
   const { data: session }: any = useSession();
@@ -26,12 +25,12 @@ const AddClientsPage: NextPage = () => {
 
   useEffect(() => {
     if (session?.user?.accessToken) {
-      dispatch(getUsersCollectionAction(""));
+      dispatch(getUserDetailsAction(session?.user?.user?.email));
     }
   }, [dispatch, session?.user?.accessToken]);
 
   const onEditHandler = useCallback(async (row: any) => {
-    await dispatch(getUserDetailsAction(row.email));
+    // await dispatch(getUserDetailsAction(row.email));
     setIsDrawerOpen(true);
   }, []);
 
@@ -63,11 +62,11 @@ const AddClientsPage: NextPage = () => {
     <div>
       {errormsg && <Alert message="Unauthorised" description="Please login again." type="error" />}
       <Row gutter={[10, 10]}>
-        {userList?.map((el: any) => {
+        {[userList]?.map((el: any) => {
           return (
             <Col span={8} key={el._id}>
               <Card
-                bordered={true}
+                bordered={false}
                 hoverable
                 cover={
                   <Image
