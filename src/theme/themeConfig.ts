@@ -21,7 +21,8 @@ const themeConfig: ThemeConfig = {
         colorWarningBg: '#eab308',
         colorWarningBorder: '#ca8a04',
         colorIcon: '#cbd5e1',
-        colorSplit: ' #cbd5e1'
+        colorSplit: ' #cbd5e1',
+        colorBgMask: '#d8ebff61'
     },
     components: {
         Button: {

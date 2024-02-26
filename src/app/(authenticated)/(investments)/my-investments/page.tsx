@@ -78,7 +78,7 @@ const MyInvestment: FC<{}> = memo(() => {
       key: "amount",
       render: (txt: number) => {
         return (
-          <span className="text-green-600">
+          <span className="text-yellow-400">
             {txt.toLocaleString("en-US", {
               style: "currency",
               currency: "INR",
@@ -92,7 +92,7 @@ const MyInvestment: FC<{}> = memo(() => {
       dataIndex: "percentage",
       key: "percentage",
       render: (txt: string) => {
-        return <span className="text-red-600">{txt} %</span>;
+        return <span className="text-sky-600">{txt} %</span>;
       },
     },
     {
@@ -101,7 +101,7 @@ const MyInvestment: FC<{}> = memo(() => {
       key: "calculated_amount",
       render: (txt: number) => {
         return (
-          <span className="text-green-600">
+          <span className="text-green-200">
             {txt.toLocaleString("en-US", {
               style: "currency",
               currency: "INR",
@@ -116,11 +116,11 @@ const MyInvestment: FC<{}> = memo(() => {
       key: "_id",
       render: (_txt: string, row: any) => (
         <Space>
-          <span className="cursor-pointer" onClick={() => onUpdateInterest(row)}>
-            <FontAwesomeIcon icon={faPenNib} fontSize={18} color="#0284c7" />
+          <span className="cursor-pointer text-blue-400" onClick={() => onUpdateInterest(row)}>
+            <FontAwesomeIcon icon={faPenNib} />
           </span>
-          <span className="cursor-pointer" onClick={() => dispatch(deleteInterestAction(row))}>
-            <FontAwesomeIcon icon={faTrash} fontSize={18} color="red" />
+          <span className="cursor-pointer text-red-700" onClick={() => dispatch(deleteInterestAction(row))}>
+            <FontAwesomeIcon icon={faTrash} />
           </span>
         </Space>
       ),
@@ -175,15 +175,16 @@ const MyInvestment: FC<{}> = memo(() => {
           columns={columns}
           dataSource={investmentList}
           loading={loading}
+          pagination={false}
           bordered
           rowKey={"_id"}
           footer={(currentPageData) => (
-            <Space className="text-right">
+            <Space className="text-right" direction="vertical">
               <div>
-                <strong>Total Investment</strong> : <span className="text-green-600">{total_principle}</span>
+                <strong>Total Investment</strong> : <span className="text-yellow-400">{total_principle}</span>
               </div>
               <div>
-                <strong>Total Interest</strong> : <span className="text-green-600">{total_interest}</span>
+                <strong>Total Interest</strong> : <span className="text-green-200">{total_interest}</span>
               </div>
             </Space>
           )}

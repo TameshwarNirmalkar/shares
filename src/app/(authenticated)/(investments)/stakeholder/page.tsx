@@ -60,7 +60,7 @@ const StakeholderPage: FC<{}> = memo(() => {
       render: (txt: string) => {
         return (
           <div>
-            <strong className="text-1xl text-red-600">{dayjs(txt).format("DD")}</strong>
+            <strong className="text-1xl text-yellow-600">{dayjs(txt).format("DD")}</strong>
             <sup className="">th</sup>
           </div>
         );
@@ -87,7 +87,7 @@ const StakeholderPage: FC<{}> = memo(() => {
       key: "principle_amount",
       render: (txt: number) => {
         return (
-          <span className="text-green-600">
+          <span className="text-yellow-400">
             {txt.toLocaleString("en-US", {
               style: "currency",
               currency: "INR",
@@ -101,7 +101,7 @@ const StakeholderPage: FC<{}> = memo(() => {
       dataIndex: "percentage",
       key: "percentage",
       render: (txt: string) => {
-        return <span className="text-red-600">{txt}%</span>;
+        return <span className="text-sky-600">{txt}%</span>;
       },
     },
     {
@@ -111,7 +111,7 @@ const StakeholderPage: FC<{}> = memo(() => {
       render: (txt: number, row: any) => {
         const mit = Math.round(row.principle_amount * (row.percentage / 100));
         return (
-          <span className="text-green-600">
+          <span className="text-green-200">
             {mit?.toLocaleString("en-US", {
               style: "currency",
               currency: "INR",
@@ -129,7 +129,7 @@ const StakeholderPage: FC<{}> = memo(() => {
           <Space>
             <FontAwesomeIcon icon={faUserPen} className="text-blue-400 cursor-pointer" onClick={() => onEditHandler(row)} />
             {/* <EditFilled /> */}
-            <DeleteFilled className="text-red-700 cursor-pointer" onClick={() => onDelete(row)} />
+            <DeleteFilled className="text-red-500 cursor-pointer" onClick={() => onDelete(row)} />
           </Space>
         );
       },
@@ -161,14 +161,15 @@ const StakeholderPage: FC<{}> = memo(() => {
               columns={columns}
               dataSource={investorList}
               bordered
+              pagination={false}
               rowKey={"_id"}
               footer={(currentPageData) => (
-                <Space className="text-right">
+                <Space className="text-right" direction="vertical">
                   <div>
-                    <strong>Investor Investment</strong> : <span className="text-green-600">{total_principle}</span>
+                    <strong>Investor Investment</strong> : <span className="text-yellow-400">{total_principle}</span>
                   </div>
                   <div>
-                    <strong>Investor Payment</strong> : <span className="text-green-600">{total_interest}</span>
+                    <strong>Investor Payment</strong> : <span className="text-green-200">{total_interest}</span>
                   </div>
                 </Space>
               )}
