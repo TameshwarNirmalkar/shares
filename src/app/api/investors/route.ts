@@ -65,7 +65,7 @@ export async function PATCH(request: NextRequest) {
     try {
       await jose.jwtVerify(`${hasBearer[1]}`, secret);
       await connectMongoDB();
-      await StakeholderModel.updateOne({ _id: payload._id }, { $set: { ...payload, lastUpdate: "$$NOW" } });
+      await StakeholderModel.updateOne({ _id: payload._id }, { $set: { ...payload, lastUpdate: "$$NOW" } }, { upsert: true });
       return NextResponse.json({ message: "Item Updated Successfully.", success: true }, { status: 200 });
     } catch (error: any) {
       return NextResponse.json({ message: "Unauthorized", code: error.code, success: false }, { status: 403 });

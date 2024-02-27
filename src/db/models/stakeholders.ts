@@ -22,7 +22,23 @@ const stakeholdersSchema: Schema = new Schema(
       type: Number,
       require: true,
     },
+    base_percentage: {
+      type: Number,
+      require: true,
+    },
+    base_interest: {
+      type: Number,
+      require: true,
+    },
     percentage: {
+      type: Number,
+      require: true,
+    },
+    monthly_interest: {
+      type: Number,
+      require: true,
+    },
+    profit: {
       type: Number,
       require: true,
     },
@@ -33,6 +49,7 @@ const stakeholdersSchema: Schema = new Schema(
   },
   {
     timestamps: true,
+    versionKey: false
   }
 );
 

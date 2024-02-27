@@ -27,7 +27,7 @@ type FieldType = {
   interest_date: Date | null;
 };
 
-const MyInvestment: FC<{}> = memo(() => {
+const MasterInvestment: FC<{}> = memo(() => {
   const dispatch = useAppDispatch();
   const { data: session }: any = useSession();
 
@@ -310,4 +310,4 @@ const MyInvestment: FC<{}> = memo(() => {
   );
 });
 
-export default MyInvestment;
+export default MasterInvestment;

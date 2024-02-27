@@ -16,6 +16,10 @@ type FieldType = {
   principle_amount: number;
   percentage: number;
   interest_date: Date;
+  base_percentage: number;
+  base_interest: number;
+  monthly_interest: number;
+  profit: number;
 };
 
 const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => void }> = (props) => {
@@ -31,8 +35,12 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
     email: null,
     phone: null,
     principle_amount: null,
-    percentage: null,
     interest_date: null,
+    base_percentage: null,
+    base_interest: null,
+    percentage: null,
+    monthly_interest: null,
+    profit: null,
   };
 
   useEffect(() => {
@@ -65,7 +73,26 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
 
   return (
     <div>
-      <Form form={investorForm} name="myInvestorForm" layout="vertical" initialValues={{ ...iniVal, ...initialVal }} onFinish={onFinish} autoComplete="off">
+      <Form
+        form={investorForm}
+        name="myInvestorForm"
+        layout="vertical"
+        initialValues={{ ...iniVal, ...initialVal }}
+        onFinish={onFinish}
+        autoComplete="off"
+        onValuesChange={async (val: any, allvalue: any) => {
+          if (allvalue.base_percentage && allvalue.principle_amount) {
+            const base_interest = allvalue.principle_amount * (allvalue.base_percentage / 100);
+            investorForm.setFieldValue("base_interest", base_interest);
+          }
+          if (allvalue.base_percentage && allvalue.percentage && allvalue.principle_amount) {
+            const base_interest = allvalue.principle_amount * (allvalue.base_percentage / 100);
+            const monthly_interest = allvalue.principle_amount * (allvalue.percentage / 100);
+            investorForm.setFieldValue("monthly_interest", monthly_interest);
+            investorForm.setFieldValue("profit", base_interest - monthly_interest);
+          }
+        }}
+      >
         {/* <div className="pt-4 pb-4">
           <Row justify={"space-between"} align={"middle"}>
             <Col>
@@ -128,6 +155,14 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
             >
               <Input maxLength={10} />
             </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item<FieldType> label="Investment Date" name={"interest_date"} rules={[{ required: true, message: "Required" }]}>
+              <DatePicker format={"DD/MM/YYYY"} style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+
+          <Col span={24}>
             <Form.Item<FieldType>
               label="Amount"
               name={"principle_amount"}
@@ -142,25 +177,80 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
 
           <Col span={12}>
             <Form.Item<FieldType>
-              label="Monthly Percentage"
-              name={"percentage"}
+              label="Base Percentage"
+              name={"base_percentage"}
               rules={[
                 { required: true, message: "Required" },
                 { message: "Only Number", pattern: NUMBER_WITH_DOT },
-                () => ({
+                ({ getFieldValue }) => ({
                   validator: (_rule, val): Promise<string> => {
+                    const percentage = getFieldValue("percentage");
                     if (val > 15) {
                       return Promise.reject("Value should be not greter than 15");
+                    } else if (percentage && +val < percentage) {
+                      return Promise.reject("Value should not be lesser than monthly percentage");
                     }
                     return Promise.resolve("");
                   },
                 }),
               ]}
             >
-              <Input addonAfter="%" maxLength={5} />
+              <Input
+                addonAfter="%"
+                maxLength={5}
+                onChange={async () => {
+                  try {
+                    await investorForm.validateFields();
+                  } catch (error) {
+                    console.log("ERROR: ", error);
+                  }
+                }}
+              />
             </Form.Item>
-            <Form.Item<FieldType> label="Investment Date" name={"interest_date"} rules={[{ required: true, message: "Required" }]}>
-              <DatePicker format={"DD/MM/YYYY"} style={{ width: "100%" }} />
+            <Form.Item<FieldType>
+              label="Monthly Percentage"
+              name={"percentage"}
+              rules={[
+                { required: true, message: "Required" },
+                { message: "Only Number", pattern: NUMBER_WITH_DOT },
+                ({ getFieldValue }) => ({
+                  validator: (_rule, val): Promise<string> => {
+                    const base_percentage = getFieldValue("base_percentage");
+                    if (val > 15) {
+                      return Promise.reject("Value should be not greter than 15");
+                    } else if (base_percentage < +val) {
+                      return Promise.reject("Value should not be greater than base percentage");
+                    }
+                    return Promise.resolve("");
+                  },
+                }),
+              ]}
+            >
+              <Input
+                addonAfter="%"
+                maxLength={5}
+                onChange={async () => {
+                  try {
+                    await investorForm.validateFields();
+                  } catch (error) {
+                    console.log("ERROR: ", error);
+                  }
+                }}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item<FieldType> label="Base Interest" name={"base_interest"}>
+              <Input addonAfter="₹" readOnly />
+            </Form.Item>
+            <Form.Item<FieldType> label="Monthly Interest" name={"monthly_interest"}>
+              <Input addonAfter="₹" readOnly />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item<FieldType> label="Your Profit" name={"profit"}>
+              <Input addonAfter="₹" readOnly />
             </Form.Item>
           </Col>
         </Row>

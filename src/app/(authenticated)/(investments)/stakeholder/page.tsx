@@ -7,7 +7,7 @@ import StackholderFormComponent from "@components/StackholderFormComponent";
 import { faMobileScreenButton, faUserPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
-import { getTotalInterest, getTotalPrinciple, selectAllStakeholders, selectStakeholderById } from "@redux-store/stakeholders";
+import { getTotalInterest, getTotalPrinciple, getTotalProfit, selectAllStakeholders, selectStakeholderById } from "@redux-store/stakeholders";
 import { deleteInvestorAction, getInvestorListAction } from "@redux-store/stakeholders/action";
 import { AppState } from "@redux-store/store";
 import { Button, Col, Row, Space, Table } from "antd";
@@ -17,12 +17,11 @@ import { FC, Suspense, memo, useCallback, useEffect, useState } from "react";
 const StakeholderPage: FC<{}> = memo(() => {
   const dispatch = useAppDispatch();
   const investorList = useAppSelector(selectAllStakeholders) as any[];
-  const total_principle = useAppSelector((state: AppState) => getTotalPrinciple(state));
-  const total_interest = useAppSelector((state: AppState) => getTotalInterest(state));
+  const total_principle = useAppSelector(getTotalPrinciple);
+  const total_interest = useAppSelector(getTotalInterest);
+  const total_profit = useAppSelector(getTotalProfit);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-  // const [investorList, setInvestorList] = useState<any[]>([]);
-  // const [apiCallState, setApiCallState] = useState<boolean>(false);
   const [selectedRow, setSelectedRow] = useState<any>({});
 
   const selectedData = useAppSelector((state: AppState) => selectStakeholderById(state, selectedRow._id));
@@ -39,7 +38,6 @@ const StakeholderPage: FC<{}> = memo(() => {
   const onDelete = useCallback(
     async (row: any) => {
       await dispatch(deleteInvestorAction(row));
-      // setApiCallState((prev) => !prev);
     },
     [dispatch]
   );
@@ -106,13 +104,27 @@ const StakeholderPage: FC<{}> = memo(() => {
     },
     {
       title: "Monthly Interest",
-      dataIndex: "calculated_amount",
-      key: "calculated_amount",
+      dataIndex: "monthly_interest",
+      key: "monthly_interest",
       render: (txt: number, row: any) => {
-        const mit = Math.round(row.principle_amount * (row.percentage / 100));
         return (
           <span className="text-green-200">
-            {mit?.toLocaleString("en-US", {
+            {txt?.toLocaleString("en-US", {
+              style: "currency",
+              currency: "INR",
+            })}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Profit",
+      dataIndex: "profit",
+      key: "profit",
+      render: (txt: number, row: any) => {
+        return (
+          <span className="text-green-200">
+            {txt?.toLocaleString("en-US", {
               style: "currency",
               currency: "INR",
             })}
@@ -171,6 +183,9 @@ const StakeholderPage: FC<{}> = memo(() => {
                   <div>
                     <strong>Investor Payment</strong> : <span className="text-green-200">{total_interest}</span>
                   </div>
+                  <div>
+                    <strong>Total Profit</strong> : <span className="text-green-200">{total_profit}</span>
+                  </div>
                 </Space>
               )}
             />
@@ -178,7 +193,7 @@ const StakeholderPage: FC<{}> = memo(() => {
         </Col>
       </Row>
       <DrawerComponent
-        heading="Add Stackholder"
+        heading={selectedData?._id ? "Edit Stakeholder" : "Add Stakeholder"}
         isOpen={isDrawerOpen}
         onCloseDrawer={() => {
           setIsDrawerOpen(false);

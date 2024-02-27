@@ -15,6 +15,7 @@ const KEY_PATH: { [key: string]: string } = {
   transaction: "transaction",
   interest_calculator: "interest_calculator",
   investment: "investment",
+  "master-investment": "master-investment",
   "my-investments": "my-investments",
   stakeholder: "stakeholder",
   "investment-list": "investment-list",
@@ -40,6 +41,7 @@ const items: MenuProps["items"] = [
     key: "investments",
     icon: <FontAwesomeIcon icon={faSackDollar} color="white" fontSize={20} />,
     children: [
+      { label: "Master Investments", key: "master-investment" },
       { label: "My Investments", key: "my-investments" },
       { label: "Stakeholder", key: "stakeholder" },
       { label: "Investment List", key: "investment-list" },

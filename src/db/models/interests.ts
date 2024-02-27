@@ -25,6 +25,7 @@ const interestSchema: Schema = new Schema(
   },
   {
     timestamps: true,
+    versionKey: false
   }
 );
 

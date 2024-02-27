@@ -64,7 +64,16 @@ export const getTotalPrinciple = createSelector(
 export const getTotalInterest = createSelector(
     [selectAllStakeholders],
     (allinterest) => {
-        return allinterest.reduce((acc: number, ite: any) => acc + ite.principle_amount * (ite.percentage / 100), 0).toLocaleString("en-US", {
+        return allinterest.reduce((acc: number, ite: any) => acc + ite.monthly_interest, 0).toLocaleString("en-US", {
+            style: "currency",
+            currency: "INR",
+        });
+    }
+);
+export const getTotalProfit = createSelector(
+    [selectAllStakeholders],
+    (allinterest) => {
+        return allinterest.reduce((acc: number, ite: any) => acc + ite.profit, 0).toLocaleString("en-US", {
             style: "currency",
             currency: "INR",
         });

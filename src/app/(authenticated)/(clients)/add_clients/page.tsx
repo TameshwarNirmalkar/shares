@@ -12,7 +12,7 @@ import { getUserDetailsAction } from "@redux-store/users/action";
 import { isLoading, userDetailsState } from "@redux-store/users/memonised-user";
 import Meta from "antd/es/card/Meta";
 import { useSession } from "next-auth/react";
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 
 const AddClientsPage: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -62,9 +62,9 @@ const AddClientsPage: NextPage = () => {
     <div>
       {errormsg && <Alert message="Unauthorised" description="Please login again." type="error" />}
       <Row gutter={[10, 10]}>
-        {[userList]?.map((el: any) => {
-          return (
-            <Col span={8} key={el?._id}>
+        {[userList]?.map((el: any) => (
+          <Fragment key={el?._id}>
+            <Col span={8}>
               <Card
                 bordered={false}
                 hoverable
@@ -95,8 +95,8 @@ const AddClientsPage: NextPage = () => {
                 </Row>
               </Card>
             </Col>
-          );
-        })}
+          </Fragment>
+        ))}
       </Row>
 
       <UserDetailsComponent drawerHeading="Edit Details" isDrawerOpen={isDrawerOpen} onDrawerOpen={(val) => setIsDrawerOpen(val)} />
