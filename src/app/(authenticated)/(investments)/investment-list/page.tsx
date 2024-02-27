@@ -12,7 +12,6 @@ import {
 } from "@redux-store/investments-list/memonised-investment-list";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
 import { Alert, Col, Row, Space, Table } from "antd";
-import dayjs from "dayjs";
 import { FC, memo, useEffect } from "react";
 
 const columns = [
@@ -24,14 +23,14 @@ const columns = [
       return <span className="capitalize">{txt}</span>;
     },
   },
-  {
-    title: "Date of Investment",
-    dataIndex: "investment_date",
-    key: "investment_date",
-    render: (txt: string) => {
-      return <span>{dayjs(txt).format("DD")} of every month.</span>;
-    },
-  },
+  // {
+  //   title: "Date of Investment",
+  //   dataIndex: "investment_date",
+  //   key: "investment_date",
+  //   render: (txt: string) => {
+  //     return <span>{dayjs(txt).format("DD")} of every month.</span>;
+  //   },
+  // },
   {
     title: "Principle",
     dataIndex: "amount",
@@ -77,7 +76,7 @@ const columns = [
 
 const columnClient = [
   {
-    title: "Client Name",
+    title: "Investor",
     dataIndex: "full_name",
     key: "full_name",
     render: (txt: string) => {
@@ -180,26 +179,12 @@ const InvestmentListPage: FC<{}> = memo(() => {
             type="warning"
           />
         </Col>
-        {/* <Col span={8}>
+        <Col span={8}>
           <Alert
-            message={
-              <div className="grid grid-col-2">
-                <span className="text-yellow-100">Profite From Client</span>
-                <span>
-                  <Input
-                    size="small"
-                    onChange={(e: any) => {
-                      const val = e.target.value;
-                      const profit_from_client = my_client_total_investment.total_investment * (val / 100) - my_client_total_investment.total_interest;
-                      dispatch(updateProfitClient(profit_from_client));
-                    }}
-                  />
-                </span>
-              </div>
-            }
+            message={<span className="text-yellow-100">Profit From Investor</span>}
             description={
               <span className="text-2xl text-sky-200">
-                {profit_from_client.toLocaleString("en-US", {
+                {my_client_total_investment?.total_profit.toLocaleString("en-US", {
                   style: "currency",
                   currency: "INR",
                 })}
@@ -207,7 +192,7 @@ const InvestmentListPage: FC<{}> = memo(() => {
             }
             type="info"
           />
-        </Col> */}
+        </Col>
       </Row>
       <div>
         <h1 className="text-xl text-stone-100 p-3">My Investment</h1>
@@ -266,6 +251,15 @@ const InvestmentListPage: FC<{}> = memo(() => {
                 <strong>Total Interest</strong> :
                 <span className="text-green-200">
                   {my_client_total_investment?.total_interest.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "INR",
+                  })}
+                </span>
+              </div>
+              <div>
+                <strong>Total Profit</strong> :
+                <span className="text-green-200">
+                  {my_client_total_investment?.total_profit.toLocaleString("en-US", {
                     style: "currency",
                     currency: "INR",
                   })}

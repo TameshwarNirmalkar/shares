@@ -38,9 +38,10 @@ export async function GET(request: NextRequest) {
             const my_client_total_investment: Investment = my_client_investment_list.reduce((acc, ite) => {
                 return {
                     total_investment: acc.total_investment + ite.principle_amount,
-                    total_interest: acc.total_interest + (ite.principle_amount * (ite.percentage / 100))
+                    total_interest: acc.total_interest + ite.monthly_interest,
+                    total_profit: acc.total_profit + ite.profit,
                 };
-            }, { total_investment: 0, total_interest: 0 });
+            }, { total_investment: 0, total_interest: 0, total_profit: 0 });
 
             const consolidate_investment: Investment = {
                 total_investment: (my_total_investment.total_investment + my_client_total_investment.total_investment),

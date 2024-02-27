@@ -44,7 +44,7 @@ const items: MenuProps["items"] = [
       { label: "Master Investments", key: "master-investment" },
       { label: "My Investments", key: "my-investments" },
       { label: "Stakeholder", key: "stakeholder" },
-      { label: "Investment List", key: "investment-list" },
+      { label: "Consolidate", key: "investment-list" },
     ],
   },
   {

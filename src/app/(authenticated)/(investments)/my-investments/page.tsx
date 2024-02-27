@@ -9,7 +9,6 @@ import { getTotalInterest, getTotalPrinciple, selectAllInterests } from "@redux-
 import { createInterestAction, deleteInterestAction, getInterestCollectionAction, updateInterestAction } from "@redux-store/interests/action";
 import { isLoading } from "@redux-store/interests/memonised-interests";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
-import { AppState } from "@redux-store/store";
 import { NUMBER_WITH_DOT } from "@utility/regex-pattern";
 import { Button, Col, DatePicker, Form, Input, Row, Space, Table, message } from "antd";
 import dayjs from "dayjs";
@@ -46,9 +45,8 @@ const MyInvestment: FC<{}> = memo(() => {
 
   const investmentList = useAppSelector(selectAllInterests);
   const loading = useAppSelector(isLoading);
-  const total_principle = useAppSelector((state: AppState) => getTotalPrinciple(state));
-  const total_interest = useAppSelector((state) => getTotalInterest(state));
-  // const memoizedRow = useAppSelector((state: AppState) => selectInterestById(state, selectedRow._id));
+  const total_principle = useAppSelector(getTotalPrinciple);
+  const total_interest = useAppSelector(getTotalInterest);
 
   const [investmentForm] = Form.useForm<FieldType>();
 
