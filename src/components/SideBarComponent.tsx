@@ -43,7 +43,7 @@ const items: MenuProps["items"] = [
     children: [
       { label: "Master Investments", key: "master-investment" },
       { label: "My Investments", key: "my-investments" },
-      { label: "Stakeholder", key: "stakeholder" },
+      { label: "Stakeholders", key: "stakeholder" },
       { label: "Consolidate", key: "investment-list" },
     ],
   },
