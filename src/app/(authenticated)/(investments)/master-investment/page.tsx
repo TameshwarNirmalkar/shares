@@ -13,33 +13,36 @@ import { AppState } from "@redux-store/store";
 import { NUMBER_WITH_DOT } from "@utility/regex-pattern";
 import { Button, Col, DatePicker, Form, Input, Row, Space, Table, message } from "antd";
 import dayjs from "dayjs";
-import { useSession } from "next-auth/react";
 import { FC, Suspense, memo, useCallback, useEffect, useState } from "react";
 
 type FieldType = {
   _id?: string | null;
-  uuid: string | null;
-  investment_name?: string | null;
-  investment_date?: Date | null;
-  amount: number | null;
-  percentage: number | null;
-  calculated_amount: number | null;
-  interest_date: Date | null;
+  full_name?: string | null;
+  amount: string | null;
+  investment_date: string | null;
+  interest_date: string | null;
+  monthly_interest: string | null;
+  daily_interest: string | null;
+  no_of_days: string | null;
+  base_percentage: string | null;
+  monthly_percentage: string | null;
+};
+
+const iniVal = {
+  _id: null,
+  full_name: null,
+  amount: null,
+  investment_date: null,
+  interest_date: null,
+  monthly_interest: null,
+  daily_interest: null,
+  no_of_days: null,
+  base_percentage: null,
+  monthly_percentage: null,
 };
 
 const MasterInvestment: FC<{}> = memo(() => {
   const dispatch = useAppDispatch();
-  const { data: session }: any = useSession();
-
-  const iniVal = {
-    uuid: session?.user?.user?.id ?? null,
-    investment_name: null,
-    investment_date: null,
-    amount: null,
-    percentage: null,
-    calculated_amount: null,
-    interest_date: null,
-  };
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [showCalculator, setShowCalculator] = useState<boolean>(false);
@@ -214,34 +217,13 @@ const MasterInvestment: FC<{}> = memo(() => {
           }}
         >
           <>
-            <div className="pb-4">
-              <Row justify={"space-between"} align={"middle"}>
-                <Col></Col>
-                <Col>
-                  <Space>
-                    <Button
-                      type="primary"
-                      onClick={() => {
-                        setShowCalculator(true);
-                      }}
-                    >
-                      Calculator
-                    </Button>
-                  </Space>
-                </Col>
-              </Row>
-            </div>
-
             <div>
               <Row gutter={[30, 0]}>
                 <Col span={24}>
-                  <Form.Item<FieldType> label="" name="uuid" hidden>
-                    <Input />
-                  </Form.Item>
                   <Form.Item<FieldType> label="" name="_id" hidden>
                     <Input />
                   </Form.Item>
-                  <Form.Item<FieldType> label="Investment Name" name="investment_name" rules={[{ required: true, message: "Required" }]}>
+                  <Form.Item<FieldType> label="Full Name" name="full_name" rules={[{ required: true, message: "Required" }]}>
                     <Input />
                   </Form.Item>
                   <Form.Item<FieldType> label="Principal Amount" name="amount" rules={[{ required: true, message: "Required" }]}>
@@ -260,7 +242,7 @@ const MasterInvestment: FC<{}> = memo(() => {
                 <Col span={12}>
                   <Form.Item<FieldType>
                     label="Monthly Percentage"
-                    name="percentage"
+                    name="monthly_percentage"
                     rules={[
                       { required: true, message: "Required" },
                       { message: "Only Number", pattern: NUMBER_WITH_DOT },
@@ -278,7 +260,7 @@ const MasterInvestment: FC<{}> = memo(() => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item<FieldType> label="Payment Amount" name="calculated_amount">
+                  <Form.Item<FieldType> label="Payment Amount" name="monthly_interest">
                     <Input readOnly={true} addonAfter="₹" />
                   </Form.Item>
                 </Col>
