@@ -5,11 +5,15 @@ import DrawerComponent from "@components/DrawerComponent";
 import SpinnerLoader from "@components/SpinnerLoader";
 import { faPenNib, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getTotalInterest, getTotalPrinciple, selectAllInterests } from "@redux-store/interests";
-import { createInterestAction, deleteInterestAction, getInterestCollectionAction, updateInterestAction } from "@redux-store/interests/action";
 import { isLoading } from "@redux-store/interests/memonised-interests";
+import { getTotalMasterInterest, getTotalMasterInvestment, selectAllMasterInvestment } from "@redux-store/master-investments";
+import {
+  createMasterInvestmentAction,
+  deleteMasterInvestmentAction,
+  getMasterInvestmentCollectionAction,
+  updateMasterInvestmentAction,
+} from "@redux-store/master-investments/action";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
-import { AppState } from "@redux-store/store";
 import { NUMBER_WITH_DOT } from "@utility/regex-pattern";
 import { Button, Col, DatePicker, Form, Input, Row, Space, Table, message } from "antd";
 import dayjs from "dayjs";
@@ -18,14 +22,14 @@ import { FC, Suspense, memo, useCallback, useEffect, useState } from "react";
 type FieldType = {
   _id?: string | null;
   full_name?: string | null;
-  amount: string | null;
+  amount: number | null;
   investment_date: string | null;
   interest_date: string | null;
-  monthly_interest: string | null;
-  daily_interest: string | null;
-  no_of_days: string | null;
-  base_percentage: string | null;
-  monthly_percentage: string | null;
+  monthly_interest: number | null;
+  daily_interest: number | null;
+  no_of_days: number | null;
+  base_percentage: number | null;
+  monthly_percentage: number | null;
 };
 
 const iniVal = {
@@ -47,23 +51,22 @@ const MasterInvestment: FC<{}> = memo(() => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [showCalculator, setShowCalculator] = useState<boolean>(false);
 
-  const investmentList = useAppSelector(selectAllInterests);
+  const investmentList = useAppSelector(selectAllMasterInvestment);
   const loading = useAppSelector(isLoading);
-  const total_principle = useAppSelector((state: AppState) => getTotalPrinciple(state));
-  const total_interest = useAppSelector((state) => getTotalInterest(state));
-  // const memoizedRow = useAppSelector((state: AppState) => selectInterestById(state, selectedRow._id));
+  const total_principle = useAppSelector(getTotalMasterInvestment);
+  const total_interest = useAppSelector(getTotalMasterInterest);
 
-  const [investmentForm] = Form.useForm<FieldType>();
+  const [masterInvestmentForm] = Form.useForm<FieldType>();
 
   useEffect(() => {
-    dispatch(getInterestCollectionAction(""));
+    dispatch(getMasterInvestmentCollectionAction(""));
   }, [dispatch]);
 
   const columns = [
     {
       title: "Name",
-      dataIndex: "investment_name",
-      key: "investment_name",
+      dataIndex: "full_name",
+      key: "full_name",
       render: (txt: string) => {
         return <span className="capitalize">{txt}</span>;
       },
@@ -93,16 +96,16 @@ const MasterInvestment: FC<{}> = memo(() => {
     },
     {
       title: "Percentage",
-      dataIndex: "percentage",
-      key: "percentage",
+      dataIndex: "monthly_percentage",
+      key: "monthly_percentage",
       render: (txt: string) => {
         return <span className="text-sky-600">{txt} %</span>;
       },
     },
     {
       title: "Monthly Interest",
-      dataIndex: "calculated_amount",
-      key: "calculated_amount",
+      dataIndex: "monthly_interest",
+      key: "monthly_interest",
       render: (txt: number) => {
         return (
           <span className="text-green-200">
@@ -120,10 +123,10 @@ const MasterInvestment: FC<{}> = memo(() => {
       key: "_id",
       render: (_txt: string, row: any) => (
         <Space>
-          <span className="cursor-pointer text-blue-400" onClick={() => onUpdateInterest(row)}>
+          <span className="cursor-pointer text-blue-400" onClick={() => onUpdateMasterInvestment(row)}>
             <FontAwesomeIcon icon={faPenNib} />
           </span>
-          <span className="cursor-pointer text-red-700" onClick={() => dispatch(deleteInterestAction(row))}>
+          <span className="cursor-pointer text-red-700" onClick={() => onDeleteMasterInvestment(row)}>
             <FontAwesomeIcon icon={faTrash} />
           </span>
         </Space>
@@ -131,19 +134,26 @@ const MasterInvestment: FC<{}> = memo(() => {
     },
   ];
 
-  const onUpdateInterest = useCallback(async (row: any) => {
+  const onUpdateMasterInvestment = useCallback(async (row: any) => {
     const fieldValues = { ...row, interest_date: dayjs(row?.interest_date), investment_date: dayjs(row?.investment_date) };
-    await investmentForm.setFieldsValue(fieldValues);
+    await masterInvestmentForm.setFieldsValue(fieldValues);
     setIsDrawerOpen(true);
   }, []);
+
+  const onDeleteMasterInvestment = useCallback(
+    (row: any) => {
+      dispatch(deleteMasterInvestmentAction(row));
+    },
+    [dispatch]
+  );
 
   const onFinish = useCallback(
     async (values: any) => {
       try {
-        if (values?._id) {
-          await dispatch(updateInterestAction({ ...values }));
+        if (values._id) {
+          await dispatch(updateMasterInvestmentAction(values));
         } else {
-          await dispatch(createInterestAction({ ...values }));
+          await dispatch(createMasterInvestmentAction(values));
         }
       } catch (error: any) {
         message.error(`SERVER ERROR ${error.toString()}`);
@@ -158,13 +168,13 @@ const MasterInvestment: FC<{}> = memo(() => {
     <>
       <div className="pb-4">
         <Row justify={"space-between"} align={"middle"}>
-          <Col className="text-white text-lg">My Investment</Col>
+          <Col className="text-white text-lg">Master Investment</Col>
           <Col>
             <Space>
               <Button
                 type="primary"
                 onClick={async () => {
-                  await investmentForm.resetFields();
+                  await masterInvestmentForm.resetFields();
                   setIsDrawerOpen(true);
                 }}
               >
@@ -203,16 +213,16 @@ const MasterInvestment: FC<{}> = memo(() => {
         }}
       >
         <Form
-          form={investmentForm}
-          name="myinvestmentform"
+          form={masterInvestmentForm}
+          name="mymasterInvestmentform"
           layout="vertical"
           initialValues={iniVal}
           onFinish={onFinish}
           autoComplete="off"
           onValuesChange={(_val, allval: any) => {
-            if (allval.amount && allval.percentage) {
-              allval.calculated_amount = Math.round(allval.amount * (allval.percentage / 100));
-              investmentForm.setFieldsValue(allval);
+            if (allval.amount && allval.monthly_percentage) {
+              allval.monthly_interest = Math.round(allval.amount * (allval.monthly_percentage / 100));
+              masterInvestmentForm.setFieldsValue(allval);
             }
           }}
         >
@@ -226,19 +236,20 @@ const MasterInvestment: FC<{}> = memo(() => {
                   <Form.Item<FieldType> label="Full Name" name="full_name" rules={[{ required: true, message: "Required" }]}>
                     <Input />
                   </Form.Item>
-                  <Form.Item<FieldType> label="Principal Amount" name="amount" rules={[{ required: true, message: "Required" }]}>
+                  <Form.Item<FieldType> label="Principle Amount" name="amount" rules={[{ required: true, message: "Required" }]}>
                     <Input addonAfter="₹" />
                   </Form.Item>
                 </Col>
-                <Col span={24}>
+                <Col span={12}>
                   <Form.Item<FieldType> label="Investment Date" name="interest_date" rules={[{ required: true, message: "Required" }]}>
                     <DatePicker format={"DD/MM/YYYY"} style={{ width: "100%" }} />
                   </Form.Item>
+                </Col>
+                <Col span={12}>
                   <Form.Item<FieldType> label="Payment Date" name="investment_date" rules={[{ required: true, message: "Required" }]}>
                     <DatePicker format={"DD/MM/YYYY"} style={{ width: "100%" }} />
                   </Form.Item>
                 </Col>
-
                 <Col span={12}>
                   <Form.Item<FieldType>
                     label="Monthly Percentage"
@@ -271,7 +282,7 @@ const MasterInvestment: FC<{}> = memo(() => {
           <Form.Item>
             <div>
               <Button type="primary" htmlType="submit" block danger>
-                {investmentForm.getFieldValue("_id") ? "Edit Your Investment" : "Add Your Investment"}
+                {masterInvestmentForm.getFieldValue("_id") ? "Edit Your Investment" : "Add Your Investment"}
               </Button>
               <Button type="text" block onClick={() => setIsDrawerOpen(false)}>
                 Cancel
