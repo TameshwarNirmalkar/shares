@@ -39,7 +39,8 @@ const themeConfig: ThemeConfig = {
         },
         Menu: {
             darkItemHoverBg: '#64748b',
-            darkItemSelectedBg: '#64748b'
+            darkItemSelectedBg: '#64748b',
+            // darkItemSelectedColor: 'rgb(250 204 21)'
         },
         Table: {
             headerBg: '#64748b',

@@ -11,7 +11,7 @@ const { Header, Sider, Content } = Layout;
 // const twoColors = { "0%": "#108ee9", "100%": "#87d068" };
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [collapsed, setCollapsed] = useState<boolean>(true);
   // const {
   //   token: { colorBgContainer, borderRadiusLG },
   // } = theme.useToken();

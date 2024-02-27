@@ -17,7 +17,7 @@ import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
 import { NUMBER_WITH_DOT } from "@utility/regex-pattern";
 import { Button, Col, DatePicker, Form, Input, Row, Space, Table, message } from "antd";
 import dayjs from "dayjs";
-import { FC, Suspense, memo, useCallback, useEffect, useState } from "react";
+import { FC, memo, useCallback, useEffect, useState } from "react";
 
 type FieldType = {
   _id?: string | null;
@@ -184,26 +184,25 @@ const MasterInvestment: FC<{}> = memo(() => {
           </Col>
         </Row>
       </div>
-      <Suspense fallback={<SpinnerLoader loading={true} />}>
-        <Table
-          columns={columns}
-          dataSource={investmentList}
-          loading={loading}
-          pagination={false}
-          bordered
-          rowKey={"_id"}
-          footer={(currentPageData) => (
-            <Space className="text-right" direction="vertical">
-              <div>
-                <strong>Total Investment</strong> : <span className="text-yellow-400">{total_principle}</span>
-              </div>
-              <div>
-                <strong>Total Interest</strong> : <span className="text-green-200">{total_interest}</span>
-              </div>
-            </Space>
-          )}
-        />
-      </Suspense>
+
+      <Table
+        columns={columns}
+        dataSource={investmentList}
+        loading={loading}
+        pagination={false}
+        bordered
+        rowKey={"_id"}
+        footer={(currentPageData) => (
+          <Space className="text-right" direction="vertical">
+            <div>
+              <strong>Total Investment</strong> : <span className="text-yellow-400">{total_principle}</span>
+            </div>
+            <div>
+              <strong>Total Interest</strong> : <span className="text-green-200">{total_interest}</span>
+            </div>
+          </Space>
+        )}
+      />
 
       <DrawerComponent
         heading="Investment Form"
@@ -299,6 +298,8 @@ const MasterInvestment: FC<{}> = memo(() => {
           </>
         )}
       </DrawerComponent>
+
+      <SpinnerLoader loading={loading} />
     </>
   );
 });

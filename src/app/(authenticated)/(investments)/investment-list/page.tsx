@@ -1,5 +1,6 @@
 "use client";
 
+import SpinnerLoader from "@components/SpinnerLoader";
 import { getInvestmentsCollectionAction } from "@redux-store/investments-list/action";
 import {
   consolidateState,
@@ -269,6 +270,7 @@ const InvestmentListPage: FC<{}> = memo(() => {
           )}
         />
       </div>
+      <SpinnerLoader loading={loading} />
     </>
   );
 });

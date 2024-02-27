@@ -1,7 +1,6 @@
 "use-client";
 
-import { SunFilled } from "@ant-design/icons";
-import { faClockRotateLeft, faMoneyBills, faPeopleRoof, faSackDollar } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faIndianRupee, faMoneyBills, faPeopleRoof, faSackDollar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
@@ -65,7 +64,7 @@ const SideBarComponent: FC<{}> = memo(() => {
 
   const openKeys = useMemo(() => items.map((el) => el?.key), [items]) as string[];
 
-  const [activeLink, setActiveLink] = useState<string[]>(["0"]);
+  const [activeLink, setActiveLink] = useState<string[]>(["dashboard"]);
 
   useEffect(() => {
     const pathIndex = Object.keys(KEY_PATH).filter((key: any) => KEY_PATH[key] === pname?.split("/")[1]) as string[];
@@ -80,8 +79,8 @@ const SideBarComponent: FC<{}> = memo(() => {
   return (
     <div className="">
       <div className="grid justify-items-center p-2 sticky top-0 bg-black z-10">
-        <SunFilled style={{ fontSize: 40, color: "white" }} />
-        {/* <FontAwesomeIcon icon={faHandHoldingUsd} color="white" fontSize={40} /> */}
+        {/* <SunFilled style={{ fontSize: 40, color: "rgb(250 204 21)" }} /> */}
+        <FontAwesomeIcon icon={faIndianRupee} color="rgb(250 204 21)" fontSize={40} />
       </div>
       <div>
         <Menu
