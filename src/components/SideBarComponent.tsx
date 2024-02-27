@@ -79,7 +79,7 @@ const SideBarComponent: FC<{}> = memo(() => {
 
   return (
     <div className="">
-      <div className="grid justify-items-center p-2 sticky top-0 bg-black">
+      <div className="grid justify-items-center p-2 sticky top-0 bg-black z-10">
         <SunFilled style={{ fontSize: 40, color: "white" }} />
         {/* <FontAwesomeIcon icon={faHandHoldingUsd} color="white" fontSize={40} /> */}
       </div>
