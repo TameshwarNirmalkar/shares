@@ -59,6 +59,13 @@ const themeConfig: ThemeConfig = {
             colorBorder: '#64748b',
             borderRadius: 50,
             actionsBg: '#1e293b'
+        },
+        DatePicker: {
+            // activeBorderColor: '#f59e0b',
+            // activeBg: '#f59e0b',
+            cellHoverBg: '#f59e0b',
+            cellActiveWithRangeBg: '#f59e0b',
+            cellHoverWithRangeBg: '#f59e0b',
         }
 
 

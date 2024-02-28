@@ -153,7 +153,7 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
                 { message: "Only Number", pattern: ONLY_NUMBER },
               ]}
             >
-              <Input maxLength={10} />
+              <Input maxLength={10} addonBefore={"+91"} />
             </Form.Item>
           </Col>
           <Col span={12}>
