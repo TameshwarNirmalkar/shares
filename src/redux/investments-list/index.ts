@@ -62,7 +62,6 @@ const investmentListSlice = createSlice({
     },
     reducers: {
         updateProfitClient: (state: InvestmentListStateI, action: PayloadAction<number>) => {
-            console.log("Action: ", action.payload);
             state.profit_from_client = action.payload;
         }
     },
@@ -84,4 +83,5 @@ const investmentListSlice = createSlice({
 export const { updateProfitClient } = investmentListSlice.actions;
 
 export default investmentListSlice.reducer;
+
 

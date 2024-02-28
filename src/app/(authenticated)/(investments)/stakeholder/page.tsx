@@ -55,6 +55,7 @@ const StakeholderPage: FC<{}> = memo(() => {
       title: "Day/Month",
       dataIndex: "interest_date",
       key: "interest_date",
+      sorter: (a: any, b: any) => a.interest_date.localeCompare(b.interest_date),
       render: (txt: string) => {
         return (
           <div>
@@ -83,6 +84,7 @@ const StakeholderPage: FC<{}> = memo(() => {
       title: "Amount",
       dataIndex: "principle_amount",
       key: "principle_amount",
+      sorter: (a: any, b: any) => a.principle_amount - b.principle_amount,
       render: (txt: number) => {
         return (
           <span className="text-yellow-400">
@@ -106,6 +108,7 @@ const StakeholderPage: FC<{}> = memo(() => {
       title: "Percentage",
       dataIndex: "percentage",
       key: "percentage",
+      sorter: (a: any, b: any) => a.percentage - b.percentage,
       render: (txt: string) => {
         return <span className="text-sky-600">{txt}%</span>;
       },
@@ -115,6 +118,7 @@ const StakeholderPage: FC<{}> = memo(() => {
       title: "Interest",
       dataIndex: "monthly_interest",
       key: "monthly_interest",
+      sorter: (a: any, b: any) => a.monthly_interest - b.monthly_interest,
       render: (txt: number, row: any) => {
         return (
           <span className="text-green-200">
@@ -130,6 +134,7 @@ const StakeholderPage: FC<{}> = memo(() => {
       title: "Profit",
       dataIndex: "profit",
       key: "profit",
+      sorter: (a: any, b: any) => a.profit - b.profit,
       render: (txt: number, row: any) => {
         return (
           <span className="text-green-200">

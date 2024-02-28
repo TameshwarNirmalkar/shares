@@ -4,12 +4,12 @@ import SpinnerLoader from "@components/SpinnerLoader";
 import { getInvestmentsCollectionAction } from "@redux-store/investments-list/action";
 import {
   consolidateState,
+  getTotalInterestMeAndInvestor,
   isLoading,
   myClientInvestmentListState,
   myClientTotalInvestmentState,
   myInvestmentListState,
   myTotalInvestmentState,
-  profitFromClientState,
 } from "@redux-store/investments-list/memonised-investment-list";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
 import { Alert, Col, Row, Space, Table } from "antd";
@@ -143,7 +143,7 @@ const InvestmentListPage: FC<{}> = memo(() => {
   const consolidate: any = useAppSelector(consolidateState);
   const my_total_investment: any = useAppSelector(myTotalInvestmentState);
   const my_client_total_investment: any = useAppSelector(myClientTotalInvestmentState);
-  const profit_from_client: number = useAppSelector(profitFromClientState);
+  const total_interest: number = useAppSelector(getTotalInterestMeAndInvestor);
 
   useEffect(() => {
     dispatch(getInvestmentsCollectionAction(""));
@@ -169,14 +169,7 @@ const InvestmentListPage: FC<{}> = memo(() => {
         <Col span={6}>
           <Alert
             message={<span className="text-white">Total Interest</span>}
-            description={
-              <span className="text-2xl text-red-200">
-                {(consolidate?.total_interest + my_client_total_investment?.total_profit).toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "INR",
-                })}
-              </span>
-            }
+            description={<span className="text-2xl text-red-200">{total_interest}</span>}
             type="error"
           />
         </Col>
