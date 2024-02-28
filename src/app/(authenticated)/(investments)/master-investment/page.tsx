@@ -67,6 +67,7 @@ const MasterInvestment: FC<{}> = memo(() => {
       title: "Name",
       dataIndex: "full_name",
       key: "full_name",
+      sorter: (a: any, b: any) => a.full_name.localeCompare(b.full_name),
       render: (txt: string) => {
         return <span className="capitalize">{txt}</span>;
       },
@@ -75,6 +76,7 @@ const MasterInvestment: FC<{}> = memo(() => {
       title: "Date of Investment",
       dataIndex: "investment_date",
       key: "investment_date",
+      sorter: (a: any, b: any) => a.investment_date.localeCompare(b.investment_date),
       render: (txt: string) => {
         return <span>{dayjs(txt).format("DD")} of every month.</span>;
       },
@@ -83,6 +85,7 @@ const MasterInvestment: FC<{}> = memo(() => {
       title: "Principle",
       dataIndex: "amount",
       key: "amount",
+      sorter: (a: any, b: any) => a.amount.localeCompare(b.amount),
       render: (txt: number) => {
         return (
           <span className="text-yellow-400">
@@ -98,6 +101,7 @@ const MasterInvestment: FC<{}> = memo(() => {
       title: "Percentage",
       dataIndex: "monthly_percentage",
       key: "monthly_percentage",
+      sorter: (a: any, b: any) => a.monthly_percentage - b.monthly_percentage,
       render: (txt: string) => {
         return <span className="text-sky-600">{txt} %</span>;
       },
@@ -106,6 +110,7 @@ const MasterInvestment: FC<{}> = memo(() => {
       title: "Monthly Interest",
       dataIndex: "monthly_interest",
       key: "monthly_interest",
+      sorter: (a: any, b: any) => a.monthly_interest - b.monthly_interest,
       render: (txt: number) => {
         return (
           <span className="text-green-200">
