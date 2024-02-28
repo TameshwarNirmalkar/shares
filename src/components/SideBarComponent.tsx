@@ -90,7 +90,7 @@ const SideBarComponent: FC<{}> = memo(() => {
           activeKey={openKeys.toString()}
           selectedKeys={activeLink}
           defaultSelectedKeys={activeLink}
-          defaultOpenKeys={openKeys}
+          // defaultOpenKeys={openKeys}
           mode="inline"
           items={items}
         />

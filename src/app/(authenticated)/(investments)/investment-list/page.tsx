@@ -152,7 +152,7 @@ const InvestmentListPage: FC<{}> = memo(() => {
   return (
     <>
       <Row align={"middle"} gutter={[10, 0]}>
-        <Col span={8}>
+        <Col span={6}>
           <Alert
             message={<span className="text-white">Total Investment</span>}
             description={
@@ -166,9 +166,23 @@ const InvestmentListPage: FC<{}> = memo(() => {
             type="success"
           />
         </Col>
-        <Col span={8}>
+        <Col span={6}>
           <Alert
-            message={<span className="text-yellow-100">Total Interest</span>}
+            message={<span className="text-white">Total Interest</span>}
+            description={
+              <span className="text-2xl text-red-200">
+                {(consolidate?.total_interest + my_client_total_investment?.total_profit).toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "INR",
+                })}
+              </span>
+            }
+            type="error"
+          />
+        </Col>
+        <Col span={6}>
+          <Alert
+            message={<span className="text-white">My & Stakeholders Interest</span>}
             description={
               <span className="text-2xl text-amber-600">
                 {consolidate?.total_interest.toLocaleString("en-US", {
@@ -180,9 +194,9 @@ const InvestmentListPage: FC<{}> = memo(() => {
             type="warning"
           />
         </Col>
-        <Col span={8}>
+        <Col span={6}>
           <Alert
-            message={<span className="text-yellow-100">Profit From Investor</span>}
+            message={<span className="text-white">Profit From Investor</span>}
             description={
               <span className="text-2xl text-sky-200">
                 {my_client_total_investment?.total_profit.toLocaleString("en-US", {
@@ -207,7 +221,7 @@ const InvestmentListPage: FC<{}> = memo(() => {
           footer={(currentPageData) => (
             <Space className="text-right" direction="vertical">
               <div>
-                <strong>Total Investment</strong> :{" "}
+                <strong>Total Investment</strong> :
                 <span className="text-yellow-400">
                   {my_total_investment?.total_investment.toLocaleString("en-US", {
                     style: "currency",
@@ -216,7 +230,7 @@ const InvestmentListPage: FC<{}> = memo(() => {
                 </span>
               </div>
               <div>
-                <strong>Total Interest</strong> :{" "}
+                <strong>Total Interest</strong> :
                 <span className="text-green-200">
                   {my_total_investment?.total_interest.toLocaleString("en-US", {
                     style: "currency",

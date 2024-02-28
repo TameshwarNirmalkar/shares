@@ -50,6 +50,10 @@ const myclientsSchema: Schema = new Schema(
             type: Date,
             require: false,
         },
+        favourite: {
+            type: Boolean,
+            require: false,
+        },
     },
     {
         timestamps: true,

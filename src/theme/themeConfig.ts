@@ -20,6 +20,8 @@ const themeConfig: ThemeConfig = {
         colorSuccessBorder: '#16a34a',
         colorWarningBg: '#eab308',
         colorWarningBorder: '#ca8a04',
+        colorErrorBg: '#b91c1c',
+        colorErrorBorder: '#b91c1c',
         colorIcon: '#cbd5e1',
         colorSplit: ' #cbd5e1',
         colorBgMask: '#d8ebff61'
