@@ -6,7 +6,7 @@ import { getSession } from 'next-auth/react';
 export const getMyClientsListAction = createAsyncThunk('GET_MYCLIENTS_COLLECTION', async (arg: any, { dispatch }) => {
     try {
         const session = await getSession() as Session;
-        const response: any = await fetch(`/api/investors`, {
+        const response: any = await fetch(`/api/my-clients`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -23,10 +23,10 @@ export const getMyClientsListAction = createAsyncThunk('GET_MYCLIENTS_COLLECTION
 });
 
 // Create clients
-export const createInvestorAction = createAsyncThunk('CREATE_MYCLIENTS_ACTION', async (arg: any, { dispatch }) => {
+export const createMyClientsAction = createAsyncThunk('CREATE_MYCLIENTS_ACTION', async (arg: any, { dispatch }) => {
     try {
         const session = await getSession() as Session | any;
-        const response: any = await fetch(`/api/investors`, {
+        const response: any = await fetch(`/api/my-clients`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -47,10 +47,10 @@ export const createInvestorAction = createAsyncThunk('CREATE_MYCLIENTS_ACTION', 
 
 
 // Update clients
-export const updateInvestorAction = createAsyncThunk('UPDATE_MYCLIENTS_ACTION', async (arg: any, { dispatch }) => {
+export const updateMyClientsAction = createAsyncThunk('UPDATE_MYCLIENTS_ACTION', async (arg: any, { dispatch }) => {
     try {
         const session = await getSession() as Session | any;
-        const response: any = await fetch(`/api/investors`, {
+        const response: any = await fetch(`/api/my-clients`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -71,11 +71,11 @@ export const updateInvestorAction = createAsyncThunk('UPDATE_MYCLIENTS_ACTION', 
 
 
 // Delete clients
-export const deleteInvestorAction = createAsyncThunk('DELETE_MYCLIENTS_ACTION', async (arg: { _id: string }, { dispatch }) => {
+export const deleteMyClientAction = createAsyncThunk('DELETE_MYCLIENTS_ACTION', async (arg: { _id: string }, { dispatch }) => {
     try {
         const { _id } = arg;
         const session = await getSession() as Session;
-        const res = await fetch("/api/investors", {
+        const res = await fetch("/api/my-clients", {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${session.user.accessToken}`,

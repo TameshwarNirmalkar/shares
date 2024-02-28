@@ -60,9 +60,9 @@ const AddClientsPage: NextPage = () => {
   // }, []);
 
   const onAddNewUser = useCallback(() => {
-    console.log("Add new user; ");
     setIsNewUser(true);
   }, []);
+
   return (
     <div>
       {errormsg && <Alert message="Unauthorised" description="Please login again." type="error" />}
