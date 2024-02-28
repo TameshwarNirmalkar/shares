@@ -3,11 +3,16 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import HeaderComponent from "@components/HeaderComponent";
 import SideBarComponent from "@components/SideBarComponent";
-import { Button, Col, Layout, Row } from "antd";
+import { Button, Col, Layout, Row, message } from "antd";
 import { Suspense, useState } from "react";
 import Loading from "./loading";
 
 const { Header, Sider, Content } = Layout;
+message.config({
+  top: 10,
+  duration: 20,
+  maxCount: 1,
+});
 // const twoColors = { "0%": "#108ee9", "100%": "#87d068" };
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
