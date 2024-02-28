@@ -196,7 +196,7 @@ const InvestmentListPage: FC<{}> = memo(() => {
         </Col>
         <Col span={6}>
           <Alert
-            message={<span className="text-white">Profit From Investor</span>}
+            message={<span className="text-white">Profit From Stakeholders</span>}
             description={
               <span className="text-2xl text-sky-200">
                 {my_client_total_investment?.total_profit.toLocaleString("en-US", {

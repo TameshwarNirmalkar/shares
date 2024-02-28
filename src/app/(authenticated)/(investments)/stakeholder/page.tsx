@@ -80,7 +80,7 @@ const StakeholderPage: FC<{}> = memo(() => {
       },
     },
     {
-      title: "Principle Amount",
+      title: "Amount",
       dataIndex: "principle_amount",
       key: "principle_amount",
       render: (txt: number) => {
@@ -95,6 +95,14 @@ const StakeholderPage: FC<{}> = memo(() => {
       },
     },
     {
+      title: "Base Percentage",
+      dataIndex: "base_percentage",
+      key: "base_percentage",
+      render: (txt: string) => {
+        return <span className="text-sky-600">{txt}%</span>;
+      },
+    },
+    {
       title: "Percentage",
       dataIndex: "percentage",
       key: "percentage",
@@ -102,8 +110,9 @@ const StakeholderPage: FC<{}> = memo(() => {
         return <span className="text-sky-600">{txt}%</span>;
       },
     },
+
     {
-      title: "Monthly Interest",
+      title: "Interest",
       dataIndex: "monthly_interest",
       key: "monthly_interest",
       render: (txt: number, row: any) => {

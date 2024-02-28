@@ -55,7 +55,7 @@ export default stakeholderSlice.reducer;
 export const getTotalPrinciple = createSelector(
     [selectAllStakeholders],
     (allinterest) => {
-        return allinterest.reduce((acc: number, ite: any) => acc + ite.principle_amount, 0).toLocaleString("en-US", {
+        return allinterest.reduce((acc: number, ite: any) => acc + parseInt(ite.principle_amount), 0).toLocaleString("en-US", {
             style: "currency",
             currency: "INR",
         });

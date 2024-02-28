@@ -60,7 +60,7 @@ export default masterInvestmentSlice.reducer;
 export const getTotalMasterInvestment = createSelector(
     [selectAllMasterInvestment],
     (allinterest) => {
-        return allinterest.reduce((acc: number, ite: any) => acc + ite.amount, 0).toLocaleString("en-US", {
+        return allinterest.reduce((acc: number, ite: any) => acc + parseInt(ite.amount), 0).toLocaleString("en-US", {
             style: "currency",
             currency: "INR",
         });

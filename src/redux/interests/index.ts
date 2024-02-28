@@ -59,7 +59,7 @@ export default interestSlice.reducer;
 export const getTotalPrinciple = createSelector(
     [selectAllInterests],
     (allinterest) => {
-        return allinterest.reduce((acc: number, ite: any) => acc + ite.amount, 0).toLocaleString("en-US", {
+        return allinterest.reduce((acc: number, ite: any) => acc + parseInt(ite.amount), 0).toLocaleString("en-US", {
             style: "currency",
             currency: "INR",
         });
