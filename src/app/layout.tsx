@@ -4,7 +4,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { StoreProviders } from "@redux-store/providers";
 import { getServerAuthSession } from "@server/auth";
 import themeConfig from "@theme/themeConfig";
-import { ConfigProvider } from "antd";
+import { App, ConfigProvider } from "antd";
 import type { Metadata } from "next";
 import { AuthProvider } from "./Provider";
 import "./globals.css";
@@ -25,7 +25,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <AuthProvider session={session}>
             <AntdRegistry>
               <ConfigProvider theme={themeConfig} autoInsertSpaceInButton={false}>
-                {children}
+                <App>{children}</App>
               </ConfigProvider>
             </AntdRegistry>
           </AuthProvider>

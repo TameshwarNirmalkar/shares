@@ -4,10 +4,14 @@ import { Button, Col, Divider, Form, GetProp, Image, Input, Modal, Row, Upload, 
 import { memo, useCallback, useState } from "react";
 
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { createMyClientsAction } from "@redux-store/my-clients/action";
+import { useAppDispatch } from "@redux-store/reduxHooks";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const AddNewUser = memo<{ isNewUser: boolean; selectedData: any; loading: boolean; onModalOpen: (val: boolean) => void }>((props) => {
   const { isNewUser, selectedData, loading, onModalOpen } = props;
+
+  const dispatch = useAppDispatch();
   const [userAddForm] = Form.useForm();
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -46,7 +50,8 @@ const AddNewUser = memo<{ isNewUser: boolean; selectedData: any; loading: boolea
   const onFormFinish = useCallback(async () => {
     try {
       const res = await userAddForm.validateFields();
-      console.log("Res: ", res);
+      await dispatch(createMyClientsAction(res));
+      onModalOpen(false);
     } catch (error) {}
   }, [userAddForm]);
 
