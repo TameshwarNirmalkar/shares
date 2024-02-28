@@ -8,7 +8,7 @@ type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const AddNewUser = memo<{ isNewUser: boolean; selectedData: any; loading: boolean; onModalOpen: (val: boolean) => void }>((props) => {
   const { isNewUser, selectedData, loading, onModalOpen } = props;
-  const [form] = Form.useForm();
+  const [userAddForm] = Form.useForm();
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
@@ -45,10 +45,10 @@ const AddNewUser = memo<{ isNewUser: boolean; selectedData: any; loading: boolea
 
   const onFormFinish = useCallback(async () => {
     try {
-      const res = await form.validateFields();
+      const res = await userAddForm.validateFields();
       console.log("Res: ", res);
     } catch (error) {}
-  }, [form]);
+  }, [userAddForm]);
 
   return (
     <Modal
@@ -61,7 +61,7 @@ const AddNewUser = memo<{ isNewUser: boolean; selectedData: any; loading: boolea
       okButtonProps={{ style: { padding: "3px 50px" } }}
       onOk={onFormFinish}
     >
-      <Form form={form} initialValues={{ ...selectedData }} name="addclientForm" layout="vertical" autoComplete="off">
+      <Form form={userAddForm} initialValues={{ ...selectedData }} name="addEditUserForm" layout="vertical" autoComplete="off">
         <Row align={"middle"}>
           <Col span={7}>
             <Upload
@@ -85,7 +85,7 @@ const AddNewUser = memo<{ isNewUser: boolean; selectedData: any; loading: boolea
             </div>
           </Col>
         </Row>
-        <Divider className="my-2" />
+        <Divider className="my-4" />
         <Form.Item name="_id" hidden>
           <Input />
         </Form.Item>
