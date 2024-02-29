@@ -24,7 +24,9 @@ const themeConfig: ThemeConfig = {
         colorErrorBorder: '#b91c1c',
         colorIcon: '#cbd5e1',
         colorSplit: ' #cbd5e1',
-        colorBgMask: '#d8ebff61'
+        colorBgMask: '#d8ebff61',
+        colorTextQuaternary: '#e2e8f0', // --------- dropdown default text color,
+        colorTextPlaceholder: '#e4e4e7'
     },
     components: {
         Button: {
@@ -68,6 +70,12 @@ const themeConfig: ThemeConfig = {
             cellHoverBg: '#f59e0b',
             cellActiveWithRangeBg: '#f59e0b',
             cellHoverWithRangeBg: '#f59e0b',
+        },
+        Select: {
+            selectorBg: '#334155',
+            optionActiveBg: '#64748b',
+            optionSelectedBg: '#64748b',
+            optionSelectedColor: '#e2e8f0'
         }
 
 

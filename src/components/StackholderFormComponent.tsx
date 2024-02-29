@@ -1,10 +1,12 @@
 "use client";
 
-import { useAppDispatch } from "@redux-store/reduxHooks";
+import { selectAllMyClients } from "@redux-store/my-clients";
+import { getMyClientsListAction } from "@redux-store/my-clients/action";
+import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
 import { stakeholdersAddOne, stakeholdersUpdateOne } from "@redux-store/stakeholders";
 import { createInvestorAction, updateInvestorAction } from "@redux-store/stakeholders/action";
 import { NUMBER_WITH_DOT, ONLY_NUMBER } from "@utility/regex-pattern";
-import { Button, Col, DatePicker, Form, Input, Row, message } from "antd";
+import { Button, Col, DatePicker, Form, Input, Row, Select, message } from "antd";
 import { useSession } from "next-auth/react";
 import { FC, memo, useCallback, useEffect, useState } from "react";
 
@@ -20,11 +22,13 @@ type FieldType = {
   base_interest: number;
   monthly_interest: number;
   profit: number;
+  client_id: string;
 };
 
 const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => void }> = (props) => {
   const { onSuccessCallback, initialVal } = props;
   const dispatch = useAppDispatch();
+  const clientList = useAppSelector(selectAllMyClients);
   const { data: session }: any = useSession();
   const [isLoading, setIsloading] = useState<boolean>(false);
   const [investorForm] = Form.useForm<FieldType>();
@@ -42,6 +46,12 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
     monthly_interest: null,
     profit: null,
   };
+
+  useEffect(() => {
+    if (!clientList.length) {
+      dispatch(getMyClientsListAction(""));
+    }
+  }, [dispatch, clientList]);
 
   useEffect(() => {
     investorForm.resetFields();
@@ -128,8 +138,22 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
             <Form.Item<FieldType> label="" name={"uuid"} hidden>
               <Input />
             </Form.Item>
-            <Form.Item<FieldType> label="Full Name" name={"full_name"} rules={[{ required: true, message: "Required" }]}>
+            <Form.Item<FieldType> label="" name="client_id" hidden>
               <Input />
+            </Form.Item>
+
+            <Form.Item<FieldType> label="Client Name" name={"full_name"} rules={[{ required: true, message: "Required" }]}>
+              {/* <Input /> */}
+              <Select
+                loading={!clientList}
+                options={clientList.map((el) => ({ label: el.full_name, value: el.full_name, option: { ...el } }))}
+                placeholder="Select Client Name"
+                onChange={(val: string, opt: any) => {
+                  console.log("E: ", opt);
+                  investorForm.setFieldValue("client_id", opt.option._id);
+                  investorForm.setFieldValue("phone", opt.option.phone);
+                }}
+              />
             </Form.Item>
           </Col>
           <Col span={24}>

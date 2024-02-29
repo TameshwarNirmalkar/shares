@@ -44,10 +44,10 @@ export const updateUsersAction = createAsyncThunk('UPDATE_USER_ACTION', async (a
     }
 })
 
-export const getUserDetailsAction = createAsyncThunk('GET_USERS_BY_EMAIL', async (email: string, { getState }) => {
+export const getUserDetailsAction = createAsyncThunk('GET_USERS_BY_EMAIL', async (arg: string, { getState }) => {
     try {
-        const session = await getSession() as Session;
-        const res = await fetch(`/api/user-exists?email=${email}`, {
+        const session = await getSession() as Session | any;
+        const res = await fetch(`/api/user-exists?email=${session?.user?.user?.email}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

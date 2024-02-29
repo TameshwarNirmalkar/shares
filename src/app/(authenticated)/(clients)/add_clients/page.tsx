@@ -33,13 +33,15 @@ const AddClientsPage: FC = () => {
   const { modal } = App.useApp();
 
   useEffect(() => {
-    if (session?.user?.accessToken) {
-      dispatch(getUserDetailsAction(session?.user?.user?.email));
+    if (!userList) {
+      dispatch(getUserDetailsAction(""));
     }
-  }, [dispatch, session?.user?.accessToken]);
+  }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getMyClientsListAction(""));
+    if (!clientList.length) {
+      dispatch(getMyClientsListAction(""));
+    }
   }, [dispatch]);
 
   const onEditHandler = useCallback(async (row: any) => {

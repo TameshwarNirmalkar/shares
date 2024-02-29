@@ -46,6 +46,10 @@ const stakeholdersSchema: Schema = new Schema(
       type: Date,
       require: true,
     },
+    client_id: {
+      type: String,
+      require: true,
+    },
   },
   {
     timestamps: true,
