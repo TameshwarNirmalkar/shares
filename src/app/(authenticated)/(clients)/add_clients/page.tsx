@@ -27,6 +27,7 @@ const AddClientsPage: NextPage = () => {
   const [errormsg, setErrorMsg] = useState<string>("");
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [isNewUser, setIsNewUser] = useState<boolean>(false);
+  const [selectedData, setSelectedData] = useState<any>({});
 
   const { modal } = App.useApp();
 
@@ -92,6 +93,12 @@ const AddClientsPage: NextPage = () => {
   );
 
   const onAddNewUser = useCallback(() => {
+    setIsNewUser(true);
+  }, []);
+
+  const onEditUser = useCallback((item: any) => {
+    console.log("Edit item: ", item);
+    setSelectedData(item);
     setIsNewUser(true);
   }, []);
 
@@ -169,7 +176,7 @@ const AddClientsPage: NextPage = () => {
                   </Col>
                   <Col>
                     <Space>
-                      <span className="text-white cursor-pointer rounded-full bg-yellow-400 p-2" onClick={() => onEditHandler(el)}>
+                      <span className="text-white cursor-pointer rounded-full bg-yellow-400 p-2" onClick={() => onEditUser(el)}>
                         <FontAwesomeIcon icon={faUserEdit} color="#78350f" />
                       </span>
                       <span className="text-white cursor-pointer rounded-full bg-red-600 p-2" onClick={() => onDeleteClient(el)}>
@@ -186,7 +193,7 @@ const AddClientsPage: NextPage = () => {
 
       <UserDetailsComponent drawerHeading="Edit Details" isDrawerOpen={isDrawerOpen} onDrawerOpen={(val) => setIsDrawerOpen(val)} />
 
-      <AddNewUser loading={loading} isNewUser={isNewUser} selectedData={""} onModalOpen={(val: boolean) => setIsNewUser(val)} />
+      <AddNewUser loading={loading} isNewUser={isNewUser} selectedData={selectedData} onModalOpen={(val: boolean) => setIsNewUser(val)} />
 
       <SpinnerLoader loading={loading} />
     </div>

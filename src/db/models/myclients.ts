@@ -18,6 +18,11 @@ const myclientsSchema: Schema = new Schema(
             type: Number,
             require: true,
         },
+        address: {
+            type: String,
+            require: true,
+            length: 400,
+        },
         email: {
             type: String,
             require: false,

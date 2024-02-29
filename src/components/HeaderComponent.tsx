@@ -32,12 +32,12 @@ const items: MenuProps["items"] = [
 
 const HeaderComponent: FC<{}> = memo(() => {
   const { data: session }: any = useSession();
-  const userDetails = useAppSelector((state: AppState) => selectUserById(state, session.user.user.id)) as any;
+  const userDetails = useAppSelector((state: AppState) => selectUserById(state, session?.user?.user?.id)) as any;
 
   return (
     <div className="flex items-center">
       <Image
-        src={userDetails?.profile_image || session.user.user.image}
+        src={userDetails?.profile_image || session?.user?.user?.image}
         alt="User Image"
         width={30}
         height={30}
@@ -48,7 +48,7 @@ const HeaderComponent: FC<{}> = memo(() => {
         <a onClick={(e) => e.preventDefault()} href="#" className="text-slate-500">
           <Space>
             <div className="text-slate-100">
-              <span className="capitalize p-3">{userDetails?.full_name || session.user.user.name}</span>
+              <span className="capitalize p-3">{userDetails?.full_name || session?.user?.user?.name}</span>
               <FontAwesomeIcon icon={faAngleDown} />
             </div>
           </Space>
