@@ -3,8 +3,8 @@
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppSelector } from "@redux-store/reduxHooks";
-import { AppState } from "@redux-store/store";
-import { selectUserById } from "@redux-store/users";
+import { userDetailsState } from "@redux-store/users/memonised-user";
+// import { selectUserById } from "@redux-store/users";
 import { Dropdown, MenuProps, Space } from "antd";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
@@ -32,7 +32,7 @@ const items: MenuProps["items"] = [
 
 const HeaderComponent: FC<{}> = memo(() => {
   const { data: session }: any = useSession();
-  const userDetails = useAppSelector((state: AppState) => selectUserById(state, session?.user?.user?.id)) as any;
+  const userDetails = useAppSelector(userDetailsState) as any;
 
   return (
     <div className="flex items-center">

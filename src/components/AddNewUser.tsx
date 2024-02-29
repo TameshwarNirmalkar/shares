@@ -1,29 +1,32 @@
 "use client";
 
-import { Button, Col, Divider, Form, GetProp, Image, Input, Modal, Row, Upload, UploadFile, UploadProps, message } from "antd";
-import { memo, useCallback, useState } from "react";
+import { Button, Card, Col, Form, GetProp, Image, Input, Modal, Row, UploadFile, UploadProps, message } from "antd";
+import { memo, useCallback, useEffect, useState } from "react";
 
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { createMyClientsAction } from "@redux-store/my-clients/action";
+import { createMyClientsAction, updateMyClientsAction } from "@redux-store/my-clients/action";
 import { useAppDispatch } from "@redux-store/reduxHooks";
+import { getBase64 } from "@utility/utilsFunction";
+import Upload, { RcFile } from "antd/es/upload";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
-const AddNewUser = memo<{ isNewUser: boolean; selectedData: any; loading: boolean; onModalOpen: (val: boolean) => void }>((props) => {
-  const { isNewUser, selectedData, loading, onModalOpen } = props;
+const AddNewUser = memo<{ isNewUser: boolean; selectedData: any; loading: boolean; onModalOpen: (val: boolean) => void; onAfterClose: () => void }>((props) => {
+  const { isNewUser, selectedData, loading, onModalOpen, onAfterClose } = props;
 
   const dispatch = useAppDispatch();
   const [userAddForm] = Form.useForm();
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [imageUrl, setImageUrl] = useState<string | null>();
 
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
+  useEffect(() => {
+    userAddForm.setFieldsValue(selectedData);
+    return () => {
+      setImageUrl(undefined);
+      userAddForm.resetFields();
+    };
+  }, [selectedData]);
 
-  const onBeforeLoad = useCallback((file: FileType) => {
+  const onBeforeLoad = useCallback((file: RcFile) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isJpgOrPng) {
@@ -32,6 +35,9 @@ const AddNewUser = memo<{ isNewUser: boolean; selectedData: any; loading: boolea
       message.error("Image must smaller than 2MB!");
     } else {
       setFileList([file]);
+      getBase64(file, (url) => {
+        setImageUrl(url);
+      });
     }
     return false;
   }, []);
@@ -43,54 +49,74 @@ const AddNewUser = memo<{ isNewUser: boolean; selectedData: any; loading: boolea
       method: "POST",
       body: formData,
     }).then((res) => res.json());
-    if (res.success) {
-    }
+    // if (res.success) {
+    //   await dispatch(updateMyClientsAction({ ...selectedData, ...userAddForm.getFieldsValue(), profile_image: res.data.url }));
+    // }
+    return res;
   }, [fileList]);
 
   const onFormFinish = useCallback(async () => {
     try {
       const res = await userAddForm.validateFields();
-      await dispatch(createMyClientsAction(res));
+
+      if (selectedData) {
+        let payload = { ...res };
+        if (imageUrl) {
+          const img_res = await onUploadImage();
+          payload.profile_image = img_res.data.url;
+        }
+        await dispatch(updateMyClientsAction({ ...selectedData, ...payload }));
+      } else {
+        let payload = { ...res };
+        if (imageUrl) {
+          const img_res = await onUploadImage();
+          payload.profile_image = img_res.data.url;
+        }
+        await dispatch(createMyClientsAction({ ...payload }));
+      }
       onModalOpen(false);
-    } catch (error) {}
-  }, [userAddForm]);
+    } catch (error) {
+      console.log("ERROR :: ", error);
+    }
+  }, [userAddForm, selectedData, fileList, imageUrl]);
 
   return (
     <Modal
-      title="Add User"
+      title={`${selectedData ? "Edit" : "Add"} Client Information.`}
       open={isNewUser}
-      okText="Save"
+      okText={selectedData ? "Update" : "Save"}
       onCancel={() => onModalOpen(false)}
       maskClosable={false}
       centered
       okButtonProps={{ style: { padding: "3px 50px" } }}
       onOk={onFormFinish}
+      afterClose={onAfterClose}
     >
-      <Form form={userAddForm} initialValues={{ ...selectedData }} name="addEditUserForm" layout="vertical" autoComplete="off">
-        <Row align={"middle"}>
-          <Col span={7}>
-            <Upload
-              listType="picture-circle"
-              showUploadList={false}
-              action="#"
-              beforeUpload={onBeforeLoad}
-              onPreview={() => false}
-              fileList={fileList}
-              multiple={false}
-            >
-              {selectedData?.profile_image ? <Image src={selectedData?.profile_image} width={100} preview={false} /> : uploadButton}
-            </Upload>
-          </Col>
-          <Col>
-            <Button type="primary" onClick={onUploadImage} disabled={loading || !fileList.length}>
-              <div className="text-white-800">Change Profile Image</div>
-            </Button>
-            <div className="pt-1">
-              <sup className="text-slate-600">File size should not greater then 2 mb.</sup>
-            </div>
-          </Col>
-        </Row>
-        <Divider className="my-4" />
+      {/* initialValues={{ ...selectedData }} */}
+      <Form form={userAddForm} name="addEditUserForm" layout="vertical" autoComplete="off">
+        <Card bordered={false} className="bg-slate-600 p-0 mb-5">
+          <Row align={"middle"} gutter={[20, 10]}>
+            <Col>
+              <Image
+                src={selectedData?.profile_image ?? imageUrl ?? "https://i.ibb.co/Wf7TB9k/png-transparent-head-the-dummy-avatar-man-tie-jacket-user.png"}
+                width={100}
+                height={100}
+                preview={false}
+                className="rounded-full border-slate-500 bg-cover bg-center"
+              />
+            </Col>
+            <Col>
+              <Upload showUploadList={false} beforeUpload={onBeforeLoad} onPreview={() => false} fileList={fileList} multiple={false}>
+                <Button type="primary">
+                  <div className="text-white-800">Change Profile Image</div>
+                  <div className="pt-2">
+                    <sup className="text-slate-400">File size should not greater then 2 mb.</sup>
+                  </div>
+                </Button>
+              </Upload>
+            </Col>
+          </Row>
+        </Card>
         <Form.Item name="_id" hidden>
           <Input />
         </Form.Item>

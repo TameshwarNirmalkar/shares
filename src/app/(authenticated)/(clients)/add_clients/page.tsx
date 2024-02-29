@@ -1,23 +1,22 @@
 "use client";
 
 import { Alert, App, Card, Col, Divider, Image, Row, Space, Tooltip } from "antd";
-import { NextPage } from "next";
 
 import AddNewUser from "@components/AddNewUser";
 import SpinnerLoader from "@components/SpinnerLoader";
 import UserDetailsComponent from "@components/UserDetailsComponent";
 import { faTrash, faUserEdit, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { selectAllMyClients } from "@redux-store/my-clients";
+import { selectAllMyClients, selectMyClientsById } from "@redux-store/my-clients";
 import { deleteMyClientAction, getMyClientsListAction } from "@redux-store/my-clients/action";
 import { isLoading } from "@redux-store/my-clients/memonised-selector";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
 import { getUserDetailsAction } from "@redux-store/users/action";
 import { userDetailsState } from "@redux-store/users/memonised-user";
 import { useSession } from "next-auth/react";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { FC, Fragment, memo, useCallback, useEffect, useState } from "react";
 
-const AddClientsPage: NextPage = () => {
+const AddClientsPage: FC = () => {
   const dispatch = useAppDispatch();
   const userList = useAppSelector(userDetailsState);
   const loading = useAppSelector(isLoading);
@@ -28,6 +27,8 @@ const AddClientsPage: NextPage = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [isNewUser, setIsNewUser] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<any>({});
+
+  const selectedClient = useAppSelector((state) => selectMyClientsById(state, selectedData._id));
 
   const { modal } = App.useApp();
 
@@ -47,7 +48,7 @@ const AddClientsPage: NextPage = () => {
   }, []);
 
   // const onDelete = useCallback(async (row: any) => {
-  //   Modal.confirm({
+  //   modal.confirm({
   //     okText: "Yes",
   //     cancelText: "No",
   //     centered: true,
@@ -97,7 +98,6 @@ const AddClientsPage: NextPage = () => {
   }, []);
 
   const onEditUser = useCallback((item: any) => {
-    console.log("Edit item: ", item);
     setSelectedData(item);
     setIsNewUser(true);
   }, []);
@@ -109,7 +109,7 @@ const AddClientsPage: NextPage = () => {
         {userList &&
           Array(userList)?.map((el: any) => (
             <Fragment key={el?._id}>
-              <Col span={8}>
+              <Col span={4}>
                 <Card
                   bordered={false}
                   hoverable
@@ -117,26 +117,26 @@ const AddClientsPage: NextPage = () => {
                     <Image
                       preview={false}
                       src={`${el?.profile_image}`}
-                      fallback="https://i.ibb.co/bXYfNhs/png-transparent-head-the-dummy-avatar-man-tie-jacket-user.png"
-                      height={200}
+                      fallback="https://i.ibb.co/Wf7TB9k/png-transparent-head-the-dummy-avatar-man-tie-jacket-user.png"
+                      // height={200}
                     />
                   }
                 >
                   <Row align={"middle"} justify={"space-between"}>
                     <Col>
-                      <h1 className="text-3xl">{el?.full_name}</h1>
+                      <h1 className="text-1xl">{el?.full_name}</h1>
                       <h2 className="text-slate-400">{session?.user?.user?.id === el?._id ? el?.email : ""}</h2>
                     </Col>
                     {session.user.user.id === el?._id && (
                       <Col>
                         <Space>
                           <Tooltip placement="top" title={"Update your details."}>
-                            <span className="text-white cursor-pointer rounded-full bg-yellow-400 p-2" onClick={() => onEditHandler(el)}>
+                            <span className="text-white cursor-pointer rounded-full bg-yellow-400 p-1" onClick={() => onEditHandler(el)}>
                               <FontAwesomeIcon icon={faUserEdit} color="#78350f" />
                             </span>
                           </Tooltip>
                           <Tooltip placement="top" title={"Add new user in you account."}>
-                            <span className="text-white cursor-pointer rounded-full bg-lime-400 p-2" onClick={onAddNewUser}>
+                            <span className="text-white cursor-pointer rounded-full bg-lime-400 p-1" onClick={onAddNewUser}>
                               <FontAwesomeIcon icon={faUserPlus} color="#3f6212" />
                             </span>
                           </Tooltip>
@@ -155,7 +155,7 @@ const AddClientsPage: NextPage = () => {
       <Row gutter={[20, 10]}>
         {clientList.map((el: any) => (
           <Fragment key={el._id}>
-            <Col span={8}>
+            <Col span={4}>
               <Card
                 size="small"
                 bordered={false}
@@ -164,22 +164,22 @@ const AddClientsPage: NextPage = () => {
                   <Image
                     preview={false}
                     src={`${el?.profile_image}`}
-                    fallback="https://i.ibb.co/bXYfNhs/png-transparent-head-the-dummy-avatar-man-tie-jacket-user.png"
+                    fallback="https://i.ibb.co/Wf7TB9k/png-transparent-head-the-dummy-avatar-man-tie-jacket-user.png"
                     // height={200}
                   />
                 }
               >
                 <Row align={"middle"} justify={"space-between"}>
                   <Col>
-                    <h1 className="text-3xl">{el?.full_name}</h1>
+                    <h1 className="text-1xl">{el?.full_name}</h1>
                     <h2 className="text-slate-400">{el.phone}</h2>
                   </Col>
                   <Col>
                     <Space>
-                      <span className="text-white cursor-pointer rounded-full bg-yellow-400 p-2" onClick={() => onEditUser(el)}>
+                      <span className="text-white cursor-pointer rounded-full bg-yellow-400 p-1" onClick={() => onEditUser(el)}>
                         <FontAwesomeIcon icon={faUserEdit} color="#78350f" />
                       </span>
-                      <span className="text-white cursor-pointer rounded-full bg-red-600 p-2" onClick={() => onDeleteClient(el)}>
+                      <span className="text-white cursor-pointer rounded-full bg-red-600 p-1" onClick={() => onDeleteClient(el)}>
                         <FontAwesomeIcon icon={faTrash} color="#ffffff" />
                       </span>
                     </Space>
@@ -193,11 +193,19 @@ const AddClientsPage: NextPage = () => {
 
       <UserDetailsComponent drawerHeading="Edit Details" isDrawerOpen={isDrawerOpen} onDrawerOpen={(val) => setIsDrawerOpen(val)} />
 
-      <AddNewUser loading={loading} isNewUser={isNewUser} selectedData={selectedData} onModalOpen={(val: boolean) => setIsNewUser(val)} />
+      <AddNewUser
+        loading={loading}
+        isNewUser={isNewUser}
+        selectedData={selectedClient}
+        onModalOpen={(val: boolean) => setIsNewUser(val)}
+        onAfterClose={() => {
+          setSelectedData({});
+        }}
+      />
 
       <SpinnerLoader loading={loading} />
     </div>
   );
 };
 
-export default AddClientsPage;
+export default memo(AddClientsPage);
