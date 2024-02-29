@@ -132,7 +132,7 @@ const AddNewUser = memo<{ isNewUser: boolean; selectedData: any; loading: boolea
             { pattern: /^[0-9]{10}\/*$/g, message: "Only 10 digits" },
           ]}
         >
-          <Input maxLength={10} />
+          <Input maxLength={10} addonBefore="+91" />
         </Form.Item>
 
         <Form.Item name="address" label="Address" rules={[{ required: true, message: "Required" }]}>

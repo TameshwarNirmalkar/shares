@@ -111,6 +111,7 @@ const AddClientsPage: FC = () => {
             <Fragment key={el?._id}>
               <Col span={4}>
                 <Card
+                  className="p-0"
                   bordered={false}
                   hoverable
                   cover={
@@ -123,13 +124,13 @@ const AddClientsPage: FC = () => {
                   }
                 >
                   <Row align={"middle"} justify={"space-between"}>
-                    <Col>
+                    <Col span={20}>
                       <h1 className="text-1xl">{el?.full_name}</h1>
-                      <h2 className="text-slate-400">{session?.user?.user?.id === el?._id ? el?.email : ""}</h2>
+                      {/* <h2 className="text-slate-400">{session?.user?.user?.id === el?._id ? el?.email : ""}</h2> */}
                     </Col>
                     {session.user.user.id === el?._id && (
-                      <Col>
-                        <Space>
+                      <Col span={2}>
+                        <Space direction="vertical">
                           <Tooltip placement="top" title={"Update your details."}>
                             <span className="text-white cursor-pointer rounded-full bg-yellow-400 p-1" onClick={() => onEditHandler(el)}>
                               <FontAwesomeIcon icon={faUserEdit} color="#78350f" />
@@ -163,19 +164,18 @@ const AddClientsPage: FC = () => {
                 cover={
                   <Image
                     preview={false}
-                    src={`${el?.profile_image}`}
-                    fallback="https://i.ibb.co/Wf7TB9k/png-transparent-head-the-dummy-avatar-man-tie-jacket-user.png"
+                    src={`${el?.profile_image ?? "https://i.ibb.co/Wf7TB9k/png-transparent-head-the-dummy-avatar-man-tie-jacket-user.png"}`}
                     // height={200}
                   />
                 }
               >
                 <Row align={"middle"} justify={"space-between"}>
-                  <Col>
+                  <Col span={20}>
                     <h1 className="text-1xl">{el?.full_name}</h1>
-                    <h2 className="text-slate-400">{el.phone}</h2>
+                    {/* <h2 className="text-slate-400">{el.phone}</h2> */}
                   </Col>
-                  <Col>
-                    <Space>
+                  <Col span={2}>
+                    <Space direction="vertical">
                       <span className="text-white cursor-pointer rounded-full bg-yellow-400 p-1" onClick={() => onEditUser(el)}>
                         <FontAwesomeIcon icon={faUserEdit} color="#78350f" />
                       </span>
