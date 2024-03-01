@@ -18,7 +18,7 @@ export const makeStore = () => {
           ignoreActions: true,
         },
       }).concat([]),
-    enhancers: (getDefaultEnhancers) => getDefaultEnhancers().concat([])
+    enhancers: (getDefaultEnhancers) => getDefaultEnhancers({ autoBatch: { type: 'tick' } }).concat([])
   })
 
 };

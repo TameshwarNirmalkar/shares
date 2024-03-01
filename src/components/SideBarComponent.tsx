@@ -18,6 +18,7 @@ const KEY_PATH: { [key: string]: string } = {
   "my-investments": "my-investments",
   stakeholder: "stakeholder",
   "investment-list": "investment-list",
+  "re-investments": "re-investments",
 };
 
 const items: MenuProps["items"] = [
@@ -44,6 +45,7 @@ const items: MenuProps["items"] = [
       { label: "My Investments", key: "my-investments" },
       { label: "Stakeholders", key: "stakeholder" },
       { label: "Consolidate", key: "investment-list" },
+      { label: "Re-Investment", key: "re-investments" },
     ],
   },
   {
