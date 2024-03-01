@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { message } from 'antd';
 import type { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
-import { stakeholdersRemoveOne } from '.';
+import { stakeholdersAddOne, stakeholdersRemoveOne, stakeholdersUpdateOne } from '.';
 
 export const getInvestorListAction = createAsyncThunk('GET_INVESTOR_COLLECTION', async (arg: any, { dispatch }) => {
     try {
@@ -39,6 +39,7 @@ export const createInvestorAction = createAsyncThunk('CREATE_INVESTOR_ACTION', a
             message.error("Invalid Session, Please login again");
         } else {
             message.success("Investor created successfully.");
+            dispatch(stakeholdersAddOne(response.data));
         }
         return response;
     } catch (error: any) {
@@ -63,6 +64,7 @@ export const updateInvestorAction = createAsyncThunk('UPDATE_INVESTOR_ACTION', a
             message.error("Invalid Session, Please login again");
         } else {
             message.success("Investor updated successfully.");
+            dispatch(stakeholdersUpdateOne({ id: arg._id, changes: { ...arg } }));
         }
         return response;
     } catch (error: any) {

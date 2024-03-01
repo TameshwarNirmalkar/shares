@@ -3,7 +3,6 @@
 import { selectAllMyClients } from "@redux-store/my-clients";
 import { getMyClientsListAction } from "@redux-store/my-clients/action";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
-import { stakeholdersAddOne, stakeholdersUpdateOne } from "@redux-store/stakeholders";
 import { createInvestorAction, updateInvestorAction } from "@redux-store/stakeholders/action";
 import { NUMBER_WITH_DOT, ONLY_NUMBER } from "@utility/regex-pattern";
 import { Button, Col, DatePicker, Form, Input, Row, Select, message } from "antd";
@@ -63,10 +62,8 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
         setIsloading(true);
         if (initialVal._id) {
           await dispatch(updateInvestorAction({ ...initialVal, ...values }));
-          dispatch(stakeholdersUpdateOne({ id: initialVal._id, changes: { ...initialVal, ...values } }));
         } else {
-          const res = await dispatch(createInvestorAction({ ...initialVal, ...values }));
-          dispatch(stakeholdersAddOne(res.payload.data));
+          await dispatch(createInvestorAction({ ...initialVal, ...values }));
         }
         investorForm.resetFields();
         if (typeof onSuccessCallback === "function") {
@@ -149,7 +146,6 @@ const StackholderFormComponent: FC<{ initialVal?: any; onSuccessCallback: () => 
                 options={clientList.map((el) => ({ label: el.full_name, value: el.full_name, option: { ...el } }))}
                 placeholder="Select Client Name"
                 onChange={(val: string, opt: any) => {
-                  console.log("E: ", opt);
                   investorForm.setFieldValue("client_id", opt.option._id);
                   investorForm.setFieldValue("phone", opt.option.phone);
                 }}
