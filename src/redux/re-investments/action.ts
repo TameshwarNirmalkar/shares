@@ -2,7 +2,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { message } from 'antd';
 import type { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
-import { reInvestmentRemove } from '.';
 
 
 export const getReInvestmentsCollectionAction = createAsyncThunk('GET_RE_INVEST_COLLECTION', async (arg: any, { getState }) => {
@@ -21,7 +20,7 @@ export const getReInvestmentsCollectionAction = createAsyncThunk('GET_RE_INVEST_
     }
 });
 
-export const createInvestmentsAction = createAsyncThunk('CREATE_RE_INVEST_ACTION', async (arg: any, { dispatch }) => {
+export const createReInvestmentsAction = createAsyncThunk('CREATE_RE_INVEST_ACTION', async (arg: any, { dispatch }) => {
     try {
         const session: any = await getSession() as Session;
         const res = await fetch("/api/re-investments", {
@@ -30,21 +29,21 @@ export const createInvestmentsAction = createAsyncThunk('CREATE_RE_INVEST_ACTION
                 Authorization: `Bearer ${session.user.accessToken}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ uuid: session.user.user.id, ...arg }),
+            body: JSON.stringify({ ...arg }),
         }).then((res) => res.json());
         if (res.success) {
             message.success(res.message);
         } else {
             message.error(res.message);
         }
-        return res;
+        return res.data;
     } catch (error) {
         return error;
     }
 
 })
 
-export const updateInvestmentsAction = createAsyncThunk('UPDATE_RE_INVEST_ACTION', async (arg: any, { dispatch }) => {
+export const updateReInvestmentsAction = createAsyncThunk('UPDATE_RE_INVEST_ACTION', async (arg: any, { dispatch }) => {
     try {
         const session = await getSession() as Session;
         const res = await fetch("/api/re-investments", {
@@ -57,19 +56,18 @@ export const updateInvestmentsAction = createAsyncThunk('UPDATE_RE_INVEST_ACTION
         }).then((res) => res.json());
         if (res.success) {
             message.success(res.message);
-            // dispatch(reInvestmentUpdate({ id: arg._id, changes: { ...arg } }));
         } else {
             message.error(res.message);
         }
-        return res;
+        return arg;
     } catch (error) {
         return error;
     }
 })
 
-export const deleteInvestmentsAction = createAsyncThunk('DELETE_REINVEST_ACTION', async (arg: any, { dispatch }) => {
+export const deleteReInvestmentsAction = createAsyncThunk('DELETE_REINVEST_ACTION', async (arg: any, { dispatch }) => {
     try {
-        const { _id, parent_id } = arg;
+        const { _id } = arg;
         const session = await getSession() as Session;
         const res = await fetch("/api/re-investments", {
             method: "DELETE",
@@ -77,15 +75,14 @@ export const deleteInvestmentsAction = createAsyncThunk('DELETE_REINVEST_ACTION'
                 Authorization: `Bearer ${session.user.accessToken}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ _id, parent_id }),
+            body: JSON.stringify({ _id }),
         }).then((res) => res.json());
         if (res.success) {
             message.success(res.message);
-            dispatch(reInvestmentRemove(_id));
         } else {
             message.error(res.message);
         }
-        return res;
+        return _id;
     } catch (error) {
         return error;
     }

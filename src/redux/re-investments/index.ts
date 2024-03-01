@@ -1,13 +1,14 @@
 import { createEntityAdapter, createSlice, EntityId, PayloadAction } from '@reduxjs/toolkit';
 import { AppState } from '../store';
-import { createInvestmentsAction, getReInvestmentsCollectionAction, updateInvestmentsAction } from './action';
+import { createReInvestmentsAction, deleteReInvestmentsAction, getReInvestmentsCollectionAction, updateReInvestmentsAction } from './action';
 
 interface ReInvestmentCollection {
     uuid: string;
     _id: number;
     interest_date: Date;
     investment_date: Date;
-    amount: number;
+    initial_amount: number;
+    monthly_amount: number;
     base_percentage: number;
     monthly_percentage: number;
     monthly_interest: number;
@@ -40,19 +41,23 @@ const reInvestmentsSlice = createSlice({
             reInvestmentsAdapter.upsertMany(state, action.payload);
         }).addCase(getReInvestmentsCollectionAction.rejected, (state: any, action) => {
             state.errorMsg = action.error
-        }).addCase(createInvestmentsAction.pending, (state: any) => {
+        }).addCase(createReInvestmentsAction.pending, (state: any) => {
             state.isLoading = true;
-        }).addCase(createInvestmentsAction.fulfilled, (state: any, action: PayloadAction<ReInvestmentCollection>) => {
+        }).addCase(createReInvestmentsAction.fulfilled, (state: any, action: PayloadAction<ReInvestmentCollection>) => {
             state.isLoading = false;
             reInvestmentsAdapter.addOne(state, action.payload);
-        }).addCase(updateInvestmentsAction.pending, (state: any) => {
+        }).addCase(updateReInvestmentsAction.pending, (state: any) => {
             state.isLoading = true;
-        }).addCase(updateInvestmentsAction.fulfilled, (state: any, action: PayloadAction<ReInvestmentCollection>) => {
-            state.isLoading = true;
+        }).addCase(updateReInvestmentsAction.fulfilled, (state: any, action: PayloadAction<ReInvestmentCollection>) => {
+            state.isLoading = false;
             reInvestmentsAdapter.updateOne(state, { id: action.payload._id, changes: { ...action.payload } });
+        }).addCase(deleteReInvestmentsAction.pending, (state: any) => {
+            state.isLoading = true;
+        }).addCase(deleteReInvestmentsAction.fulfilled, (state: any, action: PayloadAction<string>) => {
+            state.isLoading = false;
+            reInvestmentsAdapter.removeOne(state, action.payload);
         })
 
-        // 
     }
 });
 
