@@ -1,12 +1,10 @@
 "use client";
 
-import { Button, Col, DatePicker, Form, Input, List, Row } from "antd";
+import { Button, Col, DatePicker, Form, Input, List, Row, Tag } from "antd";
 import { FC, memo, useCallback, useEffect, useState } from "react";
 
 import DrawerComponent from "@components/DrawerComponent";
 import SpinnerLoader from "@components/SpinnerLoader";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { selectAllReInvestments, selectReInvestmentById } from "@redux-store/re-investments";
 import {
   createReInvestmentsAction,
@@ -31,6 +29,7 @@ interface FieldType {
   monthly_percentage: number;
   monthly_interest: number;
   profit: number;
+  total_amount: number;
 }
 
 const ReInvestmentPage: FC<{}> = memo(() => {
@@ -80,6 +79,23 @@ const ReInvestmentPage: FC<{}> = memo(() => {
     [dispatch]
   );
 
+  const onReinvest = useCallback(
+    async (el: any) => {
+      // setSelectedItem(el);
+      console.log("Select: ", el);
+      const { _id, ...restval } = el;
+      const monthly_interest = ((el.total_amount + el.monthly_amount) * el.monthly_percentage) / 100;
+      const new_paylod = {
+        ...restval,
+        monthly_interest: monthly_interest,
+        total_amount: el.total_amount + el.monthly_amount + monthly_interest,
+      };
+      console.log(monthly_interest, "new_paylod ", new_paylod);
+      await dispatch(createReInvestmentsAction(new_paylod));
+    },
+    [dispatch]
+  );
+
   return (
     <>
       <Header className="bg-slate-600 rounded">
@@ -95,15 +111,16 @@ const ReInvestmentPage: FC<{}> = memo(() => {
       <List
         itemLayout="horizontal"
         dataSource={investmentList}
+        split={false}
         renderItem={(item, index) => (
           <List.Item
             actions={[
-              <p className="cursor-pointer text-green-400 text-1xl" onClick={() => onEdit(item)}>
-                <FontAwesomeIcon icon={faEdit} />
-              </p>,
-              <p className="cursor-pointer text-red-700 text-1xl" onClick={() => onDelete(item)}>
-                <FontAwesomeIcon icon={faTrash} />
-              </p>,
+              <Tag color="#108ee9" className="cursor-pointer" onClick={() => onReinvest(item)}>
+                Reinvest
+              </Tag>,
+              <Tag color="#f50" className="cursor-pointer" onClick={() => onDelete(item)}>
+                Delete
+              </Tag>,
             ]}
           >
             <List.Item.Meta
@@ -117,6 +134,10 @@ const ReInvestmentPage: FC<{}> = memo(() => {
                   <div className="grid grid-cols-5 gap-1">
                     <h2>Interests</h2>
                     <h3>{item.monthly_interest}</h3>
+                  </div>
+                  <div className="grid grid-cols-5 gap-1">
+                    <h2>Total Amount</h2>
+                    <h3>{item.total_amount}</h3>
                   </div>
                 </div>
               }
@@ -150,6 +171,8 @@ const ReInvestmentPage: FC<{}> = memo(() => {
               const monthInt =
                 (JSON.parse(all_val.initial_amount ? all_val.initial_amount : 0) + Number(all_val.monthly_amount)) * (all_val.monthly_percentage / 100);
               reinvestmentForm.setFieldValue("monthly_interest", monthInt);
+              const total_amount = all_val.initial_amount ?? 0 + +all_val.monthly_amount + monthInt;
+              reinvestmentForm.setFieldValue("total_amount", total_amount);
             }
           }}
         >
@@ -181,6 +204,9 @@ const ReInvestmentPage: FC<{}> = memo(() => {
                 <Input />
               </Form.Item>
               <Form.Item<FieldType> name="monthly_interest" label="Monthly Interest">
+                <Input readOnly />
+              </Form.Item>
+              <Form.Item<FieldType> name="total_amount" label="Total Amount">
                 <Input readOnly />
               </Form.Item>
             </Col>

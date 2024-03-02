@@ -13,6 +13,7 @@ interface ReInvestmentCollection {
     monthly_percentage: number;
     monthly_interest: number;
     profit: number;
+    total_amount: number;
 }
 
 interface InterestStateI {

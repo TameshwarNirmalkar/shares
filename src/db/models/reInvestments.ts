@@ -42,6 +42,10 @@ const reInvestmentsSchema: Schema = new Schema(
             type: Number,
             require: false,
         },
+        total_amount: {
+            type: Number,
+            require: true,
+        },
     },
     {
         timestamps: true,
