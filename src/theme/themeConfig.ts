@@ -8,6 +8,8 @@ const themeConfig: ThemeConfig = {
         colorPrimaryBorder: '#1e293b',
         colorBgContainer: '#18181b',
         colorText: "#cbd5e1",
+        // colorTextHeading: '#cbd5e1',  // --------- global component heading title color
+        colorTextDescription: '#cbd5e1', // ----------- global description color
         borderRadius: 4,
         colorBgElevated: '#18181b',
         controlItemBgHover: '#64748b',

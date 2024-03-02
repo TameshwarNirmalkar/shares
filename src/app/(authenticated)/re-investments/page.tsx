@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Col, DatePicker, Form, Input, Row } from "antd";
+import { Button, Col, DatePicker, Form, Input, List, Row } from "antd";
 import { FC, memo, useCallback, useEffect, useState } from "react";
 
 import DrawerComponent from "@components/DrawerComponent";
@@ -54,7 +54,7 @@ const ReInvestmentPage: FC<{}> = memo(() => {
 
   const onFinishForm = useCallback(
     async (val: any) => {
-      if (selectedData._id) {
+      if (selectedData?._id) {
         await dispatch(updateReInvestmentsAction(val));
       } else {
         await dispatch(createReInvestmentsAction(val));
@@ -92,7 +92,39 @@ const ReInvestmentPage: FC<{}> = memo(() => {
           </Col>
         </Row>
       </Header>
-      <Row gutter={[10, 10]}>
+      <List
+        itemLayout="horizontal"
+        dataSource={investmentList}
+        renderItem={(item, index) => (
+          <List.Item
+            actions={[
+              <p className="cursor-pointer text-green-400 text-1xl" onClick={() => onEdit(item)}>
+                <FontAwesomeIcon icon={faEdit} />
+              </p>,
+              <p className="cursor-pointer text-red-700 text-1xl" onClick={() => onDelete(item)}>
+                <FontAwesomeIcon icon={faTrash} />
+              </p>,
+            ]}
+          >
+            <List.Item.Meta
+              title={<strong>{dayjs(item.investment_date).format("DD-MMM-YYYY")}</strong>}
+              description={
+                <div>
+                  <div className="grid grid-cols-5 gap-1">
+                    <h2>Amount</h2>
+                    <h3>{item.monthly_amount}</h3>
+                  </div>
+                  <div className="grid grid-cols-5 gap-1">
+                    <h2>Interests</h2>
+                    <h3>{item.monthly_interest}</h3>
+                  </div>
+                </div>
+              }
+            />
+          </List.Item>
+        )}
+      />
+      {/* <Row gutter={[10, 10]}>
         {investmentList.map((el) => (
           <Col span={8} key={el._id}>
             <h1 className="text-3xl">{dayjs(el.investment_date).format("DD-MMM-YYYY")}</h1>
@@ -102,16 +134,10 @@ const ReInvestmentPage: FC<{}> = memo(() => {
             <p>
               Interest: <h3 className="text-2xl">{el.monthly_interest}</h3>
             </p>
-            <p className="cursor-pointer text-green-400 text-2xl" onClick={() => onEdit(el)}>
-              <FontAwesomeIcon icon={faEdit} />
-            </p>
-            <p className="cursor-pointer text-red-700 text-2xl" onClick={() => onDelete(el)}>
-              <FontAwesomeIcon icon={faTrash} />
-            </p>
           </Col>
         ))}
-        {/* <Col span={16}>Items</Col> */}
-      </Row>
+        {/* <Col span={16}>Items</Col>
+      </Row> */}
 
       <DrawerComponent isOpen={isDrawerOpen} onCloseDrawer={() => setIsDrawerOpen(false)} heading={`${selectedData?._id ? "Edit" : "Add"} Re-Investment`}>
         <Form

@@ -1,8 +1,9 @@
 "use client";
 
-import { Card, Col, Row } from "antd";
+import { Card, Col, Flex, Progress, Row, Statistic } from "antd";
 import { FC, memo } from "react";
 
+import { ArrowDownOutlined, ArrowUpOutlined, LikeOutlined } from "@ant-design/icons";
 import { Metadata } from "next";
 import { useRouter } from "next/navigation";
 
@@ -17,7 +18,7 @@ const Dashboard: FC<{}> = memo(() => {
   return (
     <>
       {/* {errormsg && <Alert message="Unauthorised" description="Please login again." type="error" />} */}
-      <Row gutter={[10, 10]}>
+      {/* <Row gutter={[10, 10]}>
         {[
           { title: "Dashboard", rpath: "/dashboard" },
           { title: "Add Clients", rpath: "/add-clients" },
@@ -35,6 +36,46 @@ const Dashboard: FC<{}> = memo(() => {
             </Card>
           </Col>
         ))}
+      </Row> */}
+      <Row gutter={[20, 20]} align={"middle"} className="w-3/4">
+        <Col span={12}>
+          <Card bordered={false}>
+            <Flex gap="small" vertical>
+              <Progress percent={30} />
+              <Progress percent={50} status="active" />
+              <Progress percent={70} status="exception" />
+              <Progress percent={100} />
+              <Progress percent={50} showInfo={false} />
+            </Flex>
+          </Card>
+        </Col>
+        <Col span={12}>
+          <Flex gap="small" wrap="wrap">
+            <Progress type="circle" percent={65} />
+            <Progress type="circle" percent={70} status="exception" />
+            <Progress type="circle" percent={100} />
+          </Flex>
+        </Col>
+        <Col span={12}>
+          <Card bordered={false}>
+            <Statistic title="Feedback" value={1128} prefix={<LikeOutlined />} />
+          </Card>
+        </Col>
+        <Col span={12}>
+          <Card bordered={false}>
+            <Statistic title="Total Users" value={93} suffix="/ 100" />
+          </Card>
+        </Col>
+        <Col span={12}>
+          <Card bordered={false}>
+            <Statistic title="Profilt" value={11.28} precision={2} valueStyle={{ color: "#3f8600" }} prefix={<ArrowUpOutlined />} suffix="%" />
+          </Card>
+        </Col>
+        <Col span={12}>
+          <Card bordered={false}>
+            <Statistic title="Loss" value={1.3} precision={2} valueStyle={{ color: "#cf1322" }} prefix={<ArrowDownOutlined />} suffix="%" />
+          </Card>
+        </Col>
       </Row>
     </>
   );
