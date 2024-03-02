@@ -1,7 +1,7 @@
 "use client";
 
-import { Button, Col, DatePicker, Form, Input, List, Row, Tag } from "antd";
-import { FC, memo, useCallback, useEffect, useState } from "react";
+import { Button, Col, DatePicker, Form, Input, Row, Table, Tag } from "antd";
+import { FC, memo, useCallback, useEffect, useMemo, useState } from "react";
 
 import DrawerComponent from "@components/DrawerComponent";
 import SpinnerLoader from "@components/SpinnerLoader";
@@ -88,6 +88,7 @@ const ReInvestmentPage: FC<{}> = memo(() => {
       const new_paylod = {
         ...restval,
         monthly_interest: monthly_interest,
+        investment_date: dayjs(el.investment_date).add(1, "month"),
         total_amount: el.total_amount + el.monthly_amount + monthly_interest,
       };
       console.log(monthly_interest, "new_paylod ", new_paylod);
@@ -95,6 +96,91 @@ const ReInvestmentPage: FC<{}> = memo(() => {
     },
     [dispatch]
   );
+
+  const investmentListColumns = useMemo(() => {
+    return [
+      {
+        title: "Date",
+        dataIndex: "investment_date",
+        key: "investment_date",
+        width: 130,
+        render: (txt: string) => {
+          return <span className="capitalize">{dayjs(txt).format("DD-MMM-YYYY")}</span>;
+        },
+      },
+      {
+        title: "Re-Invest Amount",
+        dataIndex: "monthly_amount",
+        key: "monthly_amount",
+        render: (txt: number) => {
+          return (
+            <span>
+              {txt.toLocaleString("en-US", {
+                style: "currency",
+                currency: "INR",
+              })}
+            </span>
+          );
+        },
+      },
+      {
+        title: "Percentage %",
+        dataIndex: "monthly_percentage",
+        key: "monthly_percentage",
+        width: 130,
+        render: (txt: string) => {
+          return <span>{txt}%</span>;
+        },
+      },
+      {
+        title: "Interest",
+        dataIndex: "monthly_interest",
+        key: "monthly_interest",
+        render: (txt: number) => {
+          return (
+            <span>
+              {txt.toLocaleString("en-US", {
+                style: "currency",
+                currency: "INR",
+              })}
+            </span>
+          );
+        },
+      },
+
+      {
+        title: "Total Amount",
+        dataIndex: "total_amount",
+        key: "total_amount",
+        render: (txt: number) => {
+          return (
+            <span>
+              {txt.toLocaleString("en-US", {
+                style: "currency",
+                currency: "INR",
+              })}
+            </span>
+          );
+        },
+      },
+      {
+        title: "Action",
+        dataIndex: "_id",
+        key: "_id",
+        width: 170,
+        render: (id: string, item: any) => (
+          <>
+            <Tag color="#108ee9" className="cursor-pointer" onClick={() => onReinvest(item)}>
+              Reinvest
+            </Tag>
+            <Tag color="#f50" className="cursor-pointer" onClick={() => onDelete(item)}>
+              Delete
+            </Tag>
+          </>
+        ),
+      },
+    ];
+  }, []);
 
   return (
     <>
@@ -108,57 +194,10 @@ const ReInvestmentPage: FC<{}> = memo(() => {
           </Col>
         </Row>
       </Header>
-      <List
-        itemLayout="horizontal"
-        dataSource={investmentList}
-        split={false}
-        renderItem={(item, index) => (
-          <List.Item
-            actions={[
-              <Tag color="#108ee9" className="cursor-pointer" onClick={() => onReinvest(item)}>
-                Reinvest
-              </Tag>,
-              <Tag color="#f50" className="cursor-pointer" onClick={() => onDelete(item)}>
-                Delete
-              </Tag>,
-            ]}
-          >
-            <List.Item.Meta
-              title={<strong>{dayjs(item.investment_date).format("DD-MMM-YYYY")}</strong>}
-              description={
-                <div>
-                  <div className="grid grid-cols-5 gap-1">
-                    <h2>Amount</h2>
-                    <h3>{item.monthly_amount}</h3>
-                  </div>
-                  <div className="grid grid-cols-5 gap-1">
-                    <h2>Interests</h2>
-                    <h3>{item.monthly_interest}</h3>
-                  </div>
-                  <div className="grid grid-cols-5 gap-1">
-                    <h2>Total Amount</h2>
-                    <h3>{item.total_amount}</h3>
-                  </div>
-                </div>
-              }
-            />
-          </List.Item>
-        )}
-      />
-      {/* <Row gutter={[10, 10]}>
-        {investmentList.map((el) => (
-          <Col span={8} key={el._id}>
-            <h1 className="text-3xl">{dayjs(el.investment_date).format("DD-MMM-YYYY")}</h1>
-            <p>
-              Amount: <h3 className="text-2xl">{el.monthly_amount}</h3>
-            </p>
-            <p>
-              Interest: <h3 className="text-2xl">{el.monthly_interest}</h3>
-            </p>
-          </Col>
-        ))}
-        {/* <Col span={16}>Items</Col>
-      </Row> */}
+
+      <div className="py-4">
+        <Table rowKey={"_id"} columns={investmentListColumns} dataSource={investmentList} pagination={false} />
+      </div>
 
       <DrawerComponent isOpen={isDrawerOpen} onCloseDrawer={() => setIsDrawerOpen(false)} heading={`${selectedData?._id ? "Edit" : "Add"} Re-Investment`}>
         <Form
