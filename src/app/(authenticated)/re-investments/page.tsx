@@ -168,19 +168,23 @@ const ReInvestmentPage: FC<{}> = memo(() => {
         dataIndex: "_id",
         key: "_id",
         width: 170,
-        render: (id: string, item: any) => (
+        render: (id: number, item: any) => (
           <>
-            <Tag color="#108ee9" className="cursor-pointer" onClick={() => onReinvest(item)}>
-              Reinvest
-            </Tag>
-            <Tag color="#f50" className="cursor-pointer" onClick={() => onDelete(item)}>
-              Delete
-            </Tag>
+            {investmentList[investmentList.length - 1]._id === id && (
+              <>
+                <Tag color="#108ee9" className="cursor-pointer" onClick={() => onReinvest(item)}>
+                  Reinvest
+                </Tag>
+                <Tag color="#f50" className="cursor-pointer" onClick={() => onDelete(item)}>
+                  Delete
+                </Tag>
+              </>
+            )}
           </>
         ),
       },
     ];
-  }, []);
+  }, [investmentList]);
 
   return (
     <>
