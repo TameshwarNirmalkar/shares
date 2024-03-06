@@ -85,7 +85,7 @@ const MasterInvestment: FC<{}> = memo(() => {
       title: "Principle",
       dataIndex: "amount",
       key: "amount",
-      sorter: (a: any, b: any) => a.amount.localeCompare(b.amount),
+      // sorter: (a: any, b: any) => a.amount.localeCompare(b.amount),
       render: (txt: number) => {
         return (
           <span className="text-yellow-400">

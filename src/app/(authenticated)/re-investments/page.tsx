@@ -81,8 +81,6 @@ const ReInvestmentPage: FC<{}> = memo(() => {
 
   const onReinvest = useCallback(
     async (el: any) => {
-      // setSelectedItem(el);
-      console.log("Select: ", el);
       const { _id, ...restval } = el;
       const monthly_interest = ((el.total_amount + el.monthly_amount) * el.monthly_percentage) / 100;
       const new_paylod = {
@@ -91,7 +89,6 @@ const ReInvestmentPage: FC<{}> = memo(() => {
         investment_date: dayjs(el.investment_date).add(1, "month"),
         total_amount: el.total_amount + el.monthly_amount + monthly_interest,
       };
-      console.log(monthly_interest, "new_paylod ", new_paylod);
       await dispatch(createReInvestmentsAction(new_paylod));
     },
     [dispatch]
@@ -108,6 +105,25 @@ const ReInvestmentPage: FC<{}> = memo(() => {
           return <span className="capitalize">{dayjs(txt).format("DD-MMM-YYYY")}</span>;
         },
       },
+      // {
+      //   title: "Closing Balance",
+      //   dataIndex: "uuid",
+      //   key: "uuid",
+      //   render: (txt: number, row: any) => {
+      //     return (
+      //       <span>
+      //         {investmentList[1]?.total_amount && (
+      //           <>
+      //             {row.total_amount.toLocaleString("en-US", {
+      //               style: "currency",
+      //               currency: "INR",
+      //             })}
+      //           </>
+      //         )}
+      //       </span>
+      //     );
+      //   },
+      // },
       {
         title: "Re-Invest Amount",
         dataIndex: "monthly_amount",
