@@ -12,7 +12,8 @@ import {
   myTotalInvestmentState,
 } from "@redux-store/investments-list/memonised-investment-list";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
-import { Alert, Col, Row, Space, Table } from "antd";
+import { addTransactionAction } from "@redux-store/transaction-history/action";
+import { Alert, Button, Col, Row, Space, Table } from "antd";
 import { FC, memo, useEffect } from "react";
 
 const columns = [
@@ -75,65 +76,6 @@ const columns = [
   },
 ];
 
-const columnClient = [
-  {
-    title: "Investor",
-    dataIndex: "full_name",
-    key: "full_name",
-    render: (txt: string) => {
-      return <span className="capitalize">{txt}</span>;
-    },
-  },
-  // {
-  //   title: "Date of Investment",
-  //   dataIndex: "investment_date",
-  //   key: "investment_date",
-  //   render: (txt: string) => {
-  //     return <span>{dayjs(txt).format("DD")} of every month.</span>;
-  //   },
-  // },
-  {
-    title: "Principle",
-    dataIndex: "principle_amount",
-    key: "principle_amount",
-    sorter: (a: any, b: any) => a.principle_amount - b.principle_amount,
-    render: (txt: number) => {
-      return (
-        <span className="text-yellow-400">
-          {txt.toLocaleString("en-US", {
-            style: "currency",
-            currency: "INR",
-          })}
-        </span>
-      );
-    },
-  },
-  {
-    title: "Percentage",
-    dataIndex: "percentage",
-    key: "percentage",
-    sorter: (a: any, b: any) => a.percentage - b.percentage,
-    render: (txt: string) => {
-      return <span className="text-sky-600">{txt} %</span>;
-    },
-  },
-  {
-    title: "Monthly Interest",
-    dataIndex: "createdAt",
-    key: "createdAt",
-    render: (txt: number, row: any) => {
-      return (
-        <span className="text-green-200">
-          {((row.principle_amount * row.percentage) / 100).toLocaleString("en-US", {
-            style: "currency",
-            currency: "INR",
-          })}
-        </span>
-      );
-    },
-  },
-];
-
 const InvestmentListPage: FC<{}> = memo(() => {
   const dispatch = useAppDispatch();
 
@@ -148,6 +90,78 @@ const InvestmentListPage: FC<{}> = memo(() => {
   useEffect(() => {
     dispatch(getInvestmentsCollectionAction(""));
   }, [dispatch]);
+
+  const columnClient = [
+    {
+      title: "Investor",
+      dataIndex: "full_name",
+      key: "full_name",
+      render: (txt: string) => {
+        return <span className="capitalize">{txt}</span>;
+      },
+    },
+    // {
+    //   title: "Date of Investment",
+    //   dataIndex: "investment_date",
+    //   key: "investment_date",
+    //   render: (txt: string) => {
+    //     return <span>{dayjs(txt).format("DD")} of every month.</span>;
+    //   },
+    // },
+    {
+      title: "Principle",
+      dataIndex: "principle_amount",
+      key: "principle_amount",
+      sorter: (a: any, b: any) => a.principle_amount - b.principle_amount,
+      render: (txt: number) => {
+        return (
+          <span className="text-yellow-400">
+            {txt.toLocaleString("en-US", {
+              style: "currency",
+              currency: "INR",
+            })}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Percentage",
+      dataIndex: "percentage",
+      key: "percentage",
+      sorter: (a: any, b: any) => a.percentage - b.percentage,
+      render: (txt: string) => {
+        return <span className="text-sky-600">{txt} %</span>;
+      },
+    },
+    {
+      title: "Monthly Interest",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (txt: number, row: any) => {
+        return (
+          <span className="text-green-200">
+            {((row.principle_amount * row.percentage) / 100).toLocaleString("en-US", {
+              style: "currency",
+              currency: "INR",
+            })}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "uuid",
+      key: "uuid",
+      width: 120,
+      render: (txt: number, row: any) => {
+        return (
+          <Button type="primary" className="px-8" onClick={() => dispatch(addTransactionAction(row))}>
+            Pay
+          </Button>
+        );
+      },
+    },
+  ];
 
   return (
     <>

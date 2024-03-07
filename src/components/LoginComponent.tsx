@@ -55,7 +55,7 @@ const LoginComponent: FC<{}> = memo(() => {
                 />
               </div>
               <div className="bg-slate-600 rounded-lg p-4 bg-opacity-45">
-                {userError && <Alert className="p-2 mb-3" type="error" message={<span className="error text-red-700">{"Invalid Credentials."}</span>} />}
+                {userError && <Alert className="p-2 mb-3" type="error" message={<span className="error text-white">Invalid Credentials.</span>} />}
 
                 <Form
                   initialValues={{ email: null, password: null, remember: false }}

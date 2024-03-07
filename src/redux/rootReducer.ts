@@ -6,6 +6,7 @@ import masterInvestment from "@redux-store/master-investments";
 import myClientList from "@redux-store/my-clients";
 import reInvestments from "@redux-store/re-investments";
 import stakeholders from "@redux-store/stakeholders";
+import allHistory from '@redux-store/transaction-history';
 import users from "@redux-store/users";
 
 export default combineReducers({
@@ -15,5 +16,6 @@ export default combineReducers({
   investmentList,
   masterInvestment,
   myClientList,
-  reInvestments
+  reInvestments,
+  allHistory
 });
