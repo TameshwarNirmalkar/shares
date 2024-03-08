@@ -1,6 +1,6 @@
 import { AppState } from '@redux-store/store';
 import { createEntityAdapter, createSlice, EntityId, EntityState, PayloadAction } from '@reduxjs/toolkit';
-import { addTransactionAction, getTransactionCollectionAction } from './action';
+import { addTransactionAction, getTransactionCollectionAction, onTransactionDeleteAction } from './action';
 
 interface TransactionHistoryCollection {
     uuid: string;
@@ -16,12 +16,7 @@ interface PaymentHistoryCollection {
     amount: number;
 }
 
-interface TransactionHistoryStateI {
-    isLoading: boolean;
-    errorMsg: string | null;
-    transaction_history: EntityState<TransactionHistoryCollection, EntityId>,
-    payment_history: EntityState<PaymentHistoryCollection, EntityId>
-}
+
 
 const transactionHistoryAdapter = createEntityAdapter<TransactionHistoryCollection, EntityId>({
     selectId: (his: TransactionHistoryCollection) => his._id,
@@ -33,6 +28,12 @@ const paymentHistoryAdapter = createEntityAdapter<PaymentHistoryCollection, Enti
     sortComparer: (a: PaymentHistoryCollection, b: PaymentHistoryCollection) => a.uuid.localeCompare(b.uuid)
 });
 
+interface TransactionHistoryStateI {
+    isLoading: boolean;
+    errorMsg: string | null;
+    transaction_history: EntityState<TransactionHistoryCollection, EntityId>,
+    payment_history: EntityState<PaymentHistoryCollection, EntityId>
+}
 
 const transactionHistorySlice = createSlice({
     name: 'TRANSACTION_HISTORY_SLICE',
@@ -56,11 +57,17 @@ const transactionHistorySlice = createSlice({
     extraReducers(builder) {
         builder.addCase(getTransactionCollectionAction.pending, (state: any) => {
             state.isLoading = true;
-        }).addCase(getTransactionCollectionAction.fulfilled, (state: any, action: PayloadAction<any>) => {
+        }).addCase(getTransactionCollectionAction.fulfilled, (state: TransactionHistoryStateI, action: PayloadAction<any>) => {
             state.isLoading = false;
-            transactionHistoryAdapter.upsertMany(state, action.payload.transaction_history)
+            transactionHistoryAdapter.upsertMany(state.transaction_history, action.payload);
+
         }).addCase(addTransactionAction.fulfilled, (state: TransactionHistoryStateI, action: PayloadAction<any>) => {
             transactionHistoryAdapter.addOne(state.transaction_history, action.payload);
+        }).addCase(onTransactionDeleteAction.pending, (state: TransactionHistoryStateI) => {
+            state.isLoading = true;
+        }).addCase(onTransactionDeleteAction.fulfilled, (state: TransactionHistoryStateI, action: PayloadAction<any>) => {
+            state.isLoading = false;
+            transactionHistoryAdapter.removeOne(state.transaction_history, action.payload._id);
         })
     }
 });

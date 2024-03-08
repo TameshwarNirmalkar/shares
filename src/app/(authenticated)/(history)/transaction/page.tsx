@@ -1,12 +1,14 @@
 "use client";
 
 import { Divider, Table } from "antd";
-import { FC, memo, useEffect } from "react";
+import { FC, memo, useCallback, useEffect } from "react";
 
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
 import { selectAllTransactionHistory } from "@redux-store/transaction-history";
-import { getTransactionCollectionAction } from "@redux-store/transaction-history/action";
-import { selectedLoading } from "@redux-store/transaction-history/memonised-transaction";
+import { getTransactionCollectionAction, onTransactionDeleteAction } from "@redux-store/transaction-history/action";
+import { loadingState } from "@redux-store/transaction-history/memonised-transaction";
 import { Header } from "antd/es/layout/layout";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
@@ -16,26 +18,34 @@ const TransactionPage: FC<{}> = memo(() => {
   const dispatch = useAppDispatch();
 
   const allTrasHistory = useAppSelector(selectAllTransactionHistory);
-  const loading = useAppSelector(selectedLoading);
+  const loading = useAppSelector(loadingState);
 
   useEffect(() => {
     dispatch(getTransactionCollectionAction(""));
   }, []);
 
+  const onDeleteTransaction = useCallback(
+    (row: any) => {
+      console.log("Row: ", row);
+      dispatch(onTransactionDeleteAction(row));
+    },
+    [dispatch]
+  );
+
   const columnClient = [
     {
-      title: "ID",
-      dataIndex: "_id",
-      key: "_id",
-      sorter: (a: any, b: any) => a._id - b._id,
+      title: "Name",
+      dataIndex: "full_name",
+      key: "full_name",
+      sorter: (a: any, b: any) => a.full_name - b.full_name,
       render: (txt: string) => {
         return <span className="text-sky-600">{txt}</span>;
       },
     },
     {
       title: "Date of Investment",
-      dataIndex: "investment_date",
-      key: "investment_date",
+      dataIndex: "interest_date",
+      key: "interest_date",
       render: (txt: string) => {
         return <span>{dayjs(txt).format("DD-MM-YYYY")}</span>;
       },
@@ -48,13 +58,24 @@ const TransactionPage: FC<{}> = memo(() => {
       render: (txt: number) => {
         return (
           <span className="text-yellow-400">
-            {txt.toLocaleString("en-US", {
+            {txt?.toLocaleString("en-US", {
               style: "currency",
               currency: "INR",
             })}
           </span>
         );
       },
+    },
+    {
+      title: "Action",
+      dataIndex: "id",
+      key: "id",
+      width: 100,
+      render: (txt: string, row: any) => (
+        <span className="cursor-pointer" onClick={() => onDeleteTransaction(row)}>
+          <FontAwesomeIcon icon={faTrashCan} color="#dc2626" />
+        </span>
+      ),
     },
   ];
 

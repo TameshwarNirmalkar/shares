@@ -3,7 +3,7 @@ import type { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 
 
-export const getTransactionCollectionAction = createAsyncThunk('GET_TRANSCATION_HISTORY_COLLECTION', async (arg: any, { getState }) => {
+export const getTransactionCollectionAction = createAsyncThunk('get/transactions', async (arg: any, { getState }) => {
     try {
         const session = await getSession() as Session;
         const res = await fetch(`/api/history/transaction-history`, {
@@ -13,9 +13,7 @@ export const getTransactionCollectionAction = createAsyncThunk('GET_TRANSCATION_
                 Authorization: `Bearer ${session?.user.accessToken}`,
             },
         }).then((res) => res.json());
-        return {
-            transaction_history: res.allHistory, payment_history: []
-        };
+        return res.allHistory;
     } catch (error: any) {
         return error;
     }
@@ -23,10 +21,41 @@ export const getTransactionCollectionAction = createAsyncThunk('GET_TRANSCATION_
 
 export const addTransactionAction = createAsyncThunk('add/transaction', async (arg: any, { getState, dispatch }) => {
     const payload = {
+        full_name: arg.full_name,
         amount: arg.profit,
         uuid: arg.uuid,
-        _id: arg._id,
-        investment_date: arg.interest_date,
+        interest_date: arg.interest_date,
+        is_paid: true,
     };
-    return payload;
+    try {
+        const session = await getSession() as Session;
+        const res = await fetch(`/api/history/transaction-history`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.user.accessToken}`,
+            },
+            body: JSON.stringify(payload)
+        }).then((res) => res.json());
+        return res.data;
+    } catch (error: any) {
+        return error;
+    }
+})
+
+export const onTransactionDeleteAction = createAsyncThunk('delete/transaction', async (arg: any, { getState, dispatch }) => {
+    try {
+        const session = await getSession() as Session;
+        await fetch(`/api/history/transaction-history`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.user.accessToken}`,
+            },
+            body: JSON.stringify({ _id: arg._id })
+        }).then((res) => res.json());
+        return arg;
+    } catch (error: any) {
+        return error;
+    }
 })

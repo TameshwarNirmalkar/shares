@@ -12,9 +12,11 @@ import {
   myTotalInvestmentState,
 } from "@redux-store/investments-list/memonised-investment-list";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
+import { updateInvestorAction } from "@redux-store/stakeholders/action";
 import { addTransactionAction } from "@redux-store/transaction-history/action";
 import { Alert, Button, Col, Row, Space, Table } from "antd";
-import { FC, memo, useEffect } from "react";
+import dayjs from "dayjs";
+import { FC, memo, useCallback, useEffect } from "react";
 
 const columns = [
   {
@@ -91,6 +93,15 @@ const InvestmentListPage: FC<{}> = memo(() => {
     dispatch(getInvestmentsCollectionAction(""));
   }, [dispatch]);
 
+  const onPayment = useCallback(
+    async (row: any) => {
+      const interest_date = dayjs(row.interest_date).add(1, "month");
+      await dispatch(updateInvestorAction({ ...row, interest_date }));
+      dispatch(addTransactionAction({ ...row }));
+    },
+    [dispatch]
+  );
+
   const columnClient = [
     {
       title: "Investor",
@@ -154,11 +165,16 @@ const InvestmentListPage: FC<{}> = memo(() => {
       key: "uuid",
       width: 120,
       render: (txt: number, row: any) => {
+        // const isAfterdate = dayjs().isAfter(row.interest_date, "D");
+        // if (isAfterdate) {
         return (
-          <Button type="primary" className="px-8" onClick={() => dispatch(addTransactionAction(row))}>
+          <Button type="primary" className="px-8 bg-green-500" onClick={() => onPayment(row)}>
             Pay
           </Button>
         );
+        // } else {
+        //   return <span className="py-2 px-7 bg-slate-500 rounded">Done</span>;
+        // }
       },
     },
   ];

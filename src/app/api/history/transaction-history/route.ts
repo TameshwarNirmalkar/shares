@@ -49,3 +49,29 @@ export async function POST(request: NextRequest) {
     }
 }
 
+export async function DELETE(request: NextRequest) {
+    const geth = request.headers.get("authorization");
+    const secret = new TextEncoder().encode(SECRET_KEY);
+    const hasBearer = geth?.split(" ") as string[];
+
+    if (geth && hasBearer[0] !== "Bearer") {
+        return NextResponse.json({ message: "Bearer not found" }, { status: 403 });
+    } else if (!hasBearer[1]) {
+        return NextResponse.json({ message: "Authorize token is not defined" }, { status: 403 });
+    } else {
+        try {
+            const payload = await request.json();
+            await jose.jwtVerify(`${hasBearer[1]}`, secret);
+            await connectMongoDB();
+            // await InterestModel.updateOne(
+            //   { _id: payload.parent_id },
+            //   { $pull: { investments: { _id: payload._id } } },
+            // )
+            await TransactionHistoryModel.deleteOne(payload);
+            return NextResponse.json({ message: "Item Delete Successfully.", success: true }, { status: 200 });
+        } catch (error: any) {
+            return NextResponse.json({ message: error.toString(), code: error.code, success: false }, { status: 403 });
+        }
+    }
+}
+
