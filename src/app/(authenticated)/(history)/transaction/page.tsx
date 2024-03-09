@@ -1,6 +1,6 @@
 "use client";
 
-import { Divider, Table } from "antd";
+import { App, Divider, Table } from "antd";
 import { FC, memo, useCallback, useEffect } from "react";
 
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
@@ -11,10 +11,9 @@ import { getTransactionCollectionAction, onTransactionDeleteAction } from "@redu
 import { loadingState } from "@redux-store/transaction-history/memonised-transaction";
 import { Header } from "antd/es/layout/layout";
 import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
 
 const TransactionPage: FC<{}> = memo(() => {
-  const { push } = useRouter();
+  const { modal } = App.useApp();
   const dispatch = useAppDispatch();
 
   const allTrasHistory = useAppSelector(selectAllTransactionHistory);
@@ -26,8 +25,16 @@ const TransactionPage: FC<{}> = memo(() => {
 
   const onDeleteTransaction = useCallback(
     (row: any) => {
-      console.log("Row: ", row);
-      dispatch(onTransactionDeleteAction(row));
+      modal.confirm({
+        title: "Delete Transaction",
+        content: <>Are you sure want to delete the record.</>,
+        centered: true,
+        okText: "Yes",
+        cancelText: "No",
+        onOk: () => {
+          dispatch(onTransactionDeleteAction(row));
+        },
+      });
     },
     [dispatch]
   );
