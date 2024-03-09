@@ -1,16 +1,15 @@
 "use client";
 
-import { App, Divider, Table } from "antd";
-import { FC, memo, useCallback, useEffect } from "react";
-
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
 import { selectAllTransactionHistory } from "@redux-store/transaction-history";
 import { getTransactionCollectionAction, onTransactionDeleteAction } from "@redux-store/transaction-history/action";
 import { loadingState } from "@redux-store/transaction-history/memonised-transaction";
+import { App, Divider, Table } from "antd";
 import { Header } from "antd/es/layout/layout";
 import dayjs from "dayjs";
+import { FC, memo, useCallback, useEffect } from "react";
 
 const TransactionPage: FC<{}> = memo(() => {
   const { modal } = App.useApp();
@@ -50,7 +49,7 @@ const TransactionPage: FC<{}> = memo(() => {
       },
     },
     {
-      title: "Date of Investment",
+      title: "Payment Date",
       dataIndex: "interest_date",
       key: "interest_date",
       render: (txt: string) => {
@@ -98,7 +97,7 @@ const TransactionPage: FC<{}> = memo(() => {
           ))}
         </Col>
       </Row> */}
-      <Header className="rounded px-4">Transaction History</Header>
+      <Header className="rounded px-4 bg-slate-600">Transaction History</Header>
       <Divider />
       <Table loading={loading} columns={columnClient} dataSource={allTrasHistory} bordered pagination={false} rowKey={"_id"} />
     </>

@@ -25,6 +25,7 @@ export const addTransactionAction = createAsyncThunk('add/transaction', async (a
         amount: arg.profit,
         uuid: arg.uuid,
         interest_date: arg.interest_date,
+        client_id: arg.client_id,
         is_paid: true,
     };
     try {

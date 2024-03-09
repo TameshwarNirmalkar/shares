@@ -10,6 +10,7 @@ const transactionHisotyrSchema: Schema = new Schema(
         percentage: { type: Number, require: true },
         interest_date: { type: Date, require: true },
         is_paid: { type: Boolean, require: true },
+        client_id: { require: true, type: String },
 
     },
     {
