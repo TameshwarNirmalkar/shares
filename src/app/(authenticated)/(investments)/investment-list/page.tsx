@@ -171,7 +171,7 @@ const InvestmentListPage: FC<{}> = memo(() => {
         const isAfterdate = dayjs().isAfter(row.interest_date, "D");
         if (isAfterdate) {
           return (
-            <Button type="primary" className="px-8 bg-green-500" onClick={() => onPayment(row)}>
+            <Button type="primary" disabled={loading} className="px-8 bg-green-500" onClick={() => onPayment(row)}>
               Pay
             </Button>
           );
