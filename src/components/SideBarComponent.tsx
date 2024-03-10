@@ -19,6 +19,7 @@ const KEY_PATH: { [key: string]: string } = {
   stakeholder: "stakeholder",
   "investment-list": "investment-list",
   "re-investments": "re-investments",
+  "interest-calculator": "interest-calculator",
 };
 
 const items: MenuProps["items"] = [
@@ -54,8 +55,7 @@ const items: MenuProps["items"] = [
     icon: <FontAwesomeIcon icon={faClockRotateLeft} color="white" fontSize={20} />,
     children: [
       { label: "Transaction", key: "transaction" },
-      { label: "Interest Calculator", key: "interest_calculator" },
-      { label: "Investment", key: "investment" },
+      { label: "Interest Calculator", key: "interest-calculator" },
     ],
   },
 ];
