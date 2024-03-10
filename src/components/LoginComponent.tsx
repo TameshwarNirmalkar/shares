@@ -52,6 +52,7 @@ const LoginComponent: FC<{}> = memo(() => {
                   src="https://i.ibb.co/Wf7TB9k/png-transparent-head-the-dummy-avatar-man-tie-jacket-user.png"
                   height={100}
                   width={100}
+                  priority={true}
                 />
               </div>
               <div className="bg-slate-600 rounded-lg p-4 bg-opacity-45">
