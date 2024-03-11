@@ -1,6 +1,8 @@
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import Credentials from "node_modules/next-auth/providers/credentials";
 import { userService } from "./services/userService";
+// import * as jose from "jose";
+// import jwt from "jsonwebtoken";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -10,12 +12,11 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET, // Required to fixed the JWEDecryptionFailed error, while session expired.
   jwt: {
     // encode: async ({ secret, token }: any) => {
-    // return jwt.sign(token, secret);
-    // console.log("encode secret : ====================== ", secret);
-    // console.log("encode Token : ====================== ", token);
-    // return "token";
+    //   // console.log("encode secret : ====================== ", secret);
+    //   // console.log("encode Token : ====================== ", token);
+    //   return jwt.sign(token, secret);
     // },
-    // decode: async ({ secret, token }: jwt.JwtPayload): Promise<string | jwt.JwtPayload> => {
+    // decode: async ({ secret, token }: jwt.JwtPayload): Promise<any> => {
     //   return await jwt.verify(token, secret)
     // },
   },

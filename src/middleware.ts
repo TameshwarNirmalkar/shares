@@ -6,8 +6,9 @@ export async function middleware(request: NextRequest, response: NextResponse) {
   // const session = await getServerAuthSession();
   const session = request.cookies.get('next-auth.session-token')?.value;
 
-  // console.log("Request: ================== ", pathname);
+  console.log("Middleware Pathname: ================== ", pathname);
   // console.log("Response: ================== ", request);
+
   if (['/login', '/register'].includes(pathname)) {
     if (session) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
@@ -45,6 +46,8 @@ export const config = {
     '/interest-calculator/:path*',
     '/my-profile/:path*',
     '/re-investments/:path*',
-    '/investment-list/:path*'
+    '/investment-list/:path*',
+    '/((?!_next/static|favicon.ico|api/auth|$).*)',
+    // '/api/:path*',
   ],
 };
