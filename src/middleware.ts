@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest, response: NextResponse) {
   console.log("Middleware Pathname: ================== ", pathname);
   // console.log("Response: ================== ", request);
 
-  if (['/login', '/register'].includes(pathname)) {
+  if (['/', '/login', '/register'].includes(pathname)) {
     if (session) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
@@ -33,8 +33,8 @@ export async function middleware(request: NextRequest, response: NextResponse) {
 export const config = {
   matcher: [
     '/',
-    '/login',
-    '/register',
+    // '/login',
+    // '/register',
     '/dashboard/:path*',
     '/add_clients/:path*',
     '/client_list/:path*',
