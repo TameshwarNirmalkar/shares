@@ -9,16 +9,16 @@ export async function middleware(request: NextRequest, response: NextResponse) {
   console.log("Middleware Pathname: ================== ", pathname);
   // console.log("Response: ================== ", request);
 
-  if (['/', '/login', '/register'].includes(pathname)) {
-    if (session) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
-  } else {
-    // access secured routes.
-    if (!session) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-  }
+  // if (['/', '/login', '/register'].includes(pathname)) {
+  //   if (session) {
+  //     return NextResponse.redirect(new URL("/dashboard", request.url));
+  //   }
+  // } else {
+  //   // access secured routes.
+  //   if (!session) {
+  //     return NextResponse.redirect(new URL("/login", request.url));
+  //   }
+  // }
   // if (!session) {
   //   return NextResponse.redirect(new URL("/login", request.url));
   //   // return NextResponse.rewrite(`${origin}/login`)
@@ -27,7 +27,7 @@ export async function middleware(request: NextRequest, response: NextResponse) {
   //     return NextResponse.redirect(new URL("/dashboard", request.url));
   //   }
   // }
-  return NextResponse.next();
+  // return NextResponse.next();
 }
 
 export const config = {
