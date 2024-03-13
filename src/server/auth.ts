@@ -1,4 +1,5 @@
 import { getServerSession, type NextAuthOptions } from "next-auth";
+import { cookies } from 'next/headers';
 import Credentials from "node_modules/next-auth/providers/credentials";
 import { userService } from "./services/userService";
 // import * as jose from "jose";
@@ -41,6 +42,26 @@ export const authOptions: NextAuthOptions = {
       session.user = { ...token } as any;
       // console.log("3 callback session ============== ", session);
       return session;
+    },
+  },
+  events: {
+    signIn({ user }: { user: any }) {
+      cookies().set({
+        name: 'authToken',
+        value: user.accessToken,
+        httpOnly: true,
+        path: '/',
+        maxAge: 30 * 24 * 60 * 1, // 1 day
+      })
+    },
+    signOut({ token, session }) {
+      cookies().set({
+        name: 'authToken',
+        value: '',
+        httpOnly: true,
+        path: '/',
+        maxAge: 0
+      })
     },
   },
   pages: {

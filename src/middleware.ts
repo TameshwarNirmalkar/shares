@@ -4,37 +4,31 @@ import { NextRequest, NextResponse } from "next/server";
 export async function middleware(request: NextRequest, response: NextResponse) {
   const { pathname, origin } = request.nextUrl
   // const session = await getServerAuthSession();
-  const session = request.cookies.get('next-auth.session-token')?.value;
+  const session = request.cookies.get('authToken')?.value;
 
-  console.log("Middleware Pathname: ================== ", pathname);
+  // console.log("Middleware Pathname: ================== ", pathname);
+  // console.log("TOKEN: ================== ", session);
   // console.log("Response: ================== ", request);
 
-  // if (['/', '/login', '/register'].includes(pathname)) {
-  //   if (session) {
-  //     return NextResponse.redirect(new URL("/dashboard", request.url));
-  //   }
-  // } else {
-  //   // access secured routes.
-  //   if (!session) {
-  //     return NextResponse.redirect(new URL("/login", request.url));
-  //   }
-  // }
-  // if (!session) {
-  //   return NextResponse.redirect(new URL("/login", request.url));
-  //   // return NextResponse.rewrite(`${origin}/login`)
-  // } else {
-  //   if (['/login', '/register'].includes(pathname)) {
-  //     return NextResponse.redirect(new URL("/dashboard", request.url));
-  //   }
-  // }
-  // return NextResponse.next();
+  if (['/', '/login', '/register'].includes(pathname)) {
+    if (session) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+  } else {
+    // access secured routes.
+    if (!session) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
     '/',
-    // '/login',
-    // '/register',
+    '/login',
+    '/register',
     '/dashboard/:path*',
     '/add_clients/:path*',
     '/client_list/:path*',
