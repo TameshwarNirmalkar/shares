@@ -1,14 +1,13 @@
 "use client";
 
 import SpinnerLoader from "@components/SpinnerLoader";
+import { selectAllMyClientInvestment, selectAllMyInvestment } from "@redux-store/investments-list";
 import { getInvestmentsCollectionAction } from "@redux-store/investments-list/action";
 import {
   consolidateState,
   getTotalInterestMeAndInvestor,
   isLoading,
-  myClientInvestmentListState,
   myClientTotalInvestmentState,
-  myInvestmentListState,
   myTotalInvestmentState,
 } from "@redux-store/investments-list/memonised-investment-list";
 import { useAppDispatch, useAppSelector } from "@redux-store/reduxHooks";
@@ -82,8 +81,8 @@ const InvestmentListPage: FC<{}> = memo(() => {
   const dispatch = useAppDispatch();
 
   const loading = useAppSelector(isLoading);
-  const my_investment_list = useAppSelector(myInvestmentListState);
-  const my_client_investment_list = useAppSelector(myClientInvestmentListState);
+  const my_investment_list = useAppSelector(selectAllMyInvestment);
+  const my_client_investment_list = useAppSelector(selectAllMyClientInvestment);
   const consolidate: any = useAppSelector(consolidateState);
   const my_total_investment: any = useAppSelector(myTotalInvestmentState);
   const my_client_total_investment: any = useAppSelector(myClientTotalInvestmentState);

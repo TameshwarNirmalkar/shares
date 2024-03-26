@@ -19,12 +19,12 @@ interface PaymentHistoryCollection {
 
 
 const transactionHistoryAdapter = createEntityAdapter<TransactionHistoryCollection, EntityId>({
-    selectId: (his: TransactionHistoryCollection) => his._id,
+    selectId: (his: TransactionHistoryCollection) => his?._id,
     sortComparer: (a: TransactionHistoryCollection, b: TransactionHistoryCollection) => a.uuid.localeCompare(b.uuid)
 });
 
 const paymentHistoryAdapter = createEntityAdapter<PaymentHistoryCollection, EntityId>({
-    selectId: (phis: PaymentHistoryCollection) => phis._id,
+    selectId: (phis: PaymentHistoryCollection) => phis?._id,
     sortComparer: (a: PaymentHistoryCollection, b: PaymentHistoryCollection) => a.uuid.localeCompare(b.uuid)
 });
 

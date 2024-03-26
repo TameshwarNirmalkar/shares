@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppState } from '@redux-store/store';
+import { createEntityAdapter, createSlice, EntityId, EntityState, PayloadAction } from '@reduxjs/toolkit';
 import { getInvestmentsCollectionAction } from './action';
 
 interface InvestmentListCollection {
@@ -26,8 +27,8 @@ interface MyClientInvestmentCollection {
 interface InvestmentListStateI {
     isLoading: boolean;
     errorMsg: string | null;
-    my_investment_list: InvestmentListCollection[];
-    my_client_investment_list: MyClientInvestmentCollection[];
+    my_investment_list: EntityState<InvestmentListCollection, EntityId>;
+    my_client_investment_list: EntityState<MyClientInvestmentCollection, EntityId>;
     my_total_investment: any;
     my_client_total_investment: any;
     consolidate_investment: any;
@@ -39,22 +40,23 @@ interface InvestmentListStateI {
 //     sortComparer: (a: InvestmentListCollection, b: InvestmentListCollection) => a.full_name.localeCompare(b.full_name)
 // });
 
-// const myInvestmentListAdapter = createEntityAdapter<InvestmentListCollection, EntityId>({
-//     selectId: (myinvestment: InvestmentListCollection) => myinvestment._id,
-//     sortComparer: (a: InvestmentListCollection, b: InvestmentListCollection) => a.interest_date.localeCompare(b.interest_date)
-// });
-// const myClientinvestmentListAdapter = createEntityAdapter<MyClientInvestmentCollection, EntityId>({
-//     selectId: (client_investment: MyClientInvestmentCollection) => client_investment._id,
-//     sortComparer: (a: MyClientInvestmentCollection, b: MyClientInvestmentCollection) => a.full_name.localeCompare(b.full_name)
-// });
+const myInvestmentListAdapter = createEntityAdapter<InvestmentListCollection, EntityId>({
+    selectId: (myinvestment: InvestmentListCollection) => myinvestment?._id,
+    sortComparer: (a: InvestmentListCollection, b: InvestmentListCollection) => a.interest_date.localeCompare(b.interest_date)
+});
+
+const myClientinvestmentListAdapter = createEntityAdapter<MyClientInvestmentCollection, EntityId>({
+    selectId: (client_investment: MyClientInvestmentCollection) => client_investment?._id,
+    sortComparer: (a: MyClientInvestmentCollection, b: MyClientInvestmentCollection) => a.full_name.localeCompare(b.full_name)
+});
 
 const investmentListSlice = createSlice({
     name: 'INVESTMENT_LIST_SLICE',
     initialState: {
         isLoading: false,
         errorMsg: '',
-        my_investment_list: [],
-        my_client_investment_list: [],
+        my_investment_list: myInvestmentListAdapter.getInitialState({}),
+        my_client_investment_list: myClientinvestmentListAdapter.getInitialState({}),
         my_total_investment: null,
         my_client_total_investment: null,
         consolidate_investment: null,
@@ -68,17 +70,32 @@ const investmentListSlice = createSlice({
     extraReducers(builder) {
         builder.addCase(getInvestmentsCollectionAction.pending, (state: any) => {
             state.isLoading = true;
-        }).addCase(getInvestmentsCollectionAction.fulfilled, (state: InvestmentListStateI, action: PayloadAction<InvestmentListStateI>) => {
+        }).addCase(getInvestmentsCollectionAction.fulfilled, (state: InvestmentListStateI, action: PayloadAction<any>) => {
             state.isLoading = false;
-            state.my_investment_list = action.payload.my_investment_list;
-            state.my_client_investment_list = action.payload.my_client_investment_list;
+            // state.my_investment_list = action.payload.my_investment_list;
+            myInvestmentListAdapter.upsertMany(state.my_investment_list, action.payload.my_investment_list);
+            // state.my_client_investment_list = action.payload.my_client_investment_list;
+            myClientinvestmentListAdapter.upsertMany(state.my_client_investment_list, action.payload.my_client_investment_list);
+
+
             state.my_total_investment = action.payload.my_total_investment;
             state.my_client_total_investment = action.payload.my_client_total_investment;
             state.consolidate_investment = action.payload.consolidate_investment;
+
             // state.profit_from_client = action.payload.profit_from_client
         })
     }
 });
+
+export const {
+    selectAll: selectAllMyInvestment,
+    selectById: selectMyInvestmentById,
+} = myInvestmentListAdapter.getSelectors((state: AppState) => state.investmentList.my_investment_list);
+
+export const {
+    selectAll: selectAllMyClientInvestment,
+    selectById: selectMyClientInvestmentById
+} = myClientinvestmentListAdapter.getSelectors((state: AppState) => state.investmentList.my_client_investment_list);
 
 export const { updateProfitClient } = investmentListSlice.actions;
 
