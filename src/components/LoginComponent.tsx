@@ -44,7 +44,7 @@ const LoginComponent: FC<{}> = memo(() => {
       <Row>
         <Col span={24}>
           <div className="h-screen items-center grid justify-items-center">
-            <div className="w-1/4">
+            <div className="sm:w-30rem md:w-48rem lg:w-64rem xl:w-80rem 2xl:w-96rem">
               <div className="grid justify-items-center pb-5">
                 <Image
                   className="rounded-full"

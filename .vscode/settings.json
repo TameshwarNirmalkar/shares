@@ -1,9 +1,11 @@
 {
+  "workbench.colorTheme": "Monokai",
   "editor.formatOnSave": true,
   "editor.quickSuggestions": {"other": "on"},
   "editor.snippetSuggestions": "top",
   "editor.tabCompletion":"on",
   "prettier.printWidth": 160,
+  "terminal.integrated.fontFamily": "MesloLGS NF",
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
   },
